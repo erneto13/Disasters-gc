@@ -1,7 +1,10 @@
 package me.hhitt.disasters.util
 
+import me.hhitt.disasters.Disasters
+import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.storage.file.FileManager
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -20,7 +23,20 @@ object Lobby {
         )
         this.location = loc
     }
-     fun teleportPlayer(player: Player) {
+
+    fun teleportPlayer(player: Player) {
          player.teleport(location)
+         player.activePotionEffects.clear()
+         player.health = 20.0
+        player.gameMode = GameMode.SURVIVAL
      }
+
+    fun teleportAtEnd(arena: Arena) {
+        Bukkit.getScheduler().runTaskLater(Disasters.getInstance(), Runnable {
+            arena.playing.forEach {
+                teleportPlayer(it)
+            }
+            arena.clear()
+        }, 60L)
+    }
 }

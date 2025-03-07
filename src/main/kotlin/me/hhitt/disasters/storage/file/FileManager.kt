@@ -13,6 +13,8 @@ object FileManager {
     fun initialize() {
         this.plugin = Disasters.getInstance()
         load("config")
+        load("lang")
+        load("scoreboard")
     }
 
     private fun load(name: String) {

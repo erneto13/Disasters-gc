@@ -10,38 +10,37 @@ import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import com.sk89q.worldedit.session.ClipboardHolder
+import me.hhitt.disasters.Disasters
+import me.hhitt.disasters.arena.Arena
+import me.hhitt.disasters.game.GameState
 import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.entity.Entity
-import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import kotlin.math.max
 import kotlin.math.min
 
-class ResetArenaService(private val loc1: Location, private val loc2: Location) {
+class ResetArenaService(
+    private val arena: Arena,
+    private val worldEdit: WorldEditPlugin?) {
 
-    private val world = loc1.world
-    private lateinit var worldEdit: WorldEditPlugin
+    private val world = arena.corner1.world
     private lateinit var clipboard: Clipboard
     private lateinit var center: BlockVector3
 
-    private val minX = min(loc1.x, loc2.x)
-    private val maxX = max(loc1.x, loc2.x)
-    private val minY = min(loc1.y, loc2.y)
-    private val maxY = max(loc1.y, loc2.y)
-    private val minZ = min(loc1.z, loc2.z)
-    private val maxZ = max(loc1.z, loc2.z)
+    private val minX = min(arena.corner1.x, arena.corner2.x).toInt()
+    private val maxX = max(arena.corner1.x, arena.corner2.x).toInt()
+    private val minY = min(arena.corner1.y, arena.corner2.y).toInt()
+    private val maxY = max(arena.corner1.y, arena.corner2.y).toInt()
+    private val minZ = min(arena.corner1.z, arena.corner2.z).toInt()
+    private val maxZ = max(arena.corner1.z, arena.corner2.z).toInt()
 
-    fun initWorldEdit(worldEdit: WorldEditPlugin) {
-        this.worldEdit = worldEdit
-    }
 
     fun save() {
-        val min: BlockVector3 = BlockVector3.at(loc1.x, loc1.y, loc1.z)
-        val max: BlockVector3 = BlockVector3.at(loc2.x, loc2.y, loc2.z)
+        val min: BlockVector3 = BlockVector3.at(arena.corner1.x, arena.corner1.y, arena.corner1.z)
+        val max: BlockVector3 = BlockVector3.at(arena.corner2.x, arena.corner2.y, arena.corner2.z)
         val region = CuboidRegion(min, max)
         val clipboard = BlockArrayClipboard(region)
-        worldEdit.worldEdit.newEditSession(BukkitAdapter.adapt(world)).use { editSession ->
+        worldEdit!!.worldEdit.newEditSession(BukkitAdapter.adapt(world)).use { editSession ->
             val forwardExtentCopy = ForwardExtentCopy(editSession, region, clipboard, region.minimumPoint)
             try {
                 Operations.complete(forwardExtentCopy)
@@ -55,15 +54,9 @@ class ResetArenaService(private val loc1: Location, private val loc2: Location) 
 
     fun paste() {
 
-        for (entity in world.entities) {
-            if (isEntityInRegion(entity)) {
-                if (entity is Item || entity !is Player) {
-                    entity.remove()
-                }
-            }
-        }
+        removeEntitiesInRegion()
 
-        worldEdit.worldEdit.newEditSession(BukkitAdapter.adapt(world)).use { editSession ->
+        worldEdit!!.worldEdit.newEditSession(BukkitAdapter.adapt(world)).use { editSession ->
             val operation = ClipboardHolder(clipboard)
                 .createPaste(editSession)
                 .to(center)
@@ -75,28 +68,33 @@ class ResetArenaService(private val loc1: Location, private val loc2: Location) 
                 throw RuntimeException(e)
             }
         }
-        refreshChunks(world, loc1, loc2)
-    }
-
-    private fun isEntityInRegion(entity: Entity): Boolean {
-        val x = entity.location.x
-        val y = entity.location.y
-        val z = entity.location.z
-
-        return (x in minX..maxX) && (y in minY..maxY) && (z in minZ..maxZ)
+        refreshChunks(world, arena.corner1, arena.corner2)
+        arena.state = GameState.RECRUITING
     }
 
     private fun refreshChunks(world: World, loc1: Location, loc2: Location) {
-        val minX = min(loc1.blockX.toDouble(), loc2.blockX.toDouble()).toInt() shr 4
-        val maxX = max(loc1.blockX.toDouble(), loc2.blockX.toDouble()).toInt() shr 4
-        val minZ = min(loc1.blockZ.toDouble(), loc2.blockZ.toDouble()).toInt() shr 4
-        val maxZ = max(loc1.blockZ.toDouble(), loc2.blockZ.toDouble()).toInt() shr 4
+        val minXX = minX shr 4
+        val maxXX = maxX shr 4
+        val minZZ = minZ shr 4
+        val maxZZ = maxZ shr 4
 
-        for (x in minX..maxX) {
-            for (z in minZ..maxZ) {
+        for (x in minXX..maxXX) {
+            for (z in minZZ..maxZZ) {
                 world.refreshChunk(x, z)
             }
         }
     }
+
+    private fun removeEntitiesInRegion() {
+        for (entity in world.entities) {
+            val loc = entity.location
+            if (loc.blockX in minX..maxX && loc.blockY in minY..maxY && loc.blockZ in minZ..maxZ) {
+                if (entity !is Player) {
+                    entity.remove()
+                }
+            }
+        }
+    }
+
 
 }

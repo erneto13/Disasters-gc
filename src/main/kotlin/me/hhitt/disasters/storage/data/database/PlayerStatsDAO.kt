@@ -15,7 +15,6 @@ import java.util.UUID
 class PlayerStatsDAO(private val cache: Cache) {
 
     init {
-        Disasters.getInstance().logger.info("Init at DAO")
         val config = FileManager.get("config") ?: throw IllegalStateException("Config file not found!")
         val dbType = config.getString("database.driver")?.lowercase() ?: throw IllegalArgumentException("Database driver not specified in config")
 

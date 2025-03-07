@@ -3,10 +3,12 @@ package me.hhitt.disasters.obj.block
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
 import net.minecraft.core.BlockPos
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.CraftWorld
 import net.minecraft.world.level.block.Blocks
+import org.bukkit.craftbukkit.entity.CraftPlayer
 
 class DisasterFloor(private val arena: Arena, private val location: Location) {
     private val materials = listOf(
@@ -28,7 +30,7 @@ class DisasterFloor(private val arena: Arena, private val location: Location) {
 
     private fun setBlockMaterial(location: Location, material: Material) {
         val worldServer = (location.world as CraftWorld).handle
-        val blockPosition = BlockPos(location.blockX, location.blockY, location.blockZ)
+        val blockPosition = BlockPos(location.blockX, location.blockY - 1, location.blockZ)
         val blockData = when (material) {
             Material.YELLOW_WOOL -> Blocks.YELLOW_WOOL.defaultBlockState()
             Material.ORANGE_WOOL -> Blocks.ORANGE_WOOL.defaultBlockState()
@@ -37,6 +39,8 @@ class DisasterFloor(private val arena: Arena, private val location: Location) {
             else -> return
         }
         worldServer.setBlockAndUpdate(blockPosition, blockData)
+        val packet = ClientboundBlockUpdatePacket(worldServer, blockPosition)
+        arena.playing.forEach { player -> (player as CraftPlayer).handle.connection.send(packet) }
     }
 }
 

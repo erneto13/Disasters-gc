@@ -16,6 +16,7 @@ class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: L
         this.isInvulnerable = true
         this.color = DyeColor.GREEN
         this.setPos(location.x, location.y, location.z)
+        this.isNoAi = true
     }
 
     fun call() {
@@ -23,17 +24,14 @@ class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: L
         when(tick) {
             3 -> {
                 this.color = DyeColor.GREEN
-                playAttackSound()
                 tick--
             }
             2 -> {
                 this.color = DyeColor.ORANGE
-                playAttackSound()
                 tick--
             }
             1 -> {
                 this.color = DyeColor.RED
-                playAttackSound()
                 tick--
             }
             0 -> {

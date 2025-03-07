@@ -1,12 +1,19 @@
 package me.hhitt.disasters.arena
 
-import me.hhitt.disasters.arena.services.Border
+import com.sk89q.worldedit.bukkit.WorldEditPlugin
+import me.hhitt.disasters.arena.services.BorderService
 import me.hhitt.disasters.arena.services.ResetArenaService
+import me.hhitt.disasters.arena.services.RespawnService
 import me.hhitt.disasters.disaster.Disaster
+import me.hhitt.disasters.disaster.impl.WorldBorder
 import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.game.GameState
 import me.hhitt.disasters.util.Lobby
+import me.hhitt.disasters.util.Notify
+import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket
 import org.bukkit.Location
+import org.bukkit.craftbukkit.CraftWorld
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 
 class Arena(
@@ -21,30 +28,59 @@ class Arena(
     val maxDisasters: Int,
     val location: Location,
     val corner1: Location,
-    val corner2: Location
+    val corner2: Location,
+    worldEdit: WorldEditPlugin?,
 ) {
 
     val playing: MutableList<Player> = mutableListOf()
     val alive: MutableList<Player> = mutableListOf()
     val disasters: MutableList<Disaster> = mutableListOf()
     var state = GameState.RECRUITING
-    val border = Border(corner1, corner2)
-    val resetService = ResetArenaService(corner1, corner2)
+    val borderService = BorderService(corner1, corner2)
+    val resetService = ResetArenaService(this, worldEdit)
+    private val respawnService = RespawnService(this)
     private val gameSession = GameSession(this)
 
     fun addPlayer(player: Player) {
         playing.add(player)
         alive.add(player)
         player.teleport(location)
+        Notify.playerJoined(player, this)
         if(playing.size == minPlayers) {
             start()
         }
     }
 
+    fun playerDied(player: Player) {
+        alive.remove(player)
+        when(state) {
+            GameState.LIVE -> {
+                respawnService.setSpectator(player)
+            }
+            else -> {
+                respawnService.respawnAtArena(player)
+            }
+        }
+    }
+
     fun removePlayer(player: Player) {
+        if(disasters.contains(WorldBorder())) {
+            resetWorldBorder(player)
+        }
         Lobby.teleportPlayer(player)
         playing.remove(player)
         alive.remove(player)
+
+        if(isWaiting()) {
+            if(playing.size < minPlayers) {
+                stop()
+            }
+        } else {
+            if(alive.size < aliveToEnd) {
+                stop()
+            }
+        }
+        Notify.playerLeft(player, this)
     }
 
     fun isFull(): Boolean {
@@ -69,6 +105,40 @@ class Arena(
 
     fun stop() {
         gameSession.stop()
+    }
+
+    fun clear() {
+        playing.clear()
+        alive.clear()
+        disasters.clear()
+    }
+
+    fun getTimeLeft(): Int {
+        return gameSession.getTimeLeft()
+    }
+
+    fun getGameTime(): Int {
+        return gameSession.getGameTime()
+    }
+
+    fun getCountdownTime(): Int {
+        return gameSession.getCountdownTime()
+    }
+
+    fun getCountdownLeft(): Int {
+        return gameSession.getCountdownLeft()
+    }
+
+    private fun resetWorldBorder(player: Player) {
+        val craftWorld = player.world as CraftWorld
+        val worldServer = craftWorld.handle
+        val worldBorder = net.minecraft.world.level.border.WorldBorder()
+        worldBorder.world = worldServer
+        worldBorder.setCenter(player.world.spawnLocation.x, player.world.spawnLocation.z)
+        worldBorder.size = player.world.worldBorder.maxSize
+
+        val packet = ClientboundInitializeBorderPacket(worldBorder)
+        (player as CraftPlayer).handle.connection.send(packet)
     }
 
 }

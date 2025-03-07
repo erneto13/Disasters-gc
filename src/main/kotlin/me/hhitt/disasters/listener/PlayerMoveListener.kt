@@ -2,6 +2,7 @@ package me.hhitt.disasters.listener
 
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.disaster.DisasterRegistry
+import me.hhitt.disasters.disaster.impl.FloorIsLava
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
@@ -23,13 +24,16 @@ class PlayerMoveListener(private val arenaManager: ArenaManager): Listener {
             arenaManager.getArena(event.player)?.let { arena ->
 
                 if (arena.isWaiting()) {
-                    // We don't care if the game does not start
+                    return
+                }
+
+                if(!arena.disasters.contains(FloorIsLava())) {
                     return
                 }
 
                 // Check if player is in the border and add the block to the floor is lava if needed
-                if(arena.border.isLocationInArenaTp(event.player)) {
-                    DisasterRegistry.addBlockToFloorIsLava(arena, event.player.location)
+                if(arena.borderService.isLocationInArenaTp(event.player)) {
+                    DisasterRegistry.addBlockToFloorIsLava(arena, event.to)
                 }
 
             }

@@ -16,6 +16,10 @@ object Msg {
         return miniMsg.deserialize(placeholder(msg, player)) as TextComponent
     }
 
+    fun parse(msg : String) : TextComponent {
+        return miniMsg.deserialize(msg) as TextComponent
+    }
+
     fun parseList(lore: List<String>, player: Player) : List<TextComponent> {
         val components = mutableListOf<TextComponent>()
         lore.forEach {
@@ -24,6 +28,13 @@ object Msg {
         return components
     }
 
+    fun send(player: Player, path: String){
+        player.sendMessage(parse(getMsg(path), player))
+    }
+
+    fun send(sender: CommandSender, path: String){
+        sender.sendMessage(parse(getMsg(path)))
+    }
 
     fun sendParsed(player: Player, msg: String){
         player.sendMessage(parse(msg, player))

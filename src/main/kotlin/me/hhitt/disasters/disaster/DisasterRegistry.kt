@@ -1,9 +1,11 @@
 package me.hhitt.disasters.disaster
 
+import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
 import me.hhitt.disasters.obj.block.DisasterFloor
 import org.bukkit.Location
+import org.bukkit.entity.Player
 
 object DisasterRegistry {
     private val activeDisasters = mutableMapOf<Arena, MutableList<Disaster>>()
@@ -11,12 +13,12 @@ object DisasterRegistry {
         AcidRain::class,
         Apocalypse::class,
         ExplosiveSheep::class,
-        FloorIsLava::class,
+        //FloorIsLava::class,
         Grounded::class,
         Lightning::class,
         OneHearth::class,
         Swap::class,
-        WorldBorder::class
+        //WorldBorder::class
     )
 
     fun addRandomDisaster(arena: Arena) {
@@ -40,9 +42,9 @@ object DisasterRegistry {
         }
     }
 
-    fun pulseAll() {
-        activeDisasters.forEach { (arena, disasters) ->
-            disasters.forEach { it.pulse() }
+    fun pulseAll(time: Int) {
+        activeDisasters.forEach { (_, disasters) ->
+            disasters.forEach { it.pulse(time) }
         }
     }
 
@@ -52,6 +54,7 @@ object DisasterRegistry {
     }
 
     fun addBlockToFloorIsLava(arena: Arena, location: Location) {
+        Disasters.getInstance().logger.info("Adding block to floor is lava at ${location.x}, ${location.y}, ${location.z} in arena ${arena.name}")
         val disaster = activeDisasters[arena]?.find { it is FloorIsLava } as? FloorIsLava
         val block = DisasterFloor(arena, location)
         disaster?.addBlock(block)
@@ -60,6 +63,11 @@ object DisasterRegistry {
     fun removeBlockFromFloorIsLava(arena: Arena, block: DisasterFloor) {
         val disaster = activeDisasters[arena]?.find { it is FloorIsLava } as? FloorIsLava
         disaster?.removeBlock(block)
+    }
+
+    fun isGrounded(arena: Arena, player: Player): Boolean {
+        val disaster = activeDisasters[arena]?.find { it is Grounded } as? Grounded
+        return disaster?.isGrounded(player) ?: false
     }
 
 }

@@ -1,5 +1,21 @@
 messages:
   no-permission: "<red>You do not have permission to perform this!"
+  reload-success: "<green>Plugin reloaded (configuration and arenas)!"
+  lobby-set: "<green>Lobby set!"
+  already-in-arena: "<red>You are already in an arena!"
+  not-in-arena: "<red>You are not in an arena!"
+  arena-not-found: "<red>Arena not found!"
+  arena-in-game: "<red>Arena is in game!"
+  arena-full: "<red>Arena is full!"
+  arena-joined: "<green>You have joined the arena!"
+  arena-left: "<red>You have left the arena!"
+
+game-broadcast:
+  player-joined: "<green>%joined% has joined the game! (%disasters_game_players%/%disasters_game_max_players%)"
+  player-left: "<red>%left% has left the game! (%disasters_game_players%/%disasters_game_max_players%)"
+  player-killed: "<red>%player_name% has been killed by %killer%!"
+  player-died: "<red>%dead% has died!"
+  player-won: "<green>%winner% has won the game!"
 
 countdown:
   10:

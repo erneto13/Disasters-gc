@@ -1,38 +1,27 @@
 package me.hhitt.disasters.game.countdown
 
 import me.hhitt.disasters.arena.Arena
-import me.hhitt.disasters.game.GameState
+import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.util.Notify
 import org.bukkit.scheduler.BukkitRunnable
 
-class Countdown(private val arena: Arena): BukkitRunnable() {
+class Countdown(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
 
-    private var time = 0
-    private var remaining = arena.countdown
-    private val maxTime = arena.countdown
-
-    fun start() {
-        this.run()
-        arena.state = GameState.COUNTDOWN
-    }
-
-    override fun cancel() {
-        this.cancel()
-        Notify.countdownCanceled(arena)
-        time = 0
-        remaining = arena.countdown
-        arena.state = GameState.RESTARTING
-    }
+    var time = 0
+    var remaining = arena.countdown
 
     override fun run() {
-
-        if(time >= maxTime) {
-            arena.start()
-            cancel()
+        if (time >= arena.countdown) {
+            if(time >= (arena.countdown + 2)) {
+                Notify.gameStart(arena)
+                cancel()
+                session.startGameTimer()
+            }
+            time++
             return
         }
 
-        if(arena.alive.size <= arena.aliveToEnd) {
+        if (arena.alive.size <= arena.aliveToEnd) {
             cancel()
             return
         }
@@ -42,5 +31,10 @@ class Countdown(private val arena: Arena): BukkitRunnable() {
         remaining--
     }
 
-
+    override fun cancel() {
+        super.cancel()
+        Notify.countdownCanceled(arena)
+        time = 0
+        remaining = arena.countdown
+    }
 }
