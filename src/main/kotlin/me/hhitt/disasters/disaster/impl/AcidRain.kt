@@ -1,6 +1,5 @@
 package me.hhitt.disasters.disaster.impl
 
-import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify

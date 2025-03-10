@@ -11,6 +11,7 @@ class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
 
     private val config = FileManager.get("scoreboard")!!
     private val sidebars = mutableMapOf<Player, Sidebar>()
+    private val states = mutableMapOf<Player, GameState?>()
 
     fun updateSidebar(player: Player, state: GameState?) {
         sidebars[player]?.removePlayer(player)
@@ -20,6 +21,11 @@ class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
     }
 
     private fun sidebarBuilder(state: GameState?, player: Player): Sidebar {
+
+        if(state == states[player]) {
+            return sidebars[player]!!
+        }
+
         val sidebar = scoreboardLibrary.createSidebar()
 
         when (state) {
@@ -50,6 +56,7 @@ class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
             }
         }
 
+        states[player] = state
         return sidebar
     }
 

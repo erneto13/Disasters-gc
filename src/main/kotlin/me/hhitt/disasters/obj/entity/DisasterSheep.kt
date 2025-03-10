@@ -10,7 +10,7 @@ import org.bukkit.entity.TNTPrimed
 
 class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: Location): Sheep(entityType, level) {
 
-    var tick: Int = 3
+    private var tick: Int = 3
 
     init {
         this.isInvulnerable = true

@@ -11,9 +11,7 @@ class SidebarTask(private val arenaManager: ArenaManager, private val sidebarMan
         Bukkit.getOnlinePlayers().forEach { player: Player ->
             arenaManager.getArena(player)?.let { arena ->
                 sidebarManager.updateSidebar(player, arena.state)
-                return
-            }
-            sidebarManager.updateSidebar(player, null)
+            } ?: sidebarManager.updateSidebar(player, null)
         }
     }
 

@@ -13,12 +13,12 @@ object DisasterRegistry {
         AcidRain::class,
         Apocalypse::class,
         ExplosiveSheep::class,
-        //FloorIsLava::class,
+        FloorIsLava::class,
         Grounded::class,
         Lightning::class,
         OneHearth::class,
         Swap::class,
-        //WorldBorder::class
+        WorldBorder::class
     )
 
     fun addRandomDisaster(arena: Arena) {

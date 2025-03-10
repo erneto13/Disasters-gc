@@ -2,7 +2,7 @@ package me.hhitt.disasters.disaster
 
 import org.bukkit.scheduler.BukkitRunnable
 
-class DisasterTask() : BukkitRunnable() {
+class DisasterTask : BukkitRunnable() {
     private var time = 0
     override fun run() {
         if(time >= 4) {

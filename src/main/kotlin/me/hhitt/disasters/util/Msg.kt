@@ -58,7 +58,7 @@ object Msg {
     }
 
     private fun getMsg(path: String) : String {
-        return FileManager.get("lang")?.getString(path) ?: "Message not found"
+        return FileManager.get("lang")?.getString("messages.$path") ?: "Message not found"
     }
 
     private fun placeholder(msg: String, player: Player) : String {

@@ -10,7 +10,6 @@ import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import com.sk89q.worldedit.session.ClipboardHolder
-import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.game.GameState
 import org.bukkit.Location

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.hhitt"
-version = "1.0.0-BETA-9"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -93,6 +93,6 @@ tasks.withType<KotlinJvmCompile> {
 }
 
 tasks.register<Copy>("copyDeps") {
-    from(configurations.paperweightDevelopmentBundle)
+    from(configurations.runtimeOnly)
     into("/home/diego/Desktop/libs")
 }

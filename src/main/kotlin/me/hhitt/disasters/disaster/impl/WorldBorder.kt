@@ -34,7 +34,6 @@ class WorldBorder : Disaster {
         for (player in arena.playing) {
             sendWorldBorder(player, center, initialRadius)
         }
-        checkPlayersOutsideBorderAndApplyDamage(arena)
     }
 
     override fun pulse(time: Int) {
@@ -56,6 +55,8 @@ class WorldBorder : Disaster {
                 for (player in arena.playing) {
                     sendWorldBorder(player, center, newRadius)
                 }
+                // Verificar y aplicar daño a los jugadores fuera de la frontera
+                checkPlayersOutsideBorderAndApplyDamage(arena, center, newRadius)
             }
         }
     }
@@ -79,7 +80,6 @@ class WorldBorder : Disaster {
         sendPacket(player, packet)
     }
 
-
     private fun resetWorldBorder(player: Player) {
         val craftWorld = player.world as CraftWorld
         val worldServer = craftWorld.handle
@@ -96,25 +96,17 @@ class WorldBorder : Disaster {
         (player as CraftPlayer).handle.connection.send(packet)
     }
 
-    private fun checkPlayersOutsideBorderAndApplyDamage(arena: Arena) {
-        val world = arena.corner1.world
-        val minX = minOf(arena.corner1.x, arena.corner2.x)
-        val maxX = maxOf(arena.corner1.x, arena.corner2.x)
-        val minY = minOf(arena.corner1.y, arena.corner2.y)
-        val maxY = maxOf(arena.corner1.y, arena.corner2.y)
-        val minZ = minOf(arena.corner1.z, arena.corner2.z)
-        val maxZ = maxOf(arena.corner1.z, arena.corner2.z)
-
+    private fun checkPlayersOutsideBorderAndApplyDamage(arena: Arena, center: Location, radius: Double) {
         for (player in arena.alive) {
             val loc = player.location
-            if (loc.world == world &&
-                (loc.x !in minX..maxX || loc.y !in minY..maxY || loc.z !in minZ..maxZ)
-            ) {
-                val damageAmount = 2.0
-                player.damage(damageAmount)
+            if (loc.world == center.world) {
+                val distance = loc.distance(center)
+                if (distance > radius) {
+                    val damageAmount = 2.0
+                    player.damage(damageAmount)
+                }
             }
         }
     }
-
 }
 
