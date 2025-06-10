@@ -3,10 +3,15 @@ package me.hhitt.disasters.command
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.util.Msg
-import me.hhitt.disasters.util.Msg.parse
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
+
+/**
+ * ArenaCommand class that handles the commands related to arena prefix.
+ *
+ * @param arenaManager The ArenaManager instance used to manage arenas.
+ */
 
 @Command("arena")
 class ArenaCommand(private val arenaManager: ArenaManager) {

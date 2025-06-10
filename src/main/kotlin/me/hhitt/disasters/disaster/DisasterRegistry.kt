@@ -7,6 +7,11 @@ import me.hhitt.disasters.obj.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
+/**
+ * DisasterRegistry is a singleton object that manages the active disasters in the game.
+ * It allows adding, removing, and pulsing disasters for each arena.
+ */
+
 object DisasterRegistry {
     private val activeDisasters = mutableMapOf<Arena, MutableList<Disaster>>()
     private val disasterClasses = listOf(

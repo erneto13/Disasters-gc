@@ -1,9 +1,9 @@
 package me.hhitt.disasters.arena
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin
-import me.hhitt.disasters.arena.services.BorderService
-import me.hhitt.disasters.arena.services.ResetArenaService
-import me.hhitt.disasters.arena.services.RespawnService
+import me.hhitt.disasters.arena.service.BorderService
+import me.hhitt.disasters.arena.service.ResetArenaService
+import me.hhitt.disasters.arena.service.RespawnService
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.disaster.impl.WorldBorder
 import me.hhitt.disasters.game.GameSession
@@ -15,6 +15,25 @@ import org.bukkit.Location
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
+
+/** Arena class represents a game arena in the plugin.
+ * It manages players, game state, disasters, and arena boundaries.
+ *
+ * @param name The name of the arena.
+ * @param displayName The display name of the arena.
+ * @param minPlayers Minimum number of players required to start the game.
+ * @param maxPlayers Maximum number of players allowed in the game.
+ * @param aliveToEnd Number of players that can be alive at the end of the game.
+ * @param maxTime Maximum time for the game in seconds.
+ * @param countdown Countdown time before the game starts in seconds.
+ * @param rate Rate at which disasters occur.
+ * @param maxDisasters Maximum number of disasters that can occur in the arena.
+ * @param location The spawn location for players when they join the arena.
+ * @param corner1 One corner of the arena's bounding box.
+ * @param corner2 The opposite corner of the arena's bounding box.
+ * @param worldEdit WorldEdit plugin instance for arena manipulation.
+ *
+ **/
 
 class Arena(
     val name: String,
@@ -29,6 +48,9 @@ class Arena(
     val location: Location,
     val corner1: Location,
     val corner2: Location,
+    val winnersCommands: List<String>,
+    val losersCommands: List<String>,
+    val toAllCommands: List<String>,
     worldEdit: WorldEditPlugin?,
 ) {
 

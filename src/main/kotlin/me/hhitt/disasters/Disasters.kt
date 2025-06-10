@@ -7,7 +7,6 @@ import me.hhitt.disasters.command.ArenaCommand
 import me.hhitt.disasters.command.DisastersCommand
 import me.hhitt.disasters.disaster.DisasterTask
 import me.hhitt.disasters.hook.PlaceholderAPIHook
-import me.hhitt.disasters.hook.WorldGuardHook
 import me.hhitt.disasters.listener.*
 import me.hhitt.disasters.sidebar.SidebarService
 import me.hhitt.disasters.storage.data.Data
@@ -25,6 +24,7 @@ import revxrsal.zapper.ZapperJavaPlugin
 
 class Disasters : ZapperJavaPlugin() {
 
+    // Singleton instance
     companion object {
         private lateinit var instance: Disasters
         fun getInstance(): Disasters = instance
@@ -33,7 +33,6 @@ class Disasters : ZapperJavaPlugin() {
     private lateinit var arenaManager: ArenaManager
     private lateinit var scoreboardLibrary: ScoreboardLibrary
     private lateinit var sidebarService: SidebarService
-    private lateinit var worldGuardHook: WorldGuardHook
 
     override fun onEnable() {
         instance = this
@@ -56,10 +55,9 @@ class Disasters : ZapperJavaPlugin() {
             logger.severe("WorldEdit plugin not found! Disabling...")
             server.pluginManager.disablePlugin(this)
         }
-
-        // World Guard
-        worldGuardHook = WorldGuardHook()
-        arenaManager = ArenaManager(worldEditPlugin, worldGuardHook)
+        // Start Kryz
+        arenaManager = ArenaManager(worldEditPlugin)
+        // End Kryz
 
         // PlaceholderAPI
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {

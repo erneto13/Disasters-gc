@@ -10,6 +10,14 @@ import org.bukkit.craftbukkit.CraftWorld
 import net.minecraft.world.level.block.Blocks
 import org.bukkit.craftbukkit.entity.CraftPlayer
 
+/**
+ * DisasterFloor is a class that represents a floor block in the arena that changes its material
+ * based on the current stage of the disaster.
+ *
+ * @param arena The arena where the disaster is taking place.
+ * @param location The location of the block in the arena.
+ */
+
 class DisasterFloor(private val arena: Arena, private val location: Location) {
     private val materials = listOf(
         Material.YELLOW_WOOL,

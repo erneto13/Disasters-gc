@@ -7,6 +7,13 @@ import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
 import net.megavex.scoreboardlibrary.api.sidebar.Sidebar
 import org.bukkit.entity.Player
 
+/**
+ * SidebarManager is responsible for managing the sidebars for players in the game.
+ * It creates and updates the sidebars based on the game state.
+ *
+ * @param scoreboardLibrary The ScoreboardLibrary instance used to create sidebars.
+ */
+
 class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
 
     private val config = FileManager.get("scoreboard")!!
@@ -22,7 +29,7 @@ class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
 
     private fun sidebarBuilder(state: GameState?, player: Player): Sidebar {
 
-        if(state == states[player]) {
+        if(state == states[player] && sidebars[player] != null) {
             return sidebars[player]!!
         }
 

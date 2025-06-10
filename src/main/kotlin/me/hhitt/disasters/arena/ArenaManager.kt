@@ -2,7 +2,6 @@ package me.hhitt.disasters.arena
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin
 import me.hhitt.disasters.Disasters
-import me.hhitt.disasters.hook.WorldGuardHook
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration
@@ -11,13 +10,19 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class ArenaManager(private val worldEdit: WorldEditPlugin?, worldGuardHook: WorldGuardHook) {
+/**
+ * ArenaManager is responsible for managing all arenas in the game.
+ * It loads arenas from the configuration files and provides methods to interact with them.
+ *
+ * @property worldEdit The WorldEdit plugin instance, if available.
+ */
+
+class ArenaManager(private val worldEdit: WorldEditPlugin?) {
 
     private val plugin = Disasters.getInstance()
     private val arenas = mutableListOf<Arena>()
 
     init {
-        worldGuardHook.hook()
         createDefaultArenaFile()
         loadArenas()
     }
@@ -84,7 +89,12 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?, worldGuardHook: Worl
                 arenaConfig.getDouble("corner2.z")
             )
 
-            val arena = Arena(arenaID, displayName, minPlayers, maxPlayers, aliveToEnd, gameTime, countdown, disasterRate, maxDisasters, location, corner1, corner2, worldEdit)
+            val winnersCommands = arenaConfig.getStringList("winners-commands")
+            val losersCommands = arenaConfig.getStringList("losers-commands")
+            val toAllCommands = arenaConfig.getStringList("to-all-commands")
+
+            val arena = Arena(arenaID, displayName, minPlayers, maxPlayers, aliveToEnd, gameTime, countdown, disasterRate,
+                maxDisasters, location, corner1, corner2, winnersCommands, losersCommands, toAllCommands, worldEdit)
 
             arenas.add(arena)
         }

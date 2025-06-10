@@ -10,6 +10,13 @@ import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
+/**
+ * DisastersCommand class that handles the commands related to disasters prefix.
+ *
+ * @param arenaManager The ArenaManager instance used to manage arenas.
+ * @param sidebarService The SidebarService instance used to manage sidebars.
+ */
+
 @Command("disasters")
 @CommandPermission("disasters.admin")
 class DisastersCommand(private val arenaManager: ArenaManager, private val sidebarService: SidebarService) {

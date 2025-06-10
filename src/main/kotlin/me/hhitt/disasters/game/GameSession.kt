@@ -6,6 +6,14 @@ import me.hhitt.disasters.game.countdown.Countdown
 import me.hhitt.disasters.game.timer.GameTimer
 import org.bukkit.scheduler.BukkitTask
 
+/**
+ * The GameSession class is responsible for managing the game session of an arena.
+ * It handles the countdown before the game starts and the game timer during the game.
+ * It also provides methods to start, stop, and retrieve the time left in the countdown and game timer.
+ *
+ * @param arena The arena where the game session is taking place.
+ **/
+
 class GameSession(private val arena: Arena) {
 
     private val plugin = Disasters.getInstance()

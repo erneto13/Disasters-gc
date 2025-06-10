@@ -10,6 +10,11 @@ import org.bukkit.entity.Player
 
 object Lobby {
 
+    /*
+     * May this class is not the best way to set the lobby location,
+     * but is really helpful.
+     */
+
     private var location: Location = Location(null, 0.0, 0.0, 0.0)
 
     fun setLocation() {

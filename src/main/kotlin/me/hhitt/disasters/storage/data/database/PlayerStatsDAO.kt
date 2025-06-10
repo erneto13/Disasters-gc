@@ -12,6 +12,13 @@ import me.hhitt.disasters.Disasters
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.UUID
 
+/**
+ * Data Access Object (DAO) for managing player statistics in the database.
+ * This class is responsible for loading, updating, and retrieving player statistics.
+ *
+ * @param cache The cache instance used to store player statistics.
+ */
+
 class PlayerStatsDAO(private val cache: Cache) {
 
     init {

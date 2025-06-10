@@ -1,12 +1,16 @@
 package me.hhitt.disasters.hook
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.storage.data.Data
 import org.bukkit.entity.Player
+
+/**
+ * PlaceholderAPI Hook for Disasters plugin.
+ *
+ * @param arenaManager The ArenaManager instance to manage arenas.
+ */
 
 class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderExpansion() {
 

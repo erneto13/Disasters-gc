@@ -10,6 +10,13 @@ import org.bukkit.entity.Player
 
 object Msg {
 
+    /*
+     * This class is used to parse messages from the config file.
+     * It uses MiniMessage to parse the messages and PlaceholderAPI to set placeholders.
+     * It also has methods to send messages, titles, subtitles, action bars and sounds to players.
+     * Some of the methods are not used yet, but in a near future they will be used.
+     */
+
     private val miniMsg = MiniMessage.miniMessage()
 
     fun parse(msg : String, player: Player) : TextComponent {

@@ -4,6 +4,12 @@ import me.hhitt.disasters.storage.data.cache.Cache
 import me.hhitt.disasters.storage.data.database.PlayerStatsDAO
 import java.util.UUID
 
+/**
+ * Data class to manage player statistics.
+ * This class is responsible for loading, updating, and retrieving player statistics.
+ * It uses a cache to store player statistics for quick access.
+ */
+
 object Data {
     private lateinit var cache: Cache
     private lateinit var playerStatsDAO: PlayerStatsDAO

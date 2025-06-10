@@ -10,6 +10,10 @@ import org.bukkit.configuration.file.FileConfiguration
 
 object Notify {
 
+    /*
+     * This class is used to send notifications to players in the arena.
+     */
+
     private val config: FileConfiguration = FileManager.get("lang")!!
 
     fun countdown(arena: Arena, index: Int) {

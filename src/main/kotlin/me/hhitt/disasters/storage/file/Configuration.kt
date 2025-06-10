@@ -5,7 +5,13 @@ import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.IOException
-import java.util.Objects.requireNonNull
+
+/**
+ * Configuration class for loading and saving YAML configuration files.
+ *
+ * @param file The file to load the configuration from. If null, the file will be created in the plugin's data folder.
+ * @param fileName The name of the configuration file. Should not be null.
+ */
 
 open class Configuration(file: File?, fileName: String) : YamlConfiguration() {
 

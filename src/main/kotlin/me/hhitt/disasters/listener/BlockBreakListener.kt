@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 
+
 class BlockBreakListener(private val arenaManager: ArenaManager): Listener {
 
     @EventHandler
@@ -14,6 +15,7 @@ class BlockBreakListener(private val arenaManager: ArenaManager): Listener {
                 event.isCancelled = true
             }
         }
+
     }
 
 }

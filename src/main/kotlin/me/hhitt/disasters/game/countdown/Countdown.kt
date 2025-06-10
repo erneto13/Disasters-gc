@@ -5,6 +5,14 @@ import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.util.Notify
 import org.bukkit.scheduler.BukkitRunnable
 
+/**
+ * The Countdown class is responsible for managing the countdown timer before the game starts.
+ * It handles the countdown time, remaining time, and notifies players about the countdown status.
+ *
+ * @param arena The arena where the countdown is taking place.
+ * @param session The game session associated with the arena.
+ */
+
 class Countdown(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
 
     var time = 0
