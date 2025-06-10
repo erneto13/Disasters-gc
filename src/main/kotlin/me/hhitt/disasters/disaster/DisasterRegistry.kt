@@ -17,6 +17,8 @@ object DisasterRegistry {
     private val disasterClasses = listOf(
         AcidRain::class,
         Apocalypse::class,
+        Blind::class,
+        Cobweb::class,
         ExplosiveSheep::class,
         FloorIsLava::class,
         Grounded::class,

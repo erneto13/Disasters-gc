@@ -117,3 +117,17 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>World Border is shrinking!"
       - "<gold>----------------------------------"
+  blind:
+    title: "<red>Blind!"
+    subtitle: "<red>Your vision will be null!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Now you can't see nothing!"
+      - "<gold>----------------------------------"
+  cobweb:
+    title: "<red>Cobweb!"
+    subtitle: "<red>You will be caught by cobwebs!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Cobwebs are spawning every 5 seconds!"
+      - "<gold>----------------------------------"
