@@ -131,3 +131,10 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>Cobwebs are spawning every 5 seconds!"
       - "<gold>----------------------------------"
+  lag:
+    title: "<red>Lag!"
+    subtitle: "<red>You will experiment lag!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Now you are so lagged!"
+      - "<gold>----------------------------------"
