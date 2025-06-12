@@ -145,3 +145,10 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>You will experiment some levitation!"
       - "<gold>----------------------------------"
+  wither:
+    title: "<red>Wither Attack!"
+    subtitle: "<red>A wither boss has arrive!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>A wither boss has arrive!"
+      - "<gold>----------------------------------"
