@@ -40,7 +40,7 @@ class PlayerMoveListener(private val arenaManager: ArenaManager): Listener {
         if(!arena.disasters.contains(Lag())) {
             return
         }
-        if (Random.nextDouble() > 0.3) return
+        if (Random.nextDouble() > 0.45) return // 45% chance to lag the player
         when (Random.nextInt(5)) {
             0 -> { // Simply lag effect
                 event.isCancelled = true
