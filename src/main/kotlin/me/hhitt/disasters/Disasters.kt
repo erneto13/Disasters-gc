@@ -55,9 +55,9 @@ class Disasters : ZapperJavaPlugin() {
             logger.severe("WorldEdit plugin not found! Disabling...")
             server.pluginManager.disablePlugin(this)
         }
-        // Start Kryz
+
+        // Arena Manager
         arenaManager = ArenaManager(worldEditPlugin)
-        // End Kryz
 
         // PlaceholderAPI
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
