@@ -35,7 +35,11 @@ class Murder : Disaster {
             player = players.random()
         } while (murders.contains(player))
         murders.add(player)
-        player.inventory.setItem(5, ItemStack.of(Material.DIAMOND_SWORD))
+        player.inventory.setItem(5, ItemStack.of(Material.WOODEN_SWORD))
         Msg.send(player, "now-murder")
+    }
+
+    fun isMurder(player: Player) : Boolean {
+        return murders.contains(player)
     }
 }

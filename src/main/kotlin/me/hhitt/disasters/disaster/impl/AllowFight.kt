@@ -20,4 +20,8 @@ class AllowFight : Disaster {
     override fun stop(arena: Arena) {
         arena.playing.forEach { players.remove(it) }
     }
+
+    fun isAllowed(player: Player): Boolean {
+        return players.contains(player)
+    }
 }

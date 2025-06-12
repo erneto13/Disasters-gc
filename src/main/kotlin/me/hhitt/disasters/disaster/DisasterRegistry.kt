@@ -83,4 +83,13 @@ object DisasterRegistry {
         return disaster?.isGrounded(player) ?: false
     }
 
+    fun isAllowedToFight(arena: Arena, player: Player): Boolean {
+        val disaster = activeDisasters[arena]?.find { it is AllowFight } as? AllowFight
+        return disaster?.isAllowed(player) ?: true
+    }
+
+    fun isMurder(arena: Arena, player: Player): Boolean {
+        val disaster = activeDisasters[arena]?.find { it is Murder } as? Murder
+        return disaster?.isMurder(player) ?: true
+    }
 }
