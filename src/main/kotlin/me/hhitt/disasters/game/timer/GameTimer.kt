@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
+import me.hhitt.disasters.disaster.impl.BlockDisappear
 import me.hhitt.disasters.disaster.impl.FloorIsLava
 import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.game.GameState
@@ -48,6 +49,12 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
         if(arena.disasters.contains(FloorIsLava())){
             arena.alive.forEach { player ->
                 DisasterRegistry.addBlockToFloorIsLava(arena, player.location)
+            }
+        }
+
+        if(arena.disasters.contains(BlockDisappear())){
+            arena.alive.forEach { player ->
+                DisasterRegistry.addBlockToDisappear(arena, player.location)
             }
         }
 

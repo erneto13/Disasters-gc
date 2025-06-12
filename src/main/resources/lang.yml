@@ -174,3 +174,10 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>Now players can kill u, pay attention!"
       - "<gold>----------------------------------"
+  disappear-blocks:
+    title: "<red>Blocks disappear!"
+    subtitle: "<red>Now blocks under u will disappear!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Now blocks under u will disappear!"
+      - "<gold>----------------------------------"

@@ -3,6 +3,7 @@ package me.hhitt.disasters.disaster
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
+import me.hhitt.disasters.obj.block.DisappearBlock
 import me.hhitt.disasters.obj.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -22,6 +23,7 @@ object DisasterRegistry {
         Lag::class,
         Wither::class,
         AllowFight::class,
+        BlockDisappear::class,
         HotSun::class,
         Murder::class,
         ZeroGravity::class,
@@ -75,6 +77,18 @@ object DisasterRegistry {
 
     fun removeBlockFromFloorIsLava(arena: Arena, block: DisasterFloor) {
         val disaster = activeDisasters[arena]?.find { it is FloorIsLava } as? FloorIsLava
+        disaster?.removeBlock(block)
+    }
+
+    fun addBlockToDisappear(arena: Arena, location: Location) {
+        Disasters.getInstance().logger.info("Adding block to floor is lava at ${location.x}, ${location.y}, ${location.z} in arena ${arena.name}")
+        val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
+        val block = DisappearBlock(arena, location)
+        disaster?.addBlock(block)
+    }
+
+    fun removeBlockFromDisappear(arena: Arena, block: DisappearBlock) {
+        val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
         disaster?.removeBlock(block)
     }
 

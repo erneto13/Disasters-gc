@@ -2,6 +2,7 @@ package me.hhitt.disasters.listener
 
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.disaster.DisasterRegistry
+import me.hhitt.disasters.disaster.impl.BlockDisappear
 import me.hhitt.disasters.disaster.impl.FloorIsLava
 import me.hhitt.disasters.disaster.impl.Lag
 import org.bukkit.event.EventHandler
@@ -34,6 +35,12 @@ class PlayerMoveListener(private val arenaManager: ArenaManager): Listener {
         if(arena.disasters.contains(FloorIsLava())) {
             if(arena.borderService.isLocationInArenaTp(event.player)) {
                 DisasterRegistry.addBlockToFloorIsLava(arena, event.to)
+            }
+        }
+
+        if(arena.disasters.contains(BlockDisappear())) {
+            if(arena.borderService.isLocationInArenaTp(event.player)) {
+                DisasterRegistry.addBlockToDisappear(arena, event.to)
             }
         }
 
