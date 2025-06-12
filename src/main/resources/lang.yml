@@ -9,6 +9,7 @@ messages:
   arena-full: "<red>Arena is full!"
   arena-joined: "<green>You have joined the arena!"
   arena-left: "<red>You have left the arena!"
+  now-murder: "<green>Now you are a murder!"
 
 game-broadcast:
   player-joined: "<green>%joined% has joined the game! (%disasters_game_players%/%disasters_game_max_players%)"
@@ -158,4 +159,18 @@ disaster:
     chat:
       - "<gold>----------------------------------"
       - "<red>The sun will burn u, take cover!"
+      - "<gold>----------------------------------"
+  murder:
+    title: "<red>Murder!"
+    subtitle: "<red>Now players with sword can kill u!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Now players with sword can kill u!"
+      - "<gold>----------------------------------"
+  allow-fight:
+    title: "<red>PvP Enabled!"
+    subtitle: "<red>Now u can hit players!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>Now players can kill u, pay attention!"
       - "<gold>----------------------------------"
