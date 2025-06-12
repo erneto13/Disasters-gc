@@ -152,3 +152,10 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>A wither boss has arrive!"
       - "<gold>----------------------------------"
+  hot-sun:
+    title: "<red>Hot Sun!"
+    subtitle: "<red>Now the sun will burn u!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>The sun will burn u, take cover!"
+      - "<gold>----------------------------------"

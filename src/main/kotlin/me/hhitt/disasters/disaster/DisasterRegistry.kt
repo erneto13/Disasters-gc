@@ -21,6 +21,7 @@ object DisasterRegistry {
         Cobweb::class,
         Lag::class,
         Wither::class,
+        HotSun::class,
         ZeroGravity::class,
         ExplosiveSheep::class,
         FloorIsLava::class,
