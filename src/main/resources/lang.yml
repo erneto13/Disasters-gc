@@ -138,3 +138,10 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>Now you are so lagged!"
       - "<gold>----------------------------------"
+  zero-gravity:
+    title: "<red>No Gravity!"
+    subtitle: "<red>You will experiment some levitation!"
+    chat:
+      - "<gold>----------------------------------"
+      - "<red>You will experiment some levitation!"
+      - "<gold>----------------------------------"
