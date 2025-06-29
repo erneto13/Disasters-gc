@@ -19,7 +19,7 @@ class HotSun : Disaster {
 
         players.forEach { player ->
             val location = player.location.add(0.0, 1.0, 0.0)
-            if (location.block.type.isSolid) {
+            if (location.block.type.isAir) {
                 player.damage(0.5)
             }
         }
