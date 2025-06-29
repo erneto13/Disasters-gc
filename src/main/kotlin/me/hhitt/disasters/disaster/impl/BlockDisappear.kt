@@ -2,7 +2,7 @@ package me.hhitt.disasters.disaster.impl
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
-import me.hhitt.disasters.obj.block.DisappearBlock
+import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.util.Notify
 import java.util.concurrent.CopyOnWriteArrayList
 

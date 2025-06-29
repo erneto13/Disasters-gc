@@ -3,8 +3,8 @@ package me.hhitt.disasters.disaster
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
-import me.hhitt.disasters.obj.block.DisappearBlock
-import me.hhitt.disasters.obj.block.DisasterFloor
+import me.hhitt.disasters.model.block.DisappearBlock
+import me.hhitt.disasters.model.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
