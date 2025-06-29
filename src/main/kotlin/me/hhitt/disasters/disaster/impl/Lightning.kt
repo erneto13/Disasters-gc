@@ -3,6 +3,7 @@ package me.hhitt.disasters.disaster.impl
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify
+import org.bukkit.Material
 import kotlin.random.Random
 
 class Lightning : Disaster {
@@ -29,6 +30,7 @@ class Lightning : Disaster {
             val highestBlockY = strikeLocation.world?.getHighestBlockYAt(strikeLocation)?.toDouble() ?: strikeLocation.y
             strikeLocation.y = highestBlockY
             strikeLocation.world?.strikeLightning(strikeLocation)
+            strikeLocation.block.type = Material.AIR
         }
     }
 
