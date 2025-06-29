@@ -28,6 +28,11 @@ class Murder : Disaster {
     }
 
     override fun stop(arena: Arena) {
+        players.forEach {
+            if(murderers.contains(it.key)){
+                it.value.inventory.setItem(5, ItemStack.of(Material.AIR))
+            }
+        }
         players.clear()
         murderers.clear()
     }
