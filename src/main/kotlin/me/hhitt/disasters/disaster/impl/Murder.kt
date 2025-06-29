@@ -26,7 +26,6 @@ class Murder : Disaster {
     }
 
     override fun stop(arena: Arena) {
-        TODO("Not yet implemented")
     }
 
     private fun addMurder(){

@@ -23,7 +23,6 @@ class Blind : Disaster {
     }
 
     override fun pulse(time: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun stop(arena: Arena) {
