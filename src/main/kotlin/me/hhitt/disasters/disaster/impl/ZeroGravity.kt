@@ -30,11 +30,9 @@ class ZeroGravity : Disaster {
     }
 
     override fun pulse(time: Int) {
+        if (time % 5 != 0) return
 
-        if(time % 5 != 0) return
-
-        players.forEach() {
-            players.add(it)
+        players.forEach {
             it.addPotionEffect(
                 PotionEffect(
                     org.bukkit.potion.PotionEffectType.LEVITATION,
@@ -45,8 +43,8 @@ class ZeroGravity : Disaster {
                 )
             )
         }
-
     }
+
 
     override fun stop(arena: Arena) {
         arena.playing.forEach {

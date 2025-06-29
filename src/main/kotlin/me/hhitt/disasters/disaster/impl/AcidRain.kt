@@ -27,7 +27,7 @@ class AcidRain: Disaster {
             it.alive.forEach {
                 val player: CraftPlayer = it as CraftPlayer
                 if(!isCoveredAndBreak(player.location.block)) {
-                    player.damage(1.0)
+                    player.damage(2.0)
                 }
             }
         }
