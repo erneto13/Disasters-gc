@@ -36,14 +36,17 @@ class ExplosiveSheep: Disaster {
     }
 
     private fun tick() {
-        sheeps.forEach { sheep ->
+        val iterator = sheeps.iterator()
+        while (iterator.hasNext()) {
+            val sheep = iterator.next()
             if (sheep.isAlive) {
                 sheep.call()
             } else {
-                sheeps.remove(sheep)
+                iterator.remove()
             }
         }
     }
+
 
     private fun spawnSheep(player: Player, radius: Int, amount: Int) {
         repeat(amount) {
