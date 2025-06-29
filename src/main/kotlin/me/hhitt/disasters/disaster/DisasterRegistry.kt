@@ -1,6 +1,5 @@
 package me.hhitt.disasters.disaster
 
-import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
 import me.hhitt.disasters.model.block.DisappearBlock
@@ -14,6 +13,7 @@ import org.bukkit.entity.Player
  */
 
 object DisasterRegistry {
+
     private val activeDisasters = mutableMapOf<Arena, MutableList<Disaster>>()
     private val disasterClasses = listOf(
         AcidRain::class,
@@ -36,24 +36,28 @@ object DisasterRegistry {
         WorldBorder::class
     )
 
+    private inline fun <reified T : Disaster> getDisaster(arena: Arena): T? {
+        return activeDisasters[arena]?.find { it is T } as? T
+    }
+
     fun addRandomDisaster(arena: Arena) {
         val maxDisasters = arena.maxDisasters
         val currentDisasters = activeDisasters.getOrPut(arena) { mutableListOf() }
 
         if (currentDisasters.size >= maxDisasters) {
-            val disasterToRemove = currentDisasters.removeAt(0)
-            disasterToRemove.stop(arena)
+            val toRemove = currentDisasters.removeAt(0)
+            toRemove.stop(arena)
         }
 
-        val availableDisasters = disasterClasses.filter { cls ->
+        val available = disasterClasses.filter { cls ->
             currentDisasters.none { it::class == cls }
         }
 
-        if (availableDisasters.isNotEmpty()) {
-            val disasterClass = availableDisasters.random()
-            val disaster = disasterClass.constructors.first().call()
-            disaster.start(arena)
-            currentDisasters.add(disaster)
+        if (available.isNotEmpty()) {
+            val newDisaster = available.random().constructors.first().call()
+            newDisaster.start(arena)
+            currentDisasters.add(newDisaster)
+            arena.disasters.add(newDisaster)
         }
     }
 
@@ -66,44 +70,41 @@ object DisasterRegistry {
     fun removeDisasters(arena: Arena) {
         activeDisasters[arena]?.forEach { it.stop(arena) }
         activeDisasters.remove(arena)
-    }
-
-    fun addBlockToFloorIsLava(arena: Arena, location: Location) {
-        Disasters.getInstance().logger.info("Adding block to floor is lava at ${location.x}, ${location.y}, ${location.z} in arena ${arena.name}")
-        val disaster = activeDisasters[arena]?.find { it is FloorIsLava } as? FloorIsLava
-        val block = DisasterFloor(arena, location)
-        disaster?.addBlock(block)
-    }
-
-    fun removeBlockFromFloorIsLava(arena: Arena, block: DisasterFloor) {
-        val disaster = activeDisasters[arena]?.find { it is FloorIsLava } as? FloorIsLava
-        disaster?.removeBlock(block)
+        arena.disasters.clear()
     }
 
     fun addBlockToDisappear(arena: Arena, location: Location) {
-        Disasters.getInstance().logger.info("Adding block to floor is lava at ${location.x}, ${location.y}, ${location.z} in arena ${arena.name}")
         val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
-        val block = DisappearBlock(arena, location)
-        disaster?.addBlock(block)
+        if (disaster == null) {
+        } else {
+            val block = DisappearBlock(arena, location)
+            disaster.addBlock(block)
+        }
     }
 
+
     fun removeBlockFromDisappear(arena: Arena, block: DisappearBlock) {
-        val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
-        disaster?.removeBlock(block)
+        getDisaster<BlockDisappear>(arena)?.removeBlock(block)
+    }
+
+    fun addBlockToFloorIsLava(arena: Arena, location: Location) {
+        val block = DisasterFloor(arena, location)
+        getDisaster<FloorIsLava>(arena)?.addBlock(block)
+    }
+
+    fun removeBlockFromFloorIsLava(arena: Arena, block: DisasterFloor) {
+        getDisaster<FloorIsLava>(arena)?.removeBlock(block)
     }
 
     fun isGrounded(arena: Arena, player: Player): Boolean {
-        val disaster = activeDisasters[arena]?.find { it is Grounded } as? Grounded
-        return disaster?.isGrounded(player) ?: false
+        return getDisaster<Grounded>(arena)?.isGrounded(player) ?: false
     }
 
     fun isAllowedToFight(arena: Arena, player: Player): Boolean {
-        val disaster = activeDisasters[arena]?.find { it is AllowFight } as? AllowFight
-        return disaster?.isAllowed(player) ?: true
+        return getDisaster<AllowFight>(arena)?.isAllowed(player) ?: false
     }
 
     fun isMurder(arena: Arena, player: Player): Boolean {
-        val disaster = activeDisasters[arena]?.find { it is Murder } as? Murder
-        return disaster?.isMurder(player) ?: true
+        return getDisaster<Murder>(arena)?.isMurder(player) ?: false
     }
 }
