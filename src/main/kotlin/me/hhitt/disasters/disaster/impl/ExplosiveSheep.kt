@@ -4,6 +4,7 @@ import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.model.entity.DisasterSheep
 import me.hhitt.disasters.util.Notify
+import net.minecraft.world.entity.Entity
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.CraftWorld
@@ -32,6 +33,7 @@ class ExplosiveSheep: Disaster {
     }
 
     override fun stop(arena: Arena) {
+        sheeps.forEach { it.remove(Entity.RemovalReason.KILLED) }
         arenas.remove(arena)
     }
 
