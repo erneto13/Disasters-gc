@@ -1,7 +1,7 @@
-package me.hhitt.disasters.obj.entity
+package me.hhitt.disasters.model.entity
 
 import net.minecraft.world.entity.EntityType
-import net.minecraft.world.entity.animal.Sheep
+import net.minecraft.world.entity.animal.sheep.Sheep
 import net.minecraft.world.item.DyeColor
 import net.minecraft.world.level.Level
 import org.bukkit.Location
