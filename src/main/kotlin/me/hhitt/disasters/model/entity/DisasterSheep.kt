@@ -33,6 +33,7 @@ class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: L
         this.color = DyeColor.GREEN
         this.setPos(location.x, location.y, location.z)
         this.isNoAi = false
+        enableFollowNearestPlayer()
     }
 
     fun call() {
