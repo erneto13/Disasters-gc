@@ -55,7 +55,6 @@ class WorldBorder : Disaster {
                 for (player in arena.playing) {
                     sendWorldBorder(player, center, newRadius)
                 }
-                // Verificar y aplicar daño a los jugadores fuera de la frontera
                 checkPlayersOutsideBorderAndApplyDamage(arena, center, newRadius)
             }
         }
@@ -74,7 +73,7 @@ class WorldBorder : Disaster {
         val worldBorder = WorldBorder()
         worldBorder.world = worldServer
         worldBorder.setCenter(center.x, center.z)
-        worldBorder.size = size
+        worldBorder.size = size * 2
 
         val packet = ClientboundInitializeBorderPacket(worldBorder)
         sendPacket(player, packet)
@@ -97,16 +96,17 @@ class WorldBorder : Disaster {
     }
 
     private fun checkPlayersOutsideBorderAndApplyDamage(arena: Arena, center: Location, radius: Double) {
+        val radiusSquared = radius * radius
         for (player in arena.alive) {
             val loc = player.location
             if (loc.world == center.world) {
-                val distance = loc.distance(center)
-                if (distance > radius) {
-                    val damageAmount = 2.0
-                    player.damage(damageAmount)
+                val distanceSquared = loc.distanceSquared(center)
+                if (distanceSquared > radiusSquared) {
+                    player.damage(2.0)
                 }
             }
         }
     }
+
 }
 
