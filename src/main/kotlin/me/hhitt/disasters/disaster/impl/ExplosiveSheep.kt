@@ -2,7 +2,7 @@ package me.hhitt.disasters.disaster.impl
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
-import me.hhitt.disasters.obj.entity.DisasterSheep
+import me.hhitt.disasters.model.entity.DisasterSheep
 import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
 import org.bukkit.Material

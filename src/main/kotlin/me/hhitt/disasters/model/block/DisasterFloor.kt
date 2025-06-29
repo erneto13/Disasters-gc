@@ -1,4 +1,4 @@
-package me.hhitt.disasters.obj.block
+package me.hhitt.disasters.model.block
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
