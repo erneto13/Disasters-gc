@@ -32,21 +32,20 @@ class PlayerMoveListener(private val arenaManager: ArenaManager): Listener {
             return
         }
 
-        if(arena.disasters.contains(FloorIsLava())) {
+        if (arena.disasters.any { it is FloorIsLava }) {
             if(arena.borderService.isLocationInArenaTp(event.player)) {
                 DisasterRegistry.addBlockToFloorIsLava(arena, event.to)
             }
         }
 
-        if(arena.disasters.contains(BlockDisappear())) {
+        if (arena.disasters.any { it is BlockDisappear }) {
             if(arena.borderService.isLocationInArenaTp(event.player)) {
                 DisasterRegistry.addBlockToDisappear(arena, event.to)
             }
         }
 
-        if(!arena.disasters.contains(Lag())) {
-            return
-        }
+        if (!arena.disasters.any { it is Lag }) return
+
         if (Random.nextDouble() > 0.45) return // 45% chance to lag the player
         when (Random.nextInt(5)) {
             0 -> { // Simply lag effect
