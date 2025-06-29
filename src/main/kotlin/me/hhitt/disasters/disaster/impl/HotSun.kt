@@ -18,12 +18,17 @@ class HotSun : Disaster {
         if (time % 2 != 0) return
 
         players.forEach { player ->
-            val location = player.location.add(0.0, 1.0, 0.0)
-            if (location.block.type.isAir) {
+            val loc = player.location
+
+            val exposed = loc.block.lightFromSky >= 15 &&
+                    player.world.getHighestBlockAt(loc).y <= loc.y
+
+            if (exposed) {
                 player.damage(0.5)
             }
         }
     }
+
 
     override fun stop(arena: Arena) {
         arena.playing.forEach { players.remove(it) }
