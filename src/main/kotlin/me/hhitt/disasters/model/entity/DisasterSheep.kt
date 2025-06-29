@@ -1,7 +1,14 @@
 package me.hhitt.disasters.model.entity
 
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.ai.goal.FloatGoal
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal
+import net.minecraft.world.entity.ai.goal.PanicGoal
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
 import net.minecraft.world.entity.animal.sheep.Sheep
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.DyeColor
 import net.minecraft.world.level.Level
 import org.bukkit.Location
@@ -25,7 +32,7 @@ class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: L
         this.isInvulnerable = true
         this.color = DyeColor.GREEN
         this.setPos(location.x, location.y, location.z)
-        this.isNoAi = true
+        this.isNoAi = false
     }
 
     fun call() {
@@ -60,5 +67,23 @@ class DisasterSheep(entityType: EntityType<out Sheep>, level: Level, location: L
         tnt.isSilent = false
         tnt.yield = 4.0f
     }
+
+    fun enableFollowNearestPlayer() {
+        this.goalSelector.availableGoals.clear()
+
+        this.goalSelector.addGoal(0, FloatGoal(this))
+        this.goalSelector.addGoal(1, PanicGoal(this, 1.25))
+        this.goalSelector.addGoal(2, LookAtPlayerGoal(this, Player::class.java, 8.0f))
+        this.goalSelector.addGoal(3, RandomLookAroundGoal(this))
+        this.goalSelector.addGoal(4, RandomStrollGoal(this, 1.0))
+
+        this.targetSelector.addGoal(1, NearestAttackableTargetGoal(
+            this,
+            Player::class.java,
+            true
+        )
+        )
+    }
+
 
 }
