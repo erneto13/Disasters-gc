@@ -97,7 +97,7 @@ class WorldBorder : Disaster {
 
     private fun checkPlayersOutsideBorderAndApplyDamage(arena: Arena, center: Location, radius: Double) {
         val radiusSquared = radius * radius
-        for (player in arena.alive) {
+        for (player in arena.alive.toList()) {
             val loc = player.location
             if (loc.world == center.world) {
                 val distanceSquared = loc.distanceSquared(center)
@@ -107,6 +107,7 @@ class WorldBorder : Disaster {
             }
         }
     }
+
 
 }
 
