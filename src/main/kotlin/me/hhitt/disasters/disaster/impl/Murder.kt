@@ -23,8 +23,6 @@ class Murder : Disaster {
     }
 
     override fun pulse(time: Int) {
-        if (time % 11 != 0) return
-        addMurder()
     }
 
     override fun stop(arena: Arena) {

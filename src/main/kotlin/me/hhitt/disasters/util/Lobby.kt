@@ -30,10 +30,17 @@ object Lobby {
     }
 
     fun teleportPlayer(player: Player) {
-         player.teleport(location)
-         player.activePotionEffects.clear()
-         player.health = 20.0
+
+        player.teleport(location)
+        player.activePotionEffects.clear()
+        player.inventory.clear()
+        player.health = 20.0
+        player.foodLevel = 20
+        player.saturation = 20.0f
+        player.level = 0
+        player.exp = 0.0f
         player.gameMode = GameMode.SURVIVAL
+        player.activePotionEffects.clear()
      }
 
     fun teleportAtEnd(arena: Arena) {

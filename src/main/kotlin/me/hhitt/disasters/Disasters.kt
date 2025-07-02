@@ -82,6 +82,8 @@ class Disasters : ZapperJavaPlugin() {
         server.pluginManager.registerSuspendingEvents(PlayerJoinListener(), this)
         server.pluginManager.registerSuspendingEvents(PlayerDamageListener(arenaManager), this)
         server.pluginManager.registerSuspendingEvents(PlayerDeathListener(arenaManager), this)
+        server.pluginManager.registerEvents(ExplosionListener(arenaManager), this)
+        server.pluginManager.registerEvents(ItemPickupListener(arenaManager), this)
         server.pluginManager.registerEvents(PlayerLeaveListener(arenaManager), this)
         server.pluginManager.registerEvents(BlockBreakListener(arenaManager), this)
         server.pluginManager.registerEvents(BlockPlaceListener(arenaManager), this)

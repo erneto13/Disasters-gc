@@ -10,9 +10,7 @@ class BlockPlaceListener(private val arenaManager: ArenaManager): Listener {
      @EventHandler
      fun onBlockPlace(event: BlockPlaceEvent) {
          arenaManager.getArena(event.player)?.let { arena ->
-             if(arena.isWaiting()) {
-                 event.isCancelled = true
-             }
+             event.isCancelled = true
          }
      }
 }

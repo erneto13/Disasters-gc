@@ -74,6 +74,7 @@ object DisasterRegistry {
     }
 
     fun addBlockToDisappear(arena: Arena, location: Location) {
+        if(location.block.type.isAir) return
         val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
         if (disaster == null) {
         } else {
@@ -88,6 +89,7 @@ object DisasterRegistry {
     }
 
     fun addBlockToFloorIsLava(arena: Arena, location: Location) {
+        if(location.block.type.isAir) return
         val block = DisasterFloor(arena, location)
         getDisaster<FloorIsLava>(arena)?.addBlock(block)
     }

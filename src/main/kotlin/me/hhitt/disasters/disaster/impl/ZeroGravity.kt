@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffect
 class ZeroGravity : Disaster {
 
     private val players = mutableListOf<Player>()
+    private val count = 0
 
     override fun start(arena: Arena) {
         arena.playing.forEach() {
@@ -30,7 +31,9 @@ class ZeroGravity : Disaster {
     }
 
     override fun pulse(time: Int) {
-        if (time % 5 != 0) return
+        if(count > 30) return
+
+        if (time % 11 != 0) return
 
         players.forEach {
             it.addPotionEffect(
@@ -43,6 +46,8 @@ class ZeroGravity : Disaster {
                 )
             )
         }
+
+        count.inc()
     }
 
 

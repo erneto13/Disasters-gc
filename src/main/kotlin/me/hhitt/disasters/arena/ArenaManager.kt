@@ -135,4 +135,8 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
         loadArenas()
     }
 
+    fun getArena(location: Location): Arena? {
+        return arenas.find { it.borderService.isLocationInArena(location) }
+    }
+
 }

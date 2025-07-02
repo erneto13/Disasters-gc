@@ -11,9 +11,7 @@ class BlockBreakListener(private val arenaManager: ArenaManager): Listener {
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
         arenaManager.getArena(event.player)?.let { arena ->
-            if(arena.isWaiting()) {
-                event.isCancelled = true
-            }
+            event.isCancelled = true
         }
 
     }
