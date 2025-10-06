@@ -13,14 +13,18 @@ import org.bukkit.scheduler.BukkitRunnable
  * @param sidebarManager The SidebarManager instance used to update the sidebar for each player.
  */
 
-class SidebarTask(private val arenaManager: ArenaManager, private val sidebarManager: SidebarManager) : BukkitRunnable() {
+class SidebarTask(
+    private val arenaManager: ArenaManager,
+    private val sidebarManager: SidebarManager
+) : BukkitRunnable() {
 
     override fun run() {
+        sidebarManager.cleanupOfflinePlayers()
+
         Bukkit.getOnlinePlayers().forEach { player: Player ->
-            arenaManager.getArena(player)?.let { arena ->
-                sidebarManager.updateSidebar(player, arena.state)
-            } ?: sidebarManager.updateSidebar(player, null)
+            val arena = arenaManager.getArena(player)
+            val state = arena?.state
+            sidebarManager.updateSidebar(player, state)
         }
     }
-
 }

@@ -1,77 +1,103 @@
 package me.hhitt.disasters.sidebar
 
+import fr.mrmicky.fastboard.adventure.FastBoard
 import me.hhitt.disasters.game.GameState
 import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.util.Msg
-import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
-import net.megavex.scoreboardlibrary.api.sidebar.Sidebar
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
+import java.util.UUID
 
 /**
  * SidebarManager is responsible for managing the sidebars for players in the game.
  * It creates and updates the sidebars based on the game state.
- *
- * @param scoreboardLibrary The ScoreboardLibrary instance used to create sidebars.
  */
 
-class SidebarManager(private val scoreboardLibrary: ScoreboardLibrary) {
+class SidebarManager {
 
     private val config = FileManager.get("scoreboard")!!
-    private val sidebars = mutableMapOf<Player, Sidebar>()
-    private val states = mutableMapOf<Player, GameState?>()
+    private val boards = mutableMapOf<UUID, FastBoard>()
+    private val states = mutableMapOf<UUID, GameState?>()
 
     fun updateSidebar(player: Player, state: GameState?) {
-        sidebars[player]?.removePlayer(player)
-        val sidebar = sidebarBuilder(state, player)
-        sidebar.addPlayer(player)
-        sidebars[player] = sidebar
-    }
+        val playerId = player.uniqueId
 
-    private fun sidebarBuilder(state: GameState?, player: Player): Sidebar {
-
-        if(state == states[player] && sidebars[player] != null) {
-            return sidebars[player]!!
+        val board = boards.computeIfAbsent(playerId) {
+            FastBoard(player)
         }
 
-        val sidebar = scoreboardLibrary.createSidebar()
+        val isNewPlayer = !states.containsKey(playerId)
+        val stateChanged = states[playerId] != state
 
+        if (isNewPlayer || stateChanged) {
+            updateBoardContent(board, state, player)
+            states[playerId] = state
+        }
+    }
+
+    private fun updateBoardContent(board: FastBoard, state: GameState?, player: Player) {
         when (state) {
             GameState.RECRUITING -> {
-                sidebar.title(Msg.parse(config.getString("recruiting.title")!!, player))
+                board.updateTitle(Msg.parse(config.getString("recruiting.title")!!, player))
                 val lines = config.getStringList("recruiting.lines")
-                setSidebarLines(sidebar, lines, player)
+                board.updateLines(parseLines(lines, player))
             }
             GameState.COUNTDOWN -> {
-                sidebar.title(Msg.parse(config.getString("countdown.title")!!, player))
+                board.updateTitle(Msg.parse(config.getString("countdown.title")!!, player))
                 val lines = config.getStringList("countdown.lines")
-                setSidebarLines(sidebar, lines, player)
+                board.updateLines(parseLines(lines, player))
             }
             GameState.LIVE -> {
-                sidebar.title(Msg.parse(config.getString("live.title")!!, player))
+                board.updateTitle(Msg.parse(config.getString("live.title")!!, player))
                 val lines = config.getStringList("live.lines")
-                setSidebarLines(sidebar, lines, player)
+                board.updateLines(parseLines(lines, player))
             }
             GameState.RESTARTING -> {
-                sidebar.title(Msg.parse(config.getString("restarting.title")!!, player))
+                board.updateTitle(Msg.parse(config.getString("restarting.title")!!, player))
                 val lines = config.getStringList("restarting.lines")
-                setSidebarLines(sidebar, lines, player)
+                board.updateLines(parseLines(lines, player))
             }
             else -> {
-                sidebar.title(Msg.parse(config.getString("lobby.title")!!, player))
+                board.updateTitle(Msg.parse(config.getString("lobby.title")!!, player))
                 val lines = config.getStringList("lobby.lines")
-                setSidebarLines(sidebar, lines, player)
+                board.updateLines(parseLines(lines, player))
             }
         }
-
-        states[player] = state
-        return sidebar
     }
 
-    private fun setSidebarLines(sidebar: Sidebar, lines: List<String>, player: Player) {
-        lines.forEachIndexed { index, line ->
-            val parsedLine = Msg.parse(line, player)
-            sidebar.line(index, parsedLine)
+    private fun parseLines(lines: List<String>, player: Player): List<Component> {
+        return lines.map { line -> Msg.parse(line, player) }
+    }
+
+    fun cleanupOfflinePlayers() {
+        boards.entries.removeAll { (uuid, board) ->
+            val player = org.bukkit.Bukkit.getPlayer(uuid)
+            if (player == null || !player.isOnline) {
+                board.delete()
+                states.remove(uuid)
+                true
+            } else {
+                false
+            }
         }
     }
 
+    fun removeBoard(player: Player) {
+        val board = boards.remove(player.uniqueId)
+        states.remove(player.uniqueId)
+        board?.delete()
+    }
+
+    fun updateAllBoards() {
+        boards.entries.removeAll { (uuid, board) ->
+            val player = org.bukkit.Bukkit.getPlayer(uuid)
+            if (player == null || !player.isOnline) {
+                board.delete()
+                states.remove(uuid)
+                true
+            } else {
+                false
+            }
+        }
+    }
 }

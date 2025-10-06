@@ -56,6 +56,10 @@ object Msg {
         player.sendTitlePart(TitlePart.SUBTITLE, parse(subtitle, player))
     }
 
+    fun placeholder(msg: String, player: Player) : String {
+        return PlaceholderAPI.setPlaceholders(player, msg)
+    }
+
     fun sendActionbar(player: Player, bar: String){
         player.sendActionBar(parse(bar, player))
     }
@@ -66,10 +70,6 @@ object Msg {
 
     private fun getMsg(path: String) : String {
         return FileManager.get("lang")?.getString("messages.$path") ?: "Message not found"
-    }
-
-    private fun placeholder(msg: String, player: Player) : String {
-        return PlaceholderAPI.setPlaceholders(player, msg)
     }
 
 }

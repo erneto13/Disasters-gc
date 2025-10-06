@@ -3,34 +3,39 @@ package me.hhitt.disasters.sidebar
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.storage.file.FileManager
-import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
 
 /**
  * SidebarService is responsible for updating the sidebar for players.
  * It updates the sidebars based on the game state.
  *
- * @param scoreboardLibrary The ScoreboardLibrary instance used to create sidebars.
  * @param arenaManager The ArenaManager instance used to manage arenas.
  */
 
-class SidebarService(scoreboardLibrary: ScoreboardLibrary, arenaManager: ArenaManager) {
+class SidebarService(private val arenaManager: ArenaManager) {
 
     private val plugin = Disasters.getInstance()
-    private var sidebarManager: SidebarManager = SidebarManager(scoreboardLibrary)
-    private var sidebarTask: SidebarTask = SidebarTask(arenaManager, sidebarManager)
+    private val sidebarManager = SidebarManager()
+    private var sidebarTask: SidebarTask? = null
 
     init {
-        if(FileManager.get("config")!!.getBoolean("enable-scoreboard")) {
-            sidebarTask.runTaskTimerAsynchronously(plugin, 0, 20L)
-        }
+        updateSidebar()
     }
 
     fun updateSidebar() {
-        if(FileManager.get("config")!!.getBoolean("enable-scoreboard")) {
-            if(!sidebarTask.isCancelled) return
-            sidebarTask.runTaskTimerAsynchronously(plugin, 0, 20L)
-            return
+        val isScoreboardEnabled = FileManager.get("config")!!.getBoolean("enable-scoreboard")
+
+        if (isScoreboardEnabled) {
+            if (sidebarTask == null || sidebarTask!!.isCancelled) {
+                sidebarTask = SidebarTask(arenaManager, sidebarManager)
+                sidebarTask!!.runTaskTimerAsynchronously(plugin, 0, 20L)
+            }
+        } else {
+            sidebarTask?.cancel()
+            sidebarTask = null
         }
-        sidebarTask.cancel()
+    }
+
+    fun shutdown() {
+        sidebarTask?.cancel()
     }
 }

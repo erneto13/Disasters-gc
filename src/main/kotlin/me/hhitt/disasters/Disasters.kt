@@ -13,9 +13,6 @@ import me.hhitt.disasters.storage.data.Data
 import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.util.Filer
 import me.hhitt.disasters.util.Lobby
-import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
-import net.megavex.scoreboardlibrary.api.exception.NoPacketAdapterAvailableException
-import net.megavex.scoreboardlibrary.api.noop.NoopScoreboardLibrary
 import revxrsal.commands.Lamp
 import revxrsal.commands.bukkit.BukkitLamp
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
@@ -31,7 +28,6 @@ class Disasters : ZapperJavaPlugin() {
     }
 
     private lateinit var arenaManager: ArenaManager
-    private lateinit var scoreboardLibrary: ScoreboardLibrary
     private lateinit var sidebarService: SidebarService
 
     override fun onEnable() {
@@ -45,7 +41,6 @@ class Disasters : ZapperJavaPlugin() {
     }
 
     override fun onDisable() {
-        scoreboardLibrary.close()
     }
 
     private fun initHooks () {
@@ -72,6 +67,10 @@ class Disasters : ZapperJavaPlugin() {
         Data.load()
     }
 
+    private fun initSidebar(){
+        sidebarService = SidebarService(arenaManager)
+    }
+
     private fun registerCommands() {
         val lamp: Lamp<BukkitCommandActor> = BukkitLamp.builder(this)
             .build()
@@ -94,16 +93,6 @@ class Disasters : ZapperJavaPlugin() {
 
     private fun initDisasters() {
         DisasterTask().runTaskTimer(this, 0, 20)
-    }
-
-    private fun initSidebar(){
-        try {
-            scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(this)
-        } catch (e: NoPacketAdapterAvailableException) {
-            scoreboardLibrary = NoopScoreboardLibrary()
-            logger.warning("No scoreboard packet adapter available!")
-        }
-        sidebarService = SidebarService(scoreboardLibrary, arenaManager)
     }
 
 }

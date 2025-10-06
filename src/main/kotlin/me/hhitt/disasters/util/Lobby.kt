@@ -7,6 +7,8 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import java.util.UUID
 
 object Lobby {
 
@@ -16,6 +18,15 @@ object Lobby {
      */
 
     private var location: Location = Location(null, 0.0, 0.0, 0.0)
+
+    // Inventory snapshot per player to restore after leaving an arena
+    private data class InventorySnapshot(
+        val contents: Array<ItemStack?>,
+        val armor: Array<ItemStack?>,
+        val offhand: ItemStack?
+    )
+
+    private val inventorySnapshots = mutableMapOf<UUID, InventorySnapshot>()
 
     fun setLocation() {
         val loc = Location(
@@ -29,11 +40,37 @@ object Lobby {
         this.location = loc
     }
 
-    fun teleportPlayer(player: Player) {
+    fun savePlayerState(player: Player) {
+        val inv = player.inventory
+        val snapshot = InventorySnapshot(
+            inv.contents.map { it?.clone() }.toTypedArray(),
+            inv.armorContents.map { it?.clone() }.toTypedArray(),
+            inv.itemInOffHand.clone()
+        )
+        inventorySnapshots[player.uniqueId] = snapshot
+    }
 
+    /**
+     * Restores player's saved inventory if present.
+     * @return true if restored, false if there was nothing to restore
+     */
+    fun restorePlayerState(player: Player): Boolean {
+        val snapshot = inventorySnapshots.remove(player.uniqueId) ?: return false
+        val inv = player.inventory
+        inv.clear()
+        inv.contents = snapshot.contents
+        inv.armorContents = snapshot.armor
+        inv.setItemInOffHand(snapshot.offhand)
+        return true
+    }
+
+    fun teleportPlayer(player: Player) {
         player.teleport(location)
         player.activePotionEffects.clear()
-        player.inventory.clear()
+        // Try to restore inventory if previously saved; otherwise clear
+        if (!restorePlayerState(player)) {
+            player.inventory.clear()
+        }
         player.health = 20.0
         player.foodLevel = 20
         player.saturation = 20.0f

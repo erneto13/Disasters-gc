@@ -18,6 +18,13 @@ game-broadcast:
   player-died: "<red>%dead% has died!"
   player-won: "<green>%winner% has won the game!"
 
+game-state-placeholders:
+  recruiting: "<yellow>Recruiting"
+  countdown: "<gold>Starting soon"
+  live: "<green>In game"
+  restarting: "<red>Restarting"
+
+
 countdown:
   10:
     title: "<rainbow>Starting in 10 seconds!"

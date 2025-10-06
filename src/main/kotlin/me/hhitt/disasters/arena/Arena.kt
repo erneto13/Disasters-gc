@@ -64,6 +64,10 @@ class Arena(
     private val gameSession = GameSession(this)
 
     fun addPlayer(player: Player) {
+        // Save player inventory/state before entering the game and clear it for arena gameplay
+        Lobby.savePlayerState(player)
+        player.inventory.clear()
+
         playing.add(player)
         alive.add(player)
         player.teleport(location)
