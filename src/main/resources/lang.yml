@@ -188,3 +188,6 @@ disaster:
       - "<gold>----------------------------------"
       - "<red>Now blocks under u will disappear!"
       - "<gold>----------------------------------"
+
+# DO NOT TOUCH THIS!
+config-version: 1

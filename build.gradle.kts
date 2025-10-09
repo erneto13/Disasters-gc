@@ -44,6 +44,7 @@ dependencies {
     zap("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.21.0")
 
     implementation("fr.mrmicky:fastboard:2.1.5")
+    implementation("dev.dejvokep:boosted-yaml:1.3.6")
 }
 
 zapper {

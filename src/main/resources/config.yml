@@ -64,3 +64,7 @@ enable-scoreboard: true
 #    %disasters_game_time_left%
 #    %disasters_countdown_time%
 #    %disasters_countdown_time_left%
+
+
+# DO NOT TOUCH THIS!
+config-version: 1
