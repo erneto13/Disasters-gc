@@ -25,7 +25,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         val player = actor.asPlayer()!!
 
         arenaManager.getArena(player)?.let {
-            Msg.send(player, "already-in-arena")
+            Msg.send(player, "messages.already-in-arena")
             return
         }
 
@@ -33,18 +33,18 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.getArena(arena)?.let {
             // Checking if the arena is full
             if(it.isFull()){
-                Msg.send(player, "arena-full")
+                Msg.send(player, "messages.arena-full")
                 return
             }
             // Checking if it is recruiting or counting down
             if(!it.isWaiting()){
-                Msg.send(player, "arena-in-game")
+                Msg.send(player, "messages.arena-in-game")
                 return
             }
             it.addPlayer(player)
         } ?: run {
             // If the arena does not exist
-            Msg.send(player, "arena-not-found")
+            Msg.send(player, "messages.arena-not-found")
         }
     }
 
@@ -54,7 +54,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         val player = actor.asPlayer()!!
 
         arenaManager.getArena(player)?.let {
-            Msg.send(player, "already-in-arena")
+            Msg.send(player, "messages.already-in-arena")
             return
         }
 
@@ -69,7 +69,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
 
         // Getting the arena from the ArenaManager
         arenaManager.getArena(player)?.removePlayer(player) ?: run {
-            Msg.send(player, "not-in-arena")
+            Msg.send(player, "messages.not-in-arena")
         }
     }
 
@@ -83,14 +83,14 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.getArena(player)?.let {
             // Checking if the player has permission
             if(!player.hasPermission("disasters.forcestart")){
-                Msg.send(player, "no-permission")
+                Msg.send(player, "messages.no-permission")
 
                 return
             }
             it.start()
         } ?: run {
             // If the arena does not exist
-            Msg.send(player, "not-in-arena")
+            Msg.send(player, "messages.not-in-arena")
         }
     }
 
@@ -104,13 +104,13 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.getArena(player)?.let {
             // Checking if the player has permission
             if(!player.hasPermission("disasters.forcestop")){
-                Msg.send(player, "no-permission")
+                Msg.send(player, "messages.no-permission")
                 return
             }
             it.stop()
         } ?: run {
             // If the arena does not exist
-            Msg.send(player, "not-in-arena")
+            Msg.send(player, "messages.not-in-arena")
         }
     }
 
@@ -122,13 +122,13 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.getArena(arena)?.let {
             // Checking if the player has permission
             if(!sender.hasPermission("disasters.forcestart")){
-                Msg.send(sender, "no-permission")
+                Msg.send(sender, "messages.no-permission")
                 return
             }
             it.start()
         } ?: run {
             // If the arena does not exist
-            Msg.send(sender, "arena-not-found")
+            Msg.send(sender, "messages.arena-not-found")
         }
     }
 
@@ -140,13 +140,13 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.getArena(arena)?.let {
             // Checking if the player has permission
             if(!sender.hasPermission("disasters.forcestop")){
-                Msg.send(sender, "no-permission")
+                Msg.send(sender, "messages.no-permission")
                 return
             }
             it.stop()
         } ?: run {
             // If the arena does not exist
-            Msg.send(sender, "arena-not-found")
+            Msg.send(sender, "messages.arena-not-found")
         }
     }
 }
