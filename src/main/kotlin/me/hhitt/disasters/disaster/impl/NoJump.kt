@@ -1,0 +1,56 @@
+package me.hhitt.disasters.disaster.impl
+
+import me.hhitt.disasters.arena.Arena
+import me.hhitt.disasters.disaster.Disaster
+import me.hhitt.disasters.util.Notify
+import org.bukkit.entity.Player
+import org.bukkit.potion.PotionEffect
+
+class NoJump : Disaster {
+    private val players = mutableListOf<Player>()
+    private val count = 0
+
+    override fun start(arena: Arena) {
+        arena.playing.forEach() {
+            players.add(it)
+            it.addPotionEffect(
+                PotionEffect(
+                    org.bukkit.potion.PotionEffectType.JUMP_BOOST,
+                    20 * 5,
+                    20,
+                    true,
+                    false
+                )
+            )
+        }
+
+        Notify.disaster(arena, "no-jump")
+    }
+
+    override fun pulse(time: Int) {
+        if (count > 30) return
+
+        if (time % 11 != 0) return
+
+        players.forEach {
+            it.addPotionEffect(
+                PotionEffect(
+                    org.bukkit.potion.PotionEffectType.JUMP_BOOST,
+                    20 * 5,
+                    128,
+                    true,
+                    false
+                )
+            )
+        }
+
+        count.inc()
+    }
+
+    override fun stop(arena: Arena) {
+        arena.playing.forEach {
+            players.remove(it)
+            it.removePotionEffect(org.bukkit.potion.PotionEffectType.JUMP_BOOST)
+        }
+    }
+}
