@@ -320,7 +320,7 @@ class ArenaEditGUI(
         val pitch = config.getDouble("spawn.pitch").toFloat()
 
         player.teleport(Location(world, x, y, z, yaw, pitch))
-        Msg.playSound(player, "ENTITY_ENDERMAN_TELEPORT")
+        Msg.playSound(player, "entity.enderman.teleport")
         Msg.send(player, "arena-edit.teleported-spawn")
     }
 
@@ -331,7 +331,7 @@ class ArenaEditGUI(
         val z = config.getInt("corner1.z").toDouble()
 
         player.teleport(Location(world, x, y, z))
-        Msg.playSound(player, "ENTITY_ENDERMAN_TELEPORT")
+        Msg.playSound(player, "entity.enderman.teleport")
         Msg.send(player, "arena-edit.teleported-corner1")
     }
 
@@ -342,7 +342,7 @@ class ArenaEditGUI(
         val z = config.getInt("corner2.z").toDouble()
 
         player.teleport(Location(world, x, y, z))
-        Msg.playSound(player, "ENTITY_ENDERMAN_TELEPORT")
+        Msg.playSound(player, "entity.enderman.teleport")
         Msg.send(player, "arena-edit.teleported-corner2")
     }
 
