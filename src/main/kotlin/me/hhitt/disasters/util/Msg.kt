@@ -9,14 +9,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object Msg {
-
-    /*
-     * This class is used to parse messages from the config file.
-     * It uses MiniMessage to parse the messages and PlaceholderAPI to set placeholders.
-     * It also has methods to send messages, titles, subtitles, action bars and sounds to players.
-     * Some of the methods are not used yet, but in a near future they will be used.
-     */
-
     private val miniMsg = MiniMessage.miniMessage()
 
     fun parse(msg : String, player: Player) : TextComponent {
@@ -27,26 +19,44 @@ object Msg {
         return miniMsg.deserialize(msg) as TextComponent
     }
 
-    fun parseList(lore: List<String>, player: Player) : List<TextComponent> {
-        val components = mutableListOf<TextComponent>()
-        lore.forEach {
-            components.add(parse(it, player))
-        }
-        return components
-    }
-
     fun send(player: Player, path: String){
         player.sendMessage(parse(getMsg(path), player))
+    }
+
+    fun send(player: Player, path: String, vararg replacements: Pair<String, String>){
+        val msg = replacePlaceholders(getMsg(path), *replacements)
+        player.sendMessage(parse(msg, player))
     }
 
     fun send(sender: CommandSender, path: String){
         sender.sendMessage(parse(getMsg(path)))
     }
 
+    fun send(sender: CommandSender, path: String, vararg replacements: Pair<String, String>){
+        val msg = replacePlaceholders(getMsg(path), *replacements)
+        if (sender is Player) {
+            sender.sendMessage(parse(msg, sender))
+        } else {
+            sender.sendMessage(parse(msg))
+        }
+    }
+
+    fun sendList(sender: CommandSender, path: String) {
+        val messages = getMsgList(path)
+        if (sender is Player) {
+            messages.forEach { msg ->
+                sender.sendMessage(parse(msg, sender))
+            }
+        } else {
+            messages.forEach { msg ->
+                sender.sendMessage(parse(msg))
+            }
+        }
+    }
+
     fun sendParsed(player: Player, msg: String){
         player.sendMessage(parse(msg, player))
     }
-
 
     fun sendTitle(player: Player, title: String){
         player.sendTitlePart(TitlePart.TITLE, parse(title, player))
@@ -68,8 +78,20 @@ object Msg {
         player.playSound(player.location, sound, 1f, 1f)
     }
 
-    private fun getMsg(path: String) : String {
-        return FileManager.get("lang")?.getString("messages.$path") ?: "Message not found"
+    fun getMsg(path: String): String {
+        return FileManager.get("lang")?.getString(path) ?: "Message not found: $path"
     }
 
+    fun getMsgList(path: String): List<String> {
+        return FileManager.get("lang")?.getStringList(path)
+            ?: listOf("Message list not found: $path")
+    }
+
+    private fun replacePlaceholders(msg: String, vararg replacements: Pair<String, String>): String {
+        var result = msg
+        replacements.forEach { (key, value) ->
+            result = result.replace("%$key%", value)
+        }
+        return result
+    }
 }
