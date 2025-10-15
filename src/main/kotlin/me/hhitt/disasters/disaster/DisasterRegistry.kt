@@ -33,7 +33,8 @@ object DisasterRegistry {
         Lightning::class,
         OneHearth::class,
         Swap::class,
-        WorldBorder::class
+        WorldBorder::class,
+        NoJump::class
     )
 
     private inline fun <reified T : Disaster> getDisaster(arena: Arena): T? {
