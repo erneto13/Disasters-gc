@@ -6,6 +6,7 @@ import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import kotlin.reflect.KClass
 
 /**
  * DisasterRegistry is a singleton object that manages the active disasters in the game.
@@ -34,11 +35,15 @@ object DisasterRegistry {
         OneHearth::class,
         Swap::class,
         WorldBorder::class,
-        NoJump::class
+        NoJump::class,
     )
 
     private inline fun <reified T : Disaster> getDisaster(arena: Arena): T? {
         return activeDisasters[arena]?.find { it is T } as? T
+    }
+
+    fun getDisasterClassByName(name: String): KClass<out Disaster>? {
+        return disasterClasses.find { it.simpleName?.equals(name, ignoreCase = true) == true }
     }
 
     fun addRandomDisaster(arena: Arena) {
@@ -83,7 +88,6 @@ object DisasterRegistry {
             disaster.addBlock(block)
         }
     }
-
 
     fun removeBlockFromDisappear(arena: Arena, block: DisappearBlock) {
         getDisaster<BlockDisappear>(arena)?.removeBlock(block)
