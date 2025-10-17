@@ -18,7 +18,7 @@ class HealthRegenListener(private val arenaManager: ArenaManager): Listener {
 
         val player = event.entity as Player
 
-        // If player is in an arena
+        // If a player is in an arena
         arenaManager.getArena(player)?.let { arena ->
             if(arena.disasters.contains(OneHearth())) {
                 event.isCancelled = true
