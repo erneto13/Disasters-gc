@@ -19,7 +19,7 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.commands.bukkit.annotation.CommandPermission
 import kotlin.collections.subtract
 
-@Command("disasters")
+@Command("dg")
 @CommandPermission("disasters.admin")
 class DisastersCommand(
     private val plugin: Disasters,
@@ -30,7 +30,7 @@ class DisastersCommand(
     val version = plugin.pluginMeta.version
     val customBuild = "build-2"
 
-    @Command("disasters")
+    @Command("dg")
     fun disasters(actor: BukkitCommandActor) {
         val sender = actor.sender()
 
