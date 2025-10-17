@@ -9,6 +9,7 @@ import me.hhitt.disasters.util.SelectionTool
 import me.hhitt.disasters.visual.CuboidVisualizer
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.annotation.Named
+import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
@@ -20,7 +21,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
  * - Delegate business logic to appropriate managers
  * - Send feedback messages to players
  */
-@Command("arena")
+@Command("dg")
 @CommandPermission("disasters.admin")
 class ArenaSetupCommand(
     private val arenaManager: ArenaManager,
@@ -28,7 +29,7 @@ class ArenaSetupCommand(
     private val visualizer: CuboidVisualizer
 ) {
 
-    @Command("arena setup")
+    @Subcommand("arena setup")
     fun setup(actor: BukkitCommandActor, @Named("arena") arenaName: String) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -56,7 +57,7 @@ class ArenaSetupCommand(
         Msg.sendList(player, "arena-setup.setup-instructions-axe")
     }
 
-    @Command("arena setspawn")
+    @Subcommand("arena setspawn")
     fun setSpawn(actor: BukkitCommandActor) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -82,7 +83,7 @@ class ArenaSetupCommand(
         }
     }
 
-    @Command("arena save")
+    @Subcommand("arena save")
     fun save(actor: BukkitCommandActor) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -125,7 +126,7 @@ class ArenaSetupCommand(
         arenaManager.reloadArenas()
     }
 
-    @Command("arena cancel")
+    @Subcommand("arena cancel")
     fun cancel(actor: BukkitCommandActor) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -147,7 +148,7 @@ class ArenaSetupCommand(
         Msg.send(player, "arena-setup.cancel-arena")
     }
 
-    @Command("arena edit")
+    @Subcommand("arena edit")
     fun edit(actor: BukkitCommandActor, @Named("arena") arenaName: String) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -165,7 +166,7 @@ class ArenaSetupCommand(
         ArenaEditGUI(arena, arenaManager).open(player)
     }
 
-    @Command("arena delete")
+    @Subcommand("arena delete")
     fun delete(actor: BukkitCommandActor, @Named("arena") arenaName: String) {
         if (!actor.isPlayer) {
             Msg.send(actor.sender(), "only-players")
@@ -184,7 +185,7 @@ class ArenaSetupCommand(
         Msg.send(player, "arena-setup.arena-deleted", "arena" to arenaName)
     }
 
-    @Command("arena list")
+    @Subcommand("arena list")
     fun list(actor: BukkitCommandActor) {
         val arenas = arenaManager.getArenas()
 

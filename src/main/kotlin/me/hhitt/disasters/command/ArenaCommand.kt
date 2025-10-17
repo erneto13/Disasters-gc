@@ -13,12 +13,12 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor
  * @param arenaManager The ArenaManager instance used to manage arenas.
  */
 
-@Command("arena")
+@Command("dg")
 class ArenaCommand(private val arenaManager: ArenaManager) {
 
     private val lang = FileManager.get("lang")!!
 
-    @Subcommand("join <arena>")
+    @Subcommand("arena join <arena>")
     fun join(actor: BukkitCommandActor, arena: String) {
         //Checking if the actor is a player and obtaining it
         if(!actor.isPlayer) return
@@ -48,7 +48,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         }
     }
 
-    @Subcommand("quickjoin")
+    @Subcommand("arena quickjoin")
     fun quickJoin(actor: BukkitCommandActor) {
         if(!actor.isPlayer) return
         val player = actor.asPlayer()!!
@@ -61,7 +61,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         arenaManager.addPlayerToBestArena(player)
     }
 
-    @Subcommand("leave")
+    @Subcommand("arena leave")
     fun leave(actor: BukkitCommandActor) {
         //Checking if the actor is a player and obtaining it
         if(!actor.isPlayer) return
@@ -73,7 +73,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         }
     }
 
-    @Subcommand("forcestart")
+    @Subcommand("arena forcestart")
     fun forceStart(actor: BukkitCommandActor) {
         //Checking if the actor is a player and obtaining it
         if(!actor.isPlayer) return
@@ -94,7 +94,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         }
     }
 
-    @Subcommand("forcestop")
+    @Subcommand("arena forcestop")
     fun forceStop(actor: BukkitCommandActor) {
         //Checking if the actor is a player and obtaining it
         if(!actor.isPlayer) return
@@ -132,7 +132,7 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
         }
     }
 
-    @Subcommand("forcestop <arena>")
+    @Subcommand("arena forcestop <arena>")
     fun forceStop(actor: BukkitCommandActor, arena: String) {
         val sender = actor.sender()
 
