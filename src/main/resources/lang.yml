@@ -79,6 +79,7 @@ arena-edit:
   teleported-spawn: "<green>Teleported to spawn"
   teleported-corner1: "<green>Teleported to corner 1"
   teleported-corner2: "<green>Teleported to corner 2"
+  test-mode-toggled: "<green>Test mode %status%!"
 
   input-number: "<yellow>Enter the new value for <green>%field%"
   input-text: "<yellow>Enter the new value for <green>%field%"
@@ -170,6 +171,18 @@ gui:
         - "<gray>Y: <yellow>%y%"
         - "<gray>Z: <yellow>%z%"
         - "<gray>Click to teleport"
+
+    test-mode:
+      name: "<gold>Test Mode"
+      lore:
+        - "<gray>Status: <yellow>%value%"
+        - ""
+        - "<gray>When enabled:"
+        - "<gray>- Arena starts with 1 player"
+        - "<gray>- Game ends when player dies"
+        - "<gray>- Perfect for testing disasters"
+        - ""
+        - "<yellow>Click to toggle"
 
     winner-commands:
       name: "<green>Winner Commands"

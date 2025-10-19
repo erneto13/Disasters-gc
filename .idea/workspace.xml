@@ -4,13 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7328751a-6f87-40f5-a332-4bf0b52d4c89" name="Changes" comment="delete documentation">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
+    <list default="true" id="7328751a-6f87-40f5-a332-4bf0b52d4c89" name="Changes" comment="feat: enhance disaster list formatting by adding localized titles and improved string handling">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/command/DisastersCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/command/DisastersCommand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/Arena.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/Arena.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/ArenaManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/ArenaManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/DisasterRegistry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/DisasterRegistry.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/impl/OneHearth.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/impl/OneHearth.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/listener/HealthRegenListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/listener/HealthRegenListener.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/countdown/Countdown.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/countdown/Countdown.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/timer/GameTimer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/timer/GameTimer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/gui/ArenaEditGui.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/gui/ArenaEditGui.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/hook/PlaceholderAPIHook.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/hook/PlaceholderAPIHook.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/example_arena.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/example_arena.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/lang.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +183,11 @@
       <workItem from="1760478471031" duration="15599000" />
       <workItem from="1760517474308" duration="3459000" />
       <workItem from="1760650463482" duration="1189000" />
-      <workItem from="1760663602987" duration="1014000" />
+      <workItem from="1760663602987" duration="5738000" />
+      <workItem from="1760684622761" duration="1986000" />
+      <workItem from="1760783965207" duration="25000" />
+      <workItem from="1760838439021" duration="2486000" />
+      <workItem from="1760852350494" duration="81000" />
     </task>
     <task id="LOCAL-00001" summary="fix: update message keys to include namespace for consistency">
       <option name="closed" value="true" />
@@ -349,20 +357,101 @@
       <option name="project" value="LOCAL" />
       <updated>1760508443381</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="feat: add method to retrieve disaster class by name in DisasterRegistry">
+      <option name="closed" value="true" />
+      <created>1760667050012</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667050012</updated>
+    </task>
+    <task id="LOCAL-00023" summary="feat: add test subcommand for disaster simulation in DisastersCommand">
+      <option name="closed" value="true" />
+      <created>1760667058163</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667058163</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fix: improve comment clarity in HealthRegenListener">
+      <option name="closed" value="true" />
+      <created>1760667064902</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667064902</updated>
+    </task>
+    <task id="LOCAL-00025" summary="feat: update health management in OneHearth disaster">
+      <option name="closed" value="true" />
+      <created>1760667075686</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667075686</updated>
+    </task>
+    <task id="LOCAL-00026" summary="feat: add 'setspawn' to project dictionary">
+      <option name="closed" value="true" />
+      <created>1760667087472</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667087472</updated>
+    </task>
+    <task id="LOCAL-00027" summary="chore: bump version to 1.4.1 in build.gradle.kts and plugin.yml">
+      <option name="closed" value="true" />
+      <created>1760667594546</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1760667594546</updated>
+    </task>
+    <task id="LOCAL-00028" summary="feat: rename 'disasters' command to 'dg' for brevity">
+      <option name="closed" value="true" />
+      <created>1760668075851</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1760668075851</updated>
+    </task>
+    <task id="LOCAL-00029" summary="feat: rename 'arena' command to 'dg' and update subcommands for consistency">
+      <option name="closed" value="true" />
+      <created>1760668086292</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1760668086292</updated>
+    </task>
+    <task id="LOCAL-00030" summary="semi-fix: enhance disaster management by adding disaster registration and improving material update timing">
+      <option name="closed" value="true" />
+      <created>1760838904537</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1760838904537</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix: improve placeholder handling by adding game prefix check and refactoring result return">
+      <option name="closed" value="true" />
+      <created>1760838921337</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1760838921337</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat: enhance disaster list formatting by adding localized titles and improved string handling">
+      <option name="closed" value="true" />
+      <created>1760839262713</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1760839262713</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix: update message keys to include namespace for consistency" />
-    <MESSAGE value="feat: add ArenaEditGUI for managing arena configurations" />
-    <MESSAGE value="feat: add listener for ArenaEditGUI interactions" />
-    <MESSAGE value="feat: implement arena setup command with management features" />
-    <MESSAGE value="fix: update sound key for teleportation to use consistent naming convention" />
-    <MESSAGE value="feat: add ArenaSetupManager and ArenaSetupSession for managing arena setup" />
-    <MESSAGE value="feat: add ChatInputListener to handle player chat input for in-game prompts" />
     <MESSAGE value="chore: clean up config.yml by removing outdated comments and license key placeholder" />
     <MESSAGE value="feat: add CuboidVisualizer for managing particle visualizations in cuboid regions" />
     <MESSAGE value="feat: add NoJump disaster to the DisasterRegistry for enhanced gameplay mechanics" />
@@ -376,6 +465,18 @@
     <MESSAGE value="feat: add configuration files for project setup and migration states" />
     <MESSAGE value="feat: add project configuration files for arena management setup" />
     <MESSAGE value="delete documentation" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete documentation" />
+    <MESSAGE value="feat: add method to retrieve disaster class by name in DisasterRegistry" />
+    <MESSAGE value="feat: add test subcommand for disaster simulation in DisastersCommand" />
+    <MESSAGE value="fix: improve comment clarity in HealthRegenListener" />
+    <MESSAGE value="feat: update health management in OneHearth disaster" />
+    <MESSAGE value="feat: add 'setspawn' to project dictionary" />
+    <MESSAGE value="feat: rename 'arena' command to 'dg' for consistency across commands" />
+    <MESSAGE value="chore: bump version to 1.4.1 in build.gradle.kts and plugin.yml" />
+    <MESSAGE value="feat: rename 'disasters' command to 'dg' for brevity" />
+    <MESSAGE value="feat: rename 'arena' command to 'dg' and update subcommands for consistency" />
+    <MESSAGE value="semi-fix: enhance disaster management by adding disaster registration and improving material update timing" />
+    <MESSAGE value="fix: improve placeholder handling by adding game prefix check and refactoring result return" />
+    <MESSAGE value="feat: enhance disaster list formatting by adding localized titles and improved string handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance disaster list formatting by adding localized titles and improved string handling" />
   </component>
 </project>

@@ -24,6 +24,13 @@ disaster-rate: 30
 # max-disasters is the maximum number of disasters that can happen in the arena at the same time.
 max-disasters: 4
 
+# test-mode allows testing the arena with only 1 player
+# When enabled:
+# - Arena starts with 1 player instead of min-players
+# - Game ends when the player dies or time runs out
+# - Useful for testing disasters and arena mechanics
+test-mode: false
+
 # display-name refers to the name of the arena that will be displayed in the placeholder.
 display-name: "<rainbow>Example Arena"
 
