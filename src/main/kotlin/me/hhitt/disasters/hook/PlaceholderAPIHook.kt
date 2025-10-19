@@ -58,6 +58,14 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
             return result
         }
 
+        // Manejo de placeholders dinámicos para desastres individuales
+        if (params.startsWith("game_disaster_")) {
+            val index = params.removePrefix("game_disaster_").toIntOrNull()
+            if (index != null) {
+                return getDisasterByIndex(player, index - 1)
+            }
+        }
+
         val result = when (params) {
             // Player stats (cached)
             "wins", "player_wins" -> Data.getWinsFromCache(player.uniqueId).toString()
@@ -101,7 +109,7 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
                 val arena = arenaManager.getArena(player)
                 if (arena == null) return ""
 
-                arena.disasters.joinToString("\n") { disaster ->
+                arena.disasters.joinToString(" | ") { disaster ->
                     val key = disaster.javaClass.simpleName
                         .replace(Regex("([a-z])([A-Z])"), "$1-$2")
                         .lowercase()
@@ -133,5 +141,29 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
             GameState.LIVE -> lang?.getString("game-state-placeholders.live")
             GameState.RESTARTING -> lang?.getString("game-state-placeholders.restarting")
         } ?: state.name
+    }
+
+    /**
+     * Obtiene un desastre específico por su índice.
+     * 
+     * @param player El jugador para obtener su arena
+     * @param index El índice del desastre (0-based)
+     * @return El título formateado del desastre, o una cadena vacía si no existe
+     */
+    private fun getDisasterByIndex(player: Player, index: Int): String {
+        val lang = FileManager.get("lang")
+        val arena = arenaManager.getArena(player) ?: return ""
+        
+        if (index < 0 || index >= arena.disasters.size) return ""
+        
+        val disaster = arena.disasters[index]
+        val key = disaster.javaClass.simpleName
+            .replace(Regex("([a-z])([A-Z])"), "$1-$2")
+            .lowercase()
+
+        val titlePath = "disaster.$key.title"
+        val rawTitle = lang?.getString(titlePath) ?: key
+
+        return Msg.placeholder(rawTitle, player)
     }
 }
