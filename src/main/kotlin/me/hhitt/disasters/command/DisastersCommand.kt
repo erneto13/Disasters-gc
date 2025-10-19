@@ -87,13 +87,15 @@ class DisastersCommand(
             Msg.send(actor.sender(), "messages.only-players")
             return
         }
+
         val player = actor.asPlayer()!!
         val disasterClass = DisasterRegistry.getDisasterClassByName(disasterName)
         if (disasterClass == null) {
-            Msg.sendParsed(player, "<#e33131>Disaster '$disasterName' does not exists.")
+            Msg.sendParsed(player, "<#e33131>Disaster '$disasterName' does not exist.")
             return
         }
 
+        // Crear arena temporal para la prueba
         val testArena = Arena(
             "temp", "temp-arena",
             1, 1, 1,
@@ -103,10 +105,17 @@ class DisastersCommand(
         )
         testArena.alive.add(player)
 
+        // Instanciar el desastre
         val disaster = disasterClass.constructors.first().call()
+
+        // 🔹 Registrar el desastre en el sistema global
+        DisasterRegistry.registerDisaster(testArena, disaster)
+
+        // Iniciar el desastre
         disaster.start(testArena)
         Msg.sendParsed(player, "<#fbed3a>Starting test disaster: ${disasterClass.simpleName}")
 
+        // Duración del test
         val durationTicks = (duration ?: 30) * 20L
         var ticksPassed = 0L
 
@@ -115,14 +124,17 @@ class DisastersCommand(
                 if (ticksPassed >= durationTicks || testArena.alive.isEmpty()) {
                     disaster.stop(testArena)
                     Msg.sendParsed(player, "<#fbed3a>The test disaster is over.")
+                    DisasterRegistry.removeDisasters(testArena)
                     cancel()
                     return
                 }
 
-                disaster.pulse(ticksPassed.toInt())
+                // 🔹 Pulsar todos los desastres activos (para FloorIsLava)
+                DisasterRegistry.pulseAll(ticksPassed.toInt())
                 ticksPassed++
             }
         }
         task.runTaskTimer(plugin, 0L, 1L)
     }
+
 }

@@ -89,6 +89,12 @@ object DisasterRegistry {
         }
     }
 
+    fun registerDisaster(arena: Arena, disaster: Disaster) {
+        val list = activeDisasters.getOrPut(arena) { mutableListOf() }
+        list.add(disaster)
+        arena.disasters.add(disaster)
+    }
+
     fun removeBlockFromDisappear(arena: Arena, block: DisappearBlock) {
         getDisaster<BlockDisappear>(arena)?.removeBlock(block)
     }

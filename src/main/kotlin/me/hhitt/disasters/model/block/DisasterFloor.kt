@@ -18,7 +18,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
  * @param location The location of the block in the arena.
  */
 
-class DisasterFloor(private val arena: Arena, private val location: Location) {
+class DisasterFloor(private val arena: Arena, val location: Location) {
     private val materials = listOf(
         Material.YELLOW_WOOL,
         Material.ORANGE_WOOL,
@@ -26,19 +26,30 @@ class DisasterFloor(private val arena: Arena, private val location: Location) {
         Material.LAVA
     )
     private var currentStage = 0
+    private var ticksSinceLastUpdate = 0
+    private val ticksPerStage = 40 // 2 segundos por etapa
 
     fun updateMaterial() {
-        if (currentStage < materials.size) {
-            setBlockMaterial(location, materials[currentStage])
-            currentStage++
+        ticksSinceLastUpdate++
+
+        if (ticksSinceLastUpdate < ticksPerStage) {
             return
         }
-        DisasterRegistry.removeBlockFromFloorIsLava(arena, this)
+
+        ticksSinceLastUpdate = 0
+
+        if (currentStage >= materials.size) {
+            DisasterRegistry.removeBlockFromFloorIsLava(arena, this)
+            return
+        }
+
+        setBlockMaterial(location, materials[currentStage])
+        currentStage++
     }
 
     private fun setBlockMaterial(location: Location, material: Material) {
         val worldServer = (location.world as CraftWorld).handle
-        val blockPosition = BlockPos(location.blockX, location.blockY - 1, location.blockZ)
+        val blockPosition = BlockPos(location.blockX, location.blockY, location.blockZ)
         val blockData = when (material) {
             Material.YELLOW_WOOL -> Blocks.YELLOW_WOOL.defaultBlockState()
             Material.ORANGE_WOOL -> Blocks.ORANGE_WOOL.defaultBlockState()
@@ -51,4 +62,3 @@ class DisasterFloor(private val arena: Arena, private val location: Location) {
         arena.playing.forEach { player -> (player as CraftPlayer).handle.connection.send(packet) }
     }
 }
-
