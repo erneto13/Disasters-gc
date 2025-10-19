@@ -31,12 +31,20 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
     }
 
     override fun onPlaceholderRequest(player: Player, params: String): String {
-        // Dynamic arena placeholders: <arena-id>_state, _players, _alive, _max, _min, _is_full
-        if (params.endsWith("_state") || params.endsWith("_players") || params.endsWith("_alive") ||
-            params.endsWith("_max") || params.endsWith("_min") || params.endsWith("_is_full")) {
+
+        if ((params.endsWith("_state") || params.endsWith("_players") || params.endsWith("_alive") ||
+                    params.endsWith("_max") || params.endsWith("_min") || params.endsWith("_is_full"))
+            && !params.startsWith("game_")) {
+
+
             val arenaId = params.substringBeforeLast("_")
-            val arena = arenaManager.getArena(arenaId) ?: return ""
-            return when {
+
+            val arena = arenaManager.getArena(arenaId)
+            if (arena == null) {
+                return ""
+            }
+
+            val result = when {
                 params.endsWith("_state") -> getStateString(arena.state)
                 params.endsWith("_players") -> arena.playing.size.toString()
                 params.endsWith("_alive") -> arena.alive.size.toString()
@@ -45,9 +53,11 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
                 params.endsWith("_is_full") -> arena.isFull().toString()
                 else -> ""
             }
+
+            return result
         }
 
-        return when (params) {
+        val result = when (params) {
             // Player stats (cached)
             "wins", "player_wins" -> Data.getWinsFromCache(player.uniqueId).toString()
             "defeats", "player_defeats" -> Data.getDefeatsFromCache(player.uniqueId).toString()
@@ -94,6 +104,8 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
 
             else -> "Invalid placeholder"
         }
+
+        return result
     }
 
     private fun getStateString(state: GameState): String {
