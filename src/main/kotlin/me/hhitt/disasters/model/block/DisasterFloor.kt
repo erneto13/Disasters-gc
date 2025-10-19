@@ -26,18 +26,8 @@ class DisasterFloor(private val arena: Arena, val location: Location) {
         Material.LAVA
     )
     private var currentStage = 0
-    private var ticksSinceLastUpdate = 0
-    private val ticksPerStage = 40 // 2 segundos por etapa
 
     fun updateMaterial() {
-        ticksSinceLastUpdate++
-
-        if (ticksSinceLastUpdate < ticksPerStage) {
-            return
-        }
-
-        ticksSinceLastUpdate = 0
-
         if (currentStage >= materials.size) {
             DisasterRegistry.removeBlockFromFloorIsLava(arena, this)
             return

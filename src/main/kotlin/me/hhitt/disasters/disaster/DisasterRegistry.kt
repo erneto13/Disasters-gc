@@ -78,11 +78,14 @@ object DisasterRegistry {
     }
 
     fun addBlockToDisappear(arena: Arena, location: Location) {
-        if(location.block.type.isAir) return
+        if (location.block.type.isAir) return
+        val blockBelow = location.clone().subtract(0.0, 1.0, 0.0)
+        if (blockBelow.block.type.isAir) return
+
         val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
         if (disaster == null) {
         } else {
-            val block = DisappearBlock(arena, location)
+            val block = DisappearBlock(arena, blockBelow)
             disaster.addBlock(block)
         }
     }
@@ -98,8 +101,11 @@ object DisasterRegistry {
     }
 
     fun addBlockToFloorIsLava(arena: Arena, location: Location) {
-        if(location.block.type.isAir) return
-        val block = DisasterFloor(arena, location)
+        if (location.block.type.isAir) return
+        val blockBelow = location.clone().subtract(0.0, 1.0, 0.0)
+        if (blockBelow.block.type.isAir) return
+
+        val block = DisasterFloor(arena, blockBelow)
         getDisaster<FloorIsLava>(arena)?.addBlock(block)
     }
 

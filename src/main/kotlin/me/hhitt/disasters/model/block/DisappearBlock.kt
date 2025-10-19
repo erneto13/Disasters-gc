@@ -5,7 +5,6 @@ import me.hhitt.disasters.disaster.DisasterRegistry
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket
 import net.minecraft.world.level.block.Blocks
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.craftbukkit.CraftWorld
@@ -30,7 +29,8 @@ class DisappearBlock(private val arena: Arena, val location: Location)  {
 
     private fun setBlockMaterial(location: Location, material: Material) {
         val worldServer = (location.world as CraftWorld).handle
-        val blockPosition = BlockPos(location.blockX, location.blockY - 1, location.blockZ)
+        //change current block
+        val blockPosition = BlockPos(location.blockX, location.blockY, location.blockZ)
         val blockData = when (material) {
             Material.RED_WOOL -> Blocks.RED_WOOL.defaultBlockState()
             Material.AIR -> Blocks.AIR.defaultBlockState()

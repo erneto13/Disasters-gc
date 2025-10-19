@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7328751a-6f87-40f5-a332-4bf0b52d4c89" name="Changes" comment="feat: enhance disaster list formatting by adding localized titles and improved string handling">
+    <list default="true" id="7328751a-6f87-40f5-a332-4bf0b52d4c89" name="Changes" comment="feat: add dynamic placeholder handling for individual disasters and improve disaster title retrieval">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/Arena.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/Arena.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/ArenaManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/arena/ArenaManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/DisasterRegistry.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/disaster/DisasterRegistry.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/countdown/Countdown.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/countdown/Countdown.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/timer/GameTimer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/game/timer/GameTimer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/gui/ArenaEditGui.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/gui/ArenaEditGui.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/hook/PlaceholderAPIHook.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/hook/PlaceholderAPIHook.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/example_arena.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/example_arena.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/lang.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/model/block/DisappearBlock.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/model/block/DisappearBlock.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/model/block/DisasterFloor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/hhitt/disasters/model/block/DisasterFloor.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +181,7 @@
       <workItem from="1760684622761" duration="1986000" />
       <workItem from="1760783965207" duration="25000" />
       <workItem from="1760838439021" duration="2486000" />
-      <workItem from="1760852350494" duration="81000" />
+      <workItem from="1760852350494" duration="583000" />
     </task>
     <task id="LOCAL-00001" summary="fix: update message keys to include namespace for consistency">
       <option name="closed" value="true" />
@@ -445,17 +439,45 @@
       <option name="project" value="LOCAL" />
       <updated>1760839262713</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="feat: add test mode functionality to arenas with toggle option in GUI">
+      <option name="closed" value="true" />
+      <created>1760852457909</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1760852457909</updated>
+    </task>
+    <task id="LOCAL-00034" summary="update: disable disasters (los odio)">
+      <option name="closed" value="true" />
+      <created>1760852494533</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1760852494533</updated>
+    </task>
+    <task id="LOCAL-00035" summary="feat: add test mode configuration for arenas with toggle functionality">
+      <option name="closed" value="true" />
+      <created>1760852512607</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1760852512607</updated>
+    </task>
+    <task id="LOCAL-00036" summary="feat: add dynamic placeholder handling for individual disasters and improve disaster title retrieval">
+      <option name="closed" value="true" />
+      <created>1760852541458</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1760852541458</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="chore: clean up config.yml by removing outdated comments and license key placeholder" />
-    <MESSAGE value="feat: add CuboidVisualizer for managing particle visualizations in cuboid regions" />
-    <MESSAGE value="feat: add NoJump disaster to the DisasterRegistry for enhanced gameplay mechanics" />
-    <MESSAGE value="feat: integrate ArenaSetupManager and CuboidVisualizer for enhanced arena setup and visualization" />
     <MESSAGE value="feat: enhance DisastersCommand with version info and improved message handling" />
     <MESSAGE value="feat: update lang.yml for improved messaging and clarity in game events" />
     <MESSAGE value="feat: add NoJump disaster" />
@@ -477,6 +499,10 @@
     <MESSAGE value="semi-fix: enhance disaster management by adding disaster registration and improving material update timing" />
     <MESSAGE value="fix: improve placeholder handling by adding game prefix check and refactoring result return" />
     <MESSAGE value="feat: enhance disaster list formatting by adding localized titles and improved string handling" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance disaster list formatting by adding localized titles and improved string handling" />
+    <MESSAGE value="feat: add test mode functionality to arenas with toggle option in GUI" />
+    <MESSAGE value="update: disable disasters (los odio)" />
+    <MESSAGE value="feat: add test mode configuration for arenas with toggle functionality" />
+    <MESSAGE value="feat: add dynamic placeholder handling for individual disasters and improve disaster title retrieval" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add dynamic placeholder handling for individual disasters and improve disaster title retrieval" />
   </component>
 </project>
