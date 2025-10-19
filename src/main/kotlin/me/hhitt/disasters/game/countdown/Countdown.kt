@@ -29,7 +29,9 @@ class Countdown(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        if (arena.alive.size <= arena.aliveToEnd) {
+        val requiredAlive = if (arena.isTestMode) 1 else arena.aliveToEnd
+
+        if (arena.alive.size < requiredAlive) {
             cancel()
             return
         }

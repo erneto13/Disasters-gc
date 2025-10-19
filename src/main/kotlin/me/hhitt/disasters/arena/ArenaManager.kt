@@ -10,13 +10,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-/**
- * ArenaManager is responsible for managing all arenas in the game.
- * It loads arenas from the configuration files and provides methods to interact with them.
- *
- * @property worldEdit The WorldEdit plugin instance, if available.
- */
-
 class ArenaManager(private val worldEdit: WorldEditPlugin?) {
 
     private val plugin = Disasters.getInstance()
@@ -44,13 +37,11 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
     private fun loadArenas() {
         val arenasFolder = File(plugin.dataFolder, "Arenas")
 
-        // Check if the folder exists
         if (!arenasFolder.exists() || !arenasFolder.isDirectory) {
             plugin.logger.severe("Arenas folder does not exist or is not a directory.")
             return
         }
 
-        // List all files in the Arenas folder
         val arenaFiles = arenasFolder.listFiles { _, name -> name.endsWith(".yml", ignoreCase = true) } ?: return
         if (arenaFiles.isEmpty()) {
             plugin.logger.warning("No arena files found in the Arenas folder.")
@@ -68,6 +59,10 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
             val disasterRate = arenaConfig.getInt("disaster-rate")
             val maxDisasters = arenaConfig.getInt("max-disasters")
             val displayName = arenaConfig.getString("display-name")!!
+
+            //load test mode (default false if it doesn't exist)
+            val isTestMode = arenaConfig.getBoolean("test-mode", false)
+
             val location = Location(
                 Bukkit.getWorld(arenaConfig.getString("spawn.world")!!),
                 arenaConfig.getDouble("spawn.x"),
@@ -93,10 +88,17 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
             val losersCommands = arenaConfig.getStringList("losers-commands")
             val toAllCommands = arenaConfig.getStringList("to-all-commands")
 
-            val arena = Arena(arenaID, displayName, minPlayers, maxPlayers, aliveToEnd, gameTime, countdown, disasterRate,
-                maxDisasters, location, corner1, corner2, winnersCommands, losersCommands, toAllCommands, worldEdit)
+            val arena = Arena(
+                arenaID, displayName, minPlayers, maxPlayers, aliveToEnd, gameTime, countdown,
+                disasterRate, maxDisasters, location, corner1, corner2, winnersCommands,
+                losersCommands, toAllCommands, worldEdit, isTestMode
+            )
 
             arenas.add(arena)
+
+            if (isTestMode) {
+                plugin.logger.info("Arena '$arenaID' loaded in TEST MODE")
+            }
         }
     }
 
@@ -138,5 +140,4 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
     fun getArena(location: Location): Arena? {
         return arenas.find { it.borderService.isLocationInArena(location) }
     }
-
 }

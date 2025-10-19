@@ -36,7 +36,9 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        if (arena.alive.size <= arena.aliveToEnd) {
+        val requiredAlive = if (arena.isTestMode) 1 else arena.aliveToEnd
+
+        if (arena.alive.size < requiredAlive) {
             cancel()
             session.stop()
             return
@@ -46,13 +48,13 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             DisasterRegistry.addRandomDisaster(arena)
         }
 
-        if(arena.disasters.contains(FloorIsLava())){
+        if (arena.disasters.contains(FloorIsLava())) {
             arena.alive.forEach { player ->
                 DisasterRegistry.addBlockToFloorIsLava(arena, player.location)
             }
         }
 
-        if(arena.disasters.contains(BlockDisappear())){
+        if (arena.disasters.contains(BlockDisappear())) {
             arena.alive.forEach { player ->
                 DisasterRegistry.addBlockToDisappear(arena, player.location)
             }
@@ -70,31 +72,30 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
                 if (!arena.alive.contains(player)) {
                     Data.increaseDefeats(player.uniqueId)
                 }
-                if(arena.alive.contains(player)) {
+                if (arena.alive.contains(player)) {
                     Data.increaseWins(player.uniqueId)
                 }
             }
-
         }
 
         // Main thread
         arena.playing.forEach { player ->
             // Loser commands
             if (!arena.alive.contains(player)) {
-                for(command in arena.losersCommands) {
+                for (command in arena.losersCommands) {
                     val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
                 }
             }
             // Winner commands
-            if(arena.alive.contains(player)) {
-                for(command in arena.winnersCommands) {
+            if (arena.alive.contains(player)) {
+                for (command in arena.winnersCommands) {
                     val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
                 }
             }
             // To-all commands
-            for(command in arena.toAllCommands) {
+            for (command in arena.toAllCommands) {
                 val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
             }

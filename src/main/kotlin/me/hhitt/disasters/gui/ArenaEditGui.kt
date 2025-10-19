@@ -167,6 +167,16 @@ class ArenaEditGUI(
             )
         )
 
+        //test mode
+        inventory.setItem(
+            24, createConfigItem(
+                Material.COMMAND_BLOCK,
+                "gui.items.test-mode.name",
+                "gui.items.test-mode.lore",
+                "value" to if (config.getBoolean("test-mode", false)) "Enabled" else "Disabled"
+            )
+        )
+
         //winner commands
         inventory.setItem(
             30, createConfigItem(
@@ -226,6 +236,7 @@ class ArenaEditGUI(
             21 -> teleportToSpawn(player)
             22 -> teleportToCorner1(player)
             23 -> teleportToCorner2(player)
+            24 -> toggleTestMode(player) // NUEVO: Toggle test mode
             30 -> openCommandsEditor(player, "winners")
             31 -> openCommandsEditor(player, "losers")
             32 -> openCommandsEditor(player, "to-all")
@@ -244,6 +255,22 @@ class ArenaEditGUI(
 
     fun handleClose() {
         activeGUIs.remove(inventory)
+    }
+
+    private fun toggleTestMode(player: Player) {
+        val currentValue = config.getBoolean("test-mode", false)
+        val newValue = !currentValue
+
+        config.set("test-mode", newValue)
+
+        val status = if (newValue) "enabled" else "disabled"
+        Msg.send(
+            player,
+            "arena-edit.test-mode-toggled",
+            "status" to status
+        )
+
+        open(player)
     }
 
     private fun openNumberInput(player: Player, path: String, displayName: String) {

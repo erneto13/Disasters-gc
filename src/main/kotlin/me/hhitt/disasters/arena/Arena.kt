@@ -16,25 +16,6 @@ import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 
-/** Arena class represents a game arena in the plugin.
- * It manages players, game state, disasters, and arena boundaries.
- *
- * @param name The name of the arena.
- * @param displayName The display name of the arena.
- * @param minPlayers Minimum number of players required to start the game.
- * @param maxPlayers Maximum number of players allowed in the game.
- * @param aliveToEnd Number of players that can be alive at the end of the game.
- * @param maxTime Maximum time for the game in seconds.
- * @param countdown Countdown time before the game starts in seconds.
- * @param rate Rate at which disasters occur.
- * @param maxDisasters Maximum number of disasters that can occur in the arena.
- * @param location The spawn location for players when they join the arena.
- * @param corner1 One corner of the arena's bounding box.
- * @param corner2 The opposite corner of the arena's bounding box.
- * @param worldEdit WorldEdit plugin instance for arena manipulation.
- *
- **/
-
 class Arena(
     val name: String,
     val displayName: String,
@@ -52,6 +33,7 @@ class Arena(
     val losersCommands: List<String>,
     val toAllCommands: List<String>,
     worldEdit: WorldEditPlugin?,
+    val isTestMode: Boolean = false
 ) {
 
     val playing: MutableList<Player> = mutableListOf()
@@ -72,7 +54,9 @@ class Arena(
         alive.add(player)
         player.teleport(location)
         Notify.playerJoined(player, this)
-        if(playing.size == minPlayers) {
+
+        val requiredPlayers = if (isTestMode) 1 else minPlayers
+        if(playing.size >= requiredPlayers) {
             start()
         }
     }
@@ -98,11 +82,14 @@ class Arena(
         alive.remove(player)
 
         if(isWaiting()) {
-            if(playing.size < minPlayers) {
+            val requiredPlayers = if (isTestMode) 1 else minPlayers
+            if(playing.size < requiredPlayers) {
                 stop()
             }
         } else {
-            if(alive.size < aliveToEnd) {
+            if(isTestMode && alive.isEmpty()) {
+                stop()
+            } else if(!isTestMode && alive.size < aliveToEnd) {
                 stop()
             }
         }
@@ -166,5 +153,4 @@ class Arena(
         val packet = ClientboundInitializeBorderPacket(worldBorder)
         (player as CraftPlayer).handle.connection.send(packet)
     }
-
 }
