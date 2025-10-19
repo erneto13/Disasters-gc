@@ -6,6 +6,7 @@ import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.game.GameState
 import me.hhitt.disasters.storage.data.Data
 import me.hhitt.disasters.storage.file.FileManager
+import me.hhitt.disasters.util.Msg
 import org.bukkit.entity.Player
 
 /**
@@ -95,7 +96,23 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
                 if (arena != null) (arena.playing.size - arena.alive.size).coerceAtLeast(0).toString() else "0"
             }
             "game_disasters_count" -> arenaManager.getArena(player)?.disasters?.size?.toString() ?: "0"
-            "game_disasters_list" -> arenaManager.getArena(player)?.disasters?.joinToString(", ") { it.javaClass.simpleName } ?: ""
+            "game_disasters_list" -> {
+                val lang = FileManager.get("lang")
+                val arena = arenaManager.getArena(player)
+                if (arena == null) return ""
+
+                arena.disasters.joinToString("\n") { disaster ->
+                    val key = disaster.javaClass.simpleName
+                        .replace(Regex("([a-z])([A-Z])"), "$1-$2")
+                        .lowercase()
+
+                    val titlePath = "disaster.$key.title"
+                    val rawTitle = lang?.getString(titlePath) ?: key
+
+                    Msg.placeholder(rawTitle, player)
+                }
+            }
+
             "game_is_full" -> arenaManager.getArena(player)?.isFull()?.toString() ?: "false"
             "player_is_alive" -> {
                 val arena = arenaManager.getArena(player)
