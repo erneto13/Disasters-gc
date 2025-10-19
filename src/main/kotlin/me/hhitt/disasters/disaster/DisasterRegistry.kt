@@ -20,8 +20,6 @@ object DisasterRegistry {
         AcidRain::class,
         Apocalypse::class,
         Blind::class,
-        Cobweb::class,
-        Lag::class,
         Wither::class,
         AllowFight::class,
         BlockDisappear::class,
