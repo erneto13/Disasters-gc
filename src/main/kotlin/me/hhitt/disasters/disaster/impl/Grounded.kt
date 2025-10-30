@@ -5,7 +5,7 @@ import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify
 import org.bukkit.entity.Player
 
-class Grounded: Disaster {
+class Grounded : Disaster {
 
     private val players = mutableListOf<Player>()
 
@@ -14,8 +14,7 @@ class Grounded: Disaster {
         Notify.disaster(arena, "grounded")
     }
 
-    override fun pulse(time: Int) {
-    }
+    override fun pulse(time: Int) {}
 
     override fun stop(arena: Arena) {
         arena.playing.forEach { players.remove(it) }
@@ -24,5 +23,4 @@ class Grounded: Disaster {
     fun isGrounded(player: Player): Boolean {
         return players.contains(player)
     }
-
 }
