@@ -73,7 +73,7 @@ object ArenaValidator {
         }
 
         // Check maximum size (prevent server lag)
-        if (dx > 500 || dy > 256 || dz > 500) {
+        if (dx > 500 || dy > 500 || dz > 500) {
             return "Arena is too large (maximum 500x256x500 blocks)"
         }
 
