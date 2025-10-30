@@ -236,7 +236,7 @@ class ArenaEditGUI(
             21 -> teleportToSpawn(player)
             22 -> teleportToCorner1(player)
             23 -> teleportToCorner2(player)
-            24 -> toggleTestMode(player) // NUEVO: Toggle test mode
+            24 -> toggleTestMode(player)
             30 -> openCommandsEditor(player, "winners")
             31 -> openCommandsEditor(player, "losers")
             32 -> openCommandsEditor(player, "to-all")

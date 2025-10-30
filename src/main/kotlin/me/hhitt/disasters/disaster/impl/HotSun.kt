@@ -2,6 +2,7 @@ package me.hhitt.disasters.disaster.impl
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
+import me.hhitt.disasters.util.Msg
 import me.hhitt.disasters.util.Notify
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -28,7 +29,7 @@ class HotSun : Disaster {
                 player.damage(0.5)
 
                 player.world.spawnParticle(
-                        Particle.FLAME,
+                        Particle.LAVA,
                         player.location.add(0.0, 1.0, 0.0),
                         10,
                         0.3,
@@ -36,6 +37,7 @@ class HotSun : Disaster {
                         0.3,
                         0.01
                 )
+                Msg.playSound(player, "entity.player.hurt.on_fire")
             }
         }
     }
