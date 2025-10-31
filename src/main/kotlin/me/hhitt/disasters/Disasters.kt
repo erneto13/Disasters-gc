@@ -6,6 +6,7 @@ import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.arena.ArenaSetupManager
 import me.hhitt.disasters.command.ArenaCommand
 import me.hhitt.disasters.command.ArenaSetupCommand
+import me.hhitt.disasters.command.DisasterAdminCommand
 import me.hhitt.disasters.command.DisastersCommand
 import me.hhitt.disasters.disaster.DisasterTask
 import me.hhitt.disasters.hook.PlaceholderAPIHook
@@ -20,7 +21,6 @@ import revxrsal.commands.Lamp
 import revxrsal.commands.bukkit.BukkitLamp
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.zapper.ZapperJavaPlugin
-
 
 class Disasters : ZapperJavaPlugin() {
 
@@ -91,13 +91,13 @@ class Disasters : ZapperJavaPlugin() {
     }
 
     private fun registerCommands() {
-        val lamp: Lamp<BukkitCommandActor> = BukkitLamp.builder(this)
-            .build()
+        val lamp: Lamp<BukkitCommandActor> = BukkitLamp.builder(this).build()
 
         lamp.register(
-            ArenaCommand(arenaManager),
-            DisastersCommand(this, arenaManager, sidebarService),
-            ArenaSetupCommand(arenaManager, arenaSetupManager, cuboidVisualizer)
+                ArenaCommand(arenaManager),
+                DisastersCommand(this, arenaManager, sidebarService),
+                ArenaSetupCommand(arenaManager, arenaSetupManager, cuboidVisualizer),
+                DisasterAdminCommand()
         )
 
         logger.info("Commands registered")
@@ -119,8 +119,8 @@ class Disasters : ZapperJavaPlugin() {
         server.pluginManager.registerEvents(ArenaEditGUIListener(), this)
 
         server.pluginManager.registerEvents(
-            SelectionListener(arenaSetupManager, cuboidVisualizer),
-            this
+                SelectionListener(arenaSetupManager, cuboidVisualizer),
+                this
         )
 
         logger.info("Listeners registered")

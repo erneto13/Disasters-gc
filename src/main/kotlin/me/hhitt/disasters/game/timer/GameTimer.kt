@@ -15,22 +15,15 @@ import me.hhitt.disasters.util.Notify
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 
-/**
- * The GameTimer class is responsible for managing the game timer in an arena.
- * It handles the game time, remaining time, and disaster events during the game.
- *
- * @param arena The arena where the game is taking place.
- * @param session The game session associated with the arena.
- */
-
 class GameTimer(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
 
     private val plugin = Disasters.getInstance()
     var time = 0
-    private var remaining = arena.maxTime
+    var remaining = arena.maxTime
+    private var nextDisasterIn = arena.rate
 
     override fun run() {
-        if (time >= remaining) {
+        if (time >= arena.maxTime) {
             cancel()
             session.stop()
             return
@@ -44,8 +37,9 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        if (time % arena.rate == 0) {
+        if (time > 0 && time % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
+            nextDisasterIn = arena.rate
         }
 
         if (arena.disasters.contains(FloorIsLava())) {
@@ -62,10 +56,14 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         time++
         remaining--
+        nextDisasterIn--
+    }
+
+    fun getNextDisasterIn(): Int {
+        return nextDisasterIn.coerceAtLeast(0)
     }
 
     override fun cancel() {
-        // Async
         plugin.launch {
             arena.playing.forEach { player ->
                 Data.increaseTotalPlayed(player.uniqueId)
@@ -78,23 +76,19 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             }
         }
 
-        // Main thread
         arena.playing.forEach { player ->
-            // Loser commands
             if (!arena.alive.contains(player)) {
                 for (command in arena.losersCommands) {
                     val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
                 }
             }
-            // Winner commands
             if (arena.alive.contains(player)) {
                 for (command in arena.winnersCommands) {
                     val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
                 }
             }
-            // To-all commands
             for (command in arena.toAllCommands) {
                 val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
@@ -108,6 +102,7 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
         DisasterRegistry.removeDisasters(arena)
         time = 0
         remaining = arena.maxTime
+        nextDisasterIn = arena.rate
         arena.state = GameState.RECRUITING
         arena.resetService.paste()
     }

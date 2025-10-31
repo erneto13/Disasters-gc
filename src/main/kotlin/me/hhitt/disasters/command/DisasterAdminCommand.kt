@@ -12,7 +12,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 
 @Command("dg")
 @CommandPermission("disasters.admin")
-class DisasterAdminCommand {
+class DisasterAdminCommand() {
 
     @Subcommand("disasters list")
     fun list(actor: BukkitCommandActor) {

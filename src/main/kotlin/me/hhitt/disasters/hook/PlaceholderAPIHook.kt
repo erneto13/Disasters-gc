@@ -77,6 +77,10 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
                 if (defeats == 0) wins.toString() else String.format("%.2f", wins.toDouble() / defeats.toDouble())
             }
 
+            // Disaster info
+            "game_next_disaster" -> arenaManager.getArena(player)?.getNextDisasterIn()?.toString() ?: "0"
+            "game_disaster_rate" -> arenaManager.getArena(player)?.rate?.toString() ?: "0"
+
             // Global info
             "total_playing", "global_players_total" -> arenaManager.getArenas().sumOf { it.playing.size }.toString()
             "disasters_players_alive_total" -> arenaManager.getArenas().sumOf { it.alive.size }.toString()

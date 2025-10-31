@@ -17,23 +17,23 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 
 class Arena(
-    val name: String,
-    val displayName: String,
-    val minPlayers: Int,
-    val maxPlayers: Int,
-    val aliveToEnd: Int,
-    val maxTime: Int,
-    val countdown: Int,
-    val rate: Int,
-    val maxDisasters: Int,
-    val location: Location,
-    val corner1: Location,
-    val corner2: Location,
-    val winnersCommands: List<String>,
-    val losersCommands: List<String>,
-    val toAllCommands: List<String>,
-    worldEdit: WorldEditPlugin?,
-    val isTestMode: Boolean = false
+        val name: String,
+        val displayName: String,
+        val minPlayers: Int,
+        val maxPlayers: Int,
+        val aliveToEnd: Int,
+        val maxTime: Int,
+        val countdown: Int,
+        val rate: Int,
+        val maxDisasters: Int,
+        val location: Location,
+        val corner1: Location,
+        val corner2: Location,
+        val winnersCommands: List<String>,
+        val losersCommands: List<String>,
+        val toAllCommands: List<String>,
+        worldEdit: WorldEditPlugin?,
+        val isTestMode: Boolean = false
 ) {
 
     val playing: MutableList<Player> = mutableListOf()
@@ -56,14 +56,14 @@ class Arena(
         Notify.playerJoined(player, this)
 
         val requiredPlayers = if (isTestMode) 1 else minPlayers
-        if(playing.size >= requiredPlayers) {
+        if (playing.size >= requiredPlayers) {
             start()
         }
     }
 
     fun playerDied(player: Player) {
         alive.remove(player)
-        when(state) {
+        when (state) {
             GameState.LIVE -> {
                 respawnService.setSpectator(player)
             }
@@ -74,22 +74,22 @@ class Arena(
     }
 
     fun removePlayer(player: Player) {
-        if(disasters.contains(WorldBorder())) {
+        if (disasters.contains(WorldBorder())) {
             resetWorldBorder(player)
         }
         Lobby.teleportPlayer(player)
         playing.remove(player)
         alive.remove(player)
 
-        if(isWaiting()) {
+        if (isWaiting()) {
             val requiredPlayers = if (isTestMode) 1 else minPlayers
-            if(playing.size < requiredPlayers) {
+            if (playing.size < requiredPlayers) {
                 stop()
             }
         } else {
-            if(isTestMode && alive.isEmpty()) {
+            if (isTestMode && alive.isEmpty()) {
                 stop()
-            } else if(!isTestMode && alive.size < aliveToEnd) {
+            } else if (!isTestMode && alive.size < aliveToEnd) {
                 stop()
             }
         }
@@ -132,6 +132,10 @@ class Arena(
 
     fun getGameTime(): Int {
         return gameSession.getGameTime()
+    }
+
+    fun getNextDisasterIn(): Int {
+        return gameSession.getNextDisasterIn()
     }
 
     fun getCountdownTime(): Int {
