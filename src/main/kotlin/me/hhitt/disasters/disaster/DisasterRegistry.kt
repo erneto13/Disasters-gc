@@ -1,35 +1,38 @@
 package me.hhitt.disasters.disaster
 
+import kotlin.reflect.KClass
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
 import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import kotlin.reflect.KClass
 
 object DisasterRegistry {
 
     private val activeDisasters = mutableMapOf<Arena, MutableList<Disaster>>()
-    private val disasterClasses = listOf(
-        AcidRain::class,
-        Apocalypse::class,
-        Blind::class,
-        Wither::class,
-        AllowFight::class,
-        BlockDisappear::class,
-        HotSun::class,
-        Murder::class,
-        ZeroGravity::class,
-        ExplosiveSheep::class,
-        FloorIsLava::class,
-        Grounded::class,
-        Lightning::class,
-        OneHearth::class,
-        Swap::class,
-        WorldBorder::class,
-        NoJump::class,
-    )
+    private val activationCounts = mutableMapOf<Arena, Int>()
+
+    private val disasterClasses =
+            listOf(
+                    AcidRain::class,
+                    Apocalypse::class,
+                    Blind::class,
+                    Wither::class,
+                    AllowFight::class,
+                    BlockDisappear::class,
+                    HotSun::class,
+                    Murder::class,
+                    ZeroGravity::class,
+                    ExplosiveSheep::class,
+                    FloorIsLava::class,
+                    Grounded::class,
+                    Lightning::class,
+                    OneHearth::class,
+                    Swap::class,
+                    WorldBorder::class,
+                    NoJump::class,
+            )
 
     init {
         DisasterConfig.load()
@@ -46,45 +49,98 @@ object DisasterRegistry {
     fun addRandomDisaster(arena: Arena) {
         val maxDisasters = arena.maxDisasters
         val currentDisasters = activeDisasters.getOrPut(arena) { mutableListOf() }
+        val currentCount = activationCounts.getOrPut(arena) { 0 }
 
-        if (currentDisasters.size >= maxDisasters) {
-            val toRemove = currentDisasters.removeAt(0)
-            toRemove.stop(arena)
-        }
+        val wave = DisasterConfig.getCurrentWave(currentCount)
 
-        val gameTimePercent = ((arena.getGameTime().toFloat() / arena.maxTime) * 100).toInt()
-
-        val availableByTime = DisasterConfig.getAvailableDisastersByTime(
-            disasterClasses,
-            gameTimePercent
+        println(
+                "[DisasterRegistry] Arena ${arena.name} - Oleada $currentCount: ${wave.count}x ${wave.priority}"
         )
 
-        val availableClasses = availableByTime.filter { cls ->
-            currentDisasters.none { it::class == cls }
+        // Obtener desastres de la prioridad correcta
+        val availableByPriority =
+                DisasterConfig.getDisastersByPriority(disasterClasses, wave.priority)
+
+        println(
+                "[DisasterRegistry] Desastres disponibles de ${wave.priority}: ${availableByPriority.map { it.simpleName }}"
+        )
+
+        // Filtrar desastres ya activos
+        val notActive =
+                availableByPriority.filter { cls -> currentDisasters.none { it::class == cls } }
+
+        println("[DisasterRegistry] No activos: ${notActive.map { it.simpleName }}")
+
+        val compatible = mutableListOf<KClass<out Disaster>>()
+        for (cls in notActive) {
+            if (DisasterConfig.isCompatibleWithActive(cls, currentDisasters)) {
+                compatible.add(cls)
+            }
         }
 
-        val compatible = availableClasses.filter { cls ->
-            DisasterConfig.isCompatibleWithActive(cls, currentDisasters)
+        println("[DisasterRegistry] Compatibles: ${compatible.map { it.simpleName }}")
+
+        if (compatible.isEmpty()) {
+            println("[DisasterRegistry] ⚠ No hay desastres compatibles disponibles")
+            activationCounts[arena] = currentCount + 1
+            return
         }
 
-        if (compatible.isNotEmpty()) {
-            val selectedClass = compatible.random()
-            val newDisaster = selectedClass.constructors.first().call()
-            newDisaster.start(arena)
-            currentDisasters.add(newDisaster)
-            arena.disasters.add(newDisaster)
+        val toAdd = wave.count.coerceAtMost(compatible.size)
+        val shuffled = compatible.shuffled()
+
+        var actuallyAdded = 0
+
+        for (i in 0 until toAdd) {
+            while (currentDisasters.size >= maxDisasters) {
+                val toRemove = currentDisasters.removeAt(0)
+                toRemove.stop(arena)
+                println(
+                        "[DisasterRegistry] ✖ Removido desastre antiguo: ${toRemove.javaClass.simpleName}"
+                )
+            }
+
+            val selectedClass = shuffled[i]
+
+            if (!DisasterConfig.isCompatibleWithActive(selectedClass, currentDisasters)) {
+                println(
+                        "[DisasterRegistry] ⚠ ${selectedClass.simpleName} incompatible con desastres recién agregados"
+                )
+                continue
+            }
+
+            try {
+                val newDisaster = selectedClass.constructors.first().call()
+                newDisaster.start(arena)
+                currentDisasters.add(newDisaster)
+                arena.disasters.add(newDisaster)
+                actuallyAdded++
+                println("[DisasterRegistry] ✓ Activado: ${selectedClass.simpleName}")
+            } catch (e: Exception) {
+                println(
+                        "[DisasterRegistry] ✖ Error al activar ${selectedClass.simpleName}: ${e.message}"
+                )
+            }
         }
+
+        if (actuallyAdded > 0) {
+            activationCounts[arena] = currentCount + 1
+            println("[DisasterRegistry] Contador incrementado a ${currentCount + 1}")
+        }
+
+        println(
+                "[DisasterRegistry] Total activos: ${currentDisasters.size} - ${currentDisasters.map { it.javaClass.simpleName }}"
+        )
     }
 
     fun pulseAll(time: Int) {
-        activeDisasters.forEach { (_, disasters) ->
-            disasters.forEach { it.pulse(time) }
-        }
+        activeDisasters.forEach { (_, disasters) -> disasters.forEach { it.pulse(time) } }
     }
 
     fun removeDisasters(arena: Arena) {
         activeDisasters[arena]?.forEach { it.stop(arena) }
         activeDisasters.remove(arena)
+        activationCounts.remove(arena)
         arena.disasters.clear()
     }
 
@@ -94,11 +150,7 @@ object DisasterRegistry {
         if (blockBelow.block.type.isAir) return
 
         val disaster = activeDisasters[arena]?.find { it is BlockDisappear } as? BlockDisappear
-        if (disaster == null) {
-        } else {
-            val block = DisappearBlock(arena, blockBelow)
-            disaster.addBlock(block)
-        }
+        disaster?.addBlock(DisappearBlock(arena, blockBelow))
     }
 
     fun registerDisaster(arena: Arena, disaster: Disaster) {
@@ -134,6 +186,12 @@ object DisasterRegistry {
 
     fun isMurder(arena: Arena, player: Player): Boolean {
         return getDisaster<Murder>(arena)?.isMurder(player) ?: false
+    }
+
+    fun getPatternInfo(arena: Arena): String {
+        val currentCount = activationCounts[arena] ?: 0
+        val wave = DisasterConfig.getCurrentWave(currentCount)
+        return "Oleada ${currentCount + 1}: ${wave.count}x ${wave.priority}"
     }
 
     fun reloadConfig() {

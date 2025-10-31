@@ -10,12 +10,11 @@ import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.commands.bukkit.annotation.CommandPermission
 
-/** Comando para administrar la configuración de desastres. */
-@Command("dg disasters")
+@Command("dg")
 @CommandPermission("disasters.admin")
 class DisasterAdminCommand {
 
-    @Subcommand("list")
+    @Subcommand("disasters list")
     fun list(actor: BukkitCommandActor) {
         val sender = actor.sender()
 
@@ -65,7 +64,7 @@ class DisasterAdminCommand {
         Msg.sendParsed(sender, "<gold>=====================================")
     }
 
-    @Subcommand("info")
+    @Subcommand("disasters info")
     fun info(actor: BukkitCommandActor, @Named("disaster") disasterName: String) {
         val sender = actor.sender()
         val disasterClass = DisasterRegistry.getDisasterClassByName(disasterName)
@@ -129,7 +128,32 @@ class DisasterAdminCommand {
         Msg.sendParsed(sender, "<gold>=====================================")
     }
 
-    @Subcommand("priorities")
+    @Subcommand("disasters pattern")
+    fun pattern(actor: BukkitCommandActor) {
+        val sender = actor.sender()
+
+        Msg.sendParsed(
+                sender as Player,
+                "<gold>========== <yellow>Patrón de Desastres <gold>=========="
+        )
+        Msg.sendParsed(sender, "")
+
+        val pattern = DisasterConfig.getPatternDescription()
+        pattern.forEach { line -> Msg.sendParsed(sender, "<gray>$line") }
+
+        Msg.sendParsed(sender, "")
+        Msg.sendParsed(sender, "<gray>Este patrón determina el orden y cantidad de desastres")
+        Msg.sendParsed(sender, "<gray>que aparecerán en cada oleada del juego.")
+        Msg.sendParsed(
+                sender,
+                "<gray>Los desastres dentro de cada oleada son <yellow>aleatorios<gray>."
+        )
+        Msg.sendParsed(sender, "")
+        Msg.sendParsed(sender, "<gray>Edita <yellow>disasters.yml <gray>para modificar el patrón")
+        Msg.sendParsed(sender, "<gold>=============================================")
+    }
+
+    @Subcommand("disasters priorities")
     fun priorities(actor: BukkitCommandActor) {
         val sender = actor.sender()
 
@@ -138,16 +162,16 @@ class DisasterAdminCommand {
                 "<gold>========== <yellow>Prioridades de Desastres <gold>=========="
         )
         Msg.sendParsed(sender, "")
-        Msg.sendParsed(sender, "<gray>LOW (0-30% del juego) - Desastres ligeros:")
+        Msg.sendParsed(sender, "<gray>LOW - Desastres ligeros:")
         Msg.sendParsed(sender, "  <white>Blind, NoJump, Grounded, Lag, ZeroGravity, Swap, Cobweb")
         Msg.sendParsed(sender, "")
-        Msg.sendParsed(sender, "<yellow>MEDIUM (30-70% del juego) - Desastres normales:")
+        Msg.sendParsed(sender, "<yellow>MEDIUM - Desastres normales:")
         Msg.sendParsed(
                 sender,
                 "  <white>HotSun, Lightning, AllowFight, Murder, BlockDisappear, OneHearth"
         )
         Msg.sendParsed(sender, "")
-        Msg.sendParsed(sender, "<red>HIGH (70-100% del juego) - Desastres destructivos:")
+        Msg.sendParsed(sender, "<red>HIGH - Desastres destructivos:")
         Msg.sendParsed(
                 sender,
                 "  <white>AcidRain, Apocalypse, ExplosiveSheep, FloorIsLava, WorldBorder, Wither"
@@ -160,9 +184,25 @@ class DisasterAdminCommand {
         Msg.sendParsed(sender, "<gold>=============================================")
     }
 
-    @Subcommand("reload")
+    @Subcommand("disasters reload")
     fun reloadDisasters(actor: BukkitCommandActor) {
         DisasterRegistry.reloadConfig()
         Msg.sendParsed(actor.sender() as Player, "<green>Configuración de desastres recargada!")
+        Msg.sendParsed(
+                actor.sender() as Player,
+                "<gray>Usa <yellow>/dg disasters pattern <gray>para ver el nuevo patrón"
+        )
+    }
+
+    @Subcommand("disasters debug")
+    fun debug(actor: BukkitCommandActor) {
+        Msg.sendParsed(
+                actor.sender() as Player,
+                "<yellow>Los logs de debug ahora aparecen en la consola del servidor"
+        )
+        Msg.sendParsed(
+                actor.sender() as Player,
+                "<gray>Busca líneas que empiecen con [DisasterRegistry] y [DisasterConfig]"
+        )
     }
 }

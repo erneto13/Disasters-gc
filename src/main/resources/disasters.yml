@@ -1,20 +1,17 @@
 # Desastres deshabilitados (no aparecerán nunca)
 disabled-disasters:
 - "HotPotato"
+- "Lag"
+- "Cobweb"
 
 # Prioridades de desastres
-# HIGH: Desastres destructivos/intensos
-# MEDIUM: Desastres normales
-# LOW: Desastres ligeros
 priorities:
   low:
   - "Blind"
   - "NoJump"
   - "Grounded"
-  - "Lag"
   - "ZeroGravity"
   - "Swap"
-  - "Cobweb"
 
   medium:
   - "HotSun"
@@ -32,57 +29,24 @@ priorities:
   - "WorldBorder"
   - "Wither"
 
-# Define la secuencia de desastres que aparecerán en el juego
-# Cada entrada es una "oleada" que se activará en orden
-# Formato: "PRIORIDAD:CANTIDAD"
-# Ejemplo: "high:1" = 1 desastre aleatorio de prioridad HIGH
+# Patrón de desastres (orden de oleadas)
 disaster-pattern:
-- "high:1" # Oleada 1: 1 desastre fuerte aleatorio
-- "medium:2" # Oleada 2: 2 desastres medios aleatorios
-- "medium:1" # Oleada 3: 1 desastre medio aleatorio
-- "high:1" # Oleada 4: 1 desastre fuerte aleatorio
-- "medium:1" # Oleada 5: 1 desastre medio aleatorio
-- "low:3" # Oleada 6: 3 desastres ligeros aleatorios
-- "low:2" # Oleada 7: 2 desastres ligeros aleatorios
-- "high:1" # Oleada 8: 1 desastre fuerte aleatorio
+- "high:1"
+- "medium:2"
+- "medium:1"
+- "high:1"
+- "low:2"
+- "medium:1"
+- "low:1"
+- "high:1"
 
 repeat-pattern: true
 
+# Exclusiones (desastres incompatibles)
 exclusions:
   grounded:
   - "NoJump"
   - "ZeroGravity"
-
-  nojump:
-  - "Grounded"
-  - "ZeroGravity"
-
-  zerogravity:
-  - "Grounded"
-  - "NoJump"
-
-  acidrain:
-  - "HotSun"
-
-  hotsun:
-  - "AcidRain"
-
-  allowfight:
-  - "Murder"
-
-  murder:
-  - "AllowFight"
-
-  blockdisappear:
-  - "FloorIsLava"
-
-  floorislava:
-  - "BlockDisappear"
-
-  worldborder:
-  - "Apocalypse"
-  - "Wither"
-  - "ExplosiveSheep"
 
 disaster-settings:
   worldborder:
