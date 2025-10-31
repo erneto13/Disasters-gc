@@ -1,11 +1,11 @@
-# Disabled disasters (will never appear)
+# Desastres deshabilitados (no aparecerán nunca)
 disabled-disasters:
 - "HotPotato"
 
-# Priorities of disasters (control when they appear based on % of game time)
-# HIGH: 0-30% game time (destructive disasters at the start)
-# MEDIUM: 30-70% game time (normal disasters)
-# LOW: 70-100% game time (light disasters at the end)
+# Prioridades de desastres (controlan cuándo aparecen según el % de juego)
+# LOW: 0-30% del tiempo de juego (desastres ligeros al inicio)
+# MEDIUM: 30-70% del tiempo de juego (desastres normales)
+# HIGH: 70-100% del tiempo de juego (desastres destructivos al final)
 priorities:
   low:
   - "Blind"
@@ -32,48 +32,49 @@ priorities:
   - "WorldBorder"
   - "Wither"
 
-# Exclusions: disasters that CANNOT be active at the same time
+# Exclusiones: desastres que NO pueden estar activos al mismo tiempo
+# Cuando un desastre está activo, los de su lista de exclusión no podrán aparecer
 exclusions:
-  # Movement-related disasters
+  # Desastres de movimiento incompatibles
   grounded:
-  - "NoJump" # Both affect jumping
-  - "ZeroGravity" # Incompatible with being stuck to the ground
+  - "NoJump" # Ambos afectan el salto
+  - "ZeroGravity" # Incompatible con estar pegado al suelo
 
   nojump:
-  - "Grounded" # Both affect jumping
-  - "ZeroGravity" # Incompatible with super jump
+  - "Grounded" # Ambos afectan el salto
+  - "ZeroGravity" # Incompatible con super salto
 
   zerogravity:
-  - "Grounded" # Incompatible with levitation
-  - "NoJump" # Incompatible with super jump
-  # Weather-related disasters
+  - "Grounded" # Incompatible con levitación
+  - "NoJump" # Incompatible con super salto
+  # Desastres de clima incompatibles
   acidrain:
-  - "HotSun" # Cannot have rain and strong sun at the same time
+  - "HotSun" # No puede haber lluvia y sol fuerte al mismo tiempo
 
   hotsun:
-  - "AcidRain" # Cannot have rain and strong sun at the same time
-  # PvP-related disasters
+  - "AcidRain" # No puede haber sol y lluvia al mismo tiempo
+  # Desastres de PvP incompatibles
   allowfight:
-  - "Murder" # Both allow PvP in different ways
+  - "Murder" # Ambos permiten PvP de formas diferentes
 
   murder:
-  - "AllowFight" # Both allow PvP in different ways
-  # Block-related disasters
+  - "AllowFight" # Ambos permiten PvP de formas diferentes
+  # Desastres de bloques incompatibles
   blockdisappear:
-  - "FloorIsLava" # Both modify the blocks beneath players
+  - "FloorIsLava" # Ambos modifican los bloques bajo los jugadores
 
   floorislava:
-  - "BlockDisappear" # Both modify the blocks beneath players
-  # WorldBorder is very intense, avoid combining it with other heavy disasters
+  - "BlockDisappear" # Ambos modifican los bloques bajo los jugadores
+  # WorldBorder es muy intenso, evitar combinarlo con otros desastres pesados
   worldborder:
   - "Apocalypse"
   - "Wither"
   - "ExplosiveSheep"
 
-# Specific configurations for each disaster
+# Configuraciones específicas por desastre (opcional)
 disaster-settings:
   worldborder:
-    shrink-rate: 0.5 # Blocks per tick
+    shrink-rate: 0.5
 
   apocalypse:
     zombies-per-pulse: 2
@@ -92,5 +93,5 @@ disaster-settings:
   hotsun:
     damage-per-pulse: 0.5
 
-# DO NOT TOUCH THIS!
+# NO TOCAR
 config-version: 1

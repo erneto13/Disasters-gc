@@ -4,24 +4,10 @@ import kotlin.reflect.KClass
 import me.hhitt.disasters.storage.file.FileManager
 import org.bukkit.configuration.file.FileConfiguration
 
-/**
- * DisasterConfig manages disaster configuration including priorities and exclusions. Disasters are
- * organized by priority levels:
- * - LOW: Light disasters that happen first (60-100% game time)
- * - MEDIUM: Normal disasters (40-60% game time)
- * - HIGH: Destructive disasters that happen last (15-20% game time)
- */
 object DisasterConfig {
-
     private lateinit var config: FileConfiguration
-
-    // map of exclusions between disasters
     private val exclusions = mutableMapOf<String, Set<String>>()
-
-    // map of disaster name to priority
     private val priorities = mutableMapOf<String, Priority>()
-
-    // map of disabled disasters
     private val disabledDisasters = mutableSetOf<String>()
 
     fun load() {
@@ -37,9 +23,7 @@ object DisasterConfig {
         loadDisabledDisasters()
     }
 
-    private fun createDefaultConfig() {
-        // file will be created with default values
-    }
+    private fun createDefaultConfig() {}
 
     private fun loadExclusions() {
         exclusions.clear()
@@ -94,30 +78,24 @@ object DisasterConfig {
         return activeDisasters.all { active -> areCompatible(disasterClass, active::class) }
     }
 
-    /**
-     * filter available disasters based on game time and priority
-     * @param gameTimePercent percentage of game time elapsed (0-100)
-     */
     fun getAvailableDisastersByTime(
             allDisasters: List<KClass<out Disaster>>,
             gameTimePercent: Int
     ): List<KClass<out Disaster>> {
         val targetPriority =
                 when {
-                    gameTimePercent < 30 -> Priority.HIGH // 0-30% = destructive disasters
-                    gameTimePercent < 70 -> Priority.MEDIUM // 30-70% = normal disasters
-                    else -> Priority.LOW // 70-100% = light disasters
+                    gameTimePercent < 30 -> Priority.LOW
+                    gameTimePercent < 70 -> Priority.MEDIUM
+                    else -> Priority.HIGH
                 }
 
         return allDisasters.filter { disaster ->
             isEnabled(disaster) &&
                     (getPriority(disaster) == targetPriority ||
-                            // allow higher priority disasters as well (from more destructive to
-                            // less)
                             (targetPriority == Priority.MEDIUM &&
-                                    getPriority(disaster) == Priority.HIGH) ||
-                            (targetPriority == Priority.LOW &&
-                                    getPriority(disaster) != Priority.LOW))
+                                    getPriority(disaster) == Priority.LOW) ||
+                            (targetPriority == Priority.HIGH &&
+                                    getPriority(disaster) != Priority.HIGH))
         }
     }
 
