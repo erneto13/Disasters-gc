@@ -1,0 +1,96 @@
+# Disabled disasters (will never appear)
+disabled-disasters:
+- "HotPotato"
+
+# Priorities of disasters (control when they appear based on % of game time)
+# HIGH: 0-30% game time (destructive disasters at the start)
+# MEDIUM: 30-70% game time (normal disasters)
+# LOW: 70-100% game time (light disasters at the end)
+priorities:
+  low:
+  - "Blind"
+  - "NoJump"
+  - "Grounded"
+  - "Lag"
+  - "ZeroGravity"
+  - "Swap"
+  - "Cobweb"
+
+  medium:
+  - "HotSun"
+  - "Lightning"
+  - "AllowFight"
+  - "Murder"
+  - "BlockDisappear"
+  - "OneHearth"
+
+  high:
+  - "AcidRain"
+  - "Apocalypse"
+  - "ExplosiveSheep"
+  - "FloorIsLava"
+  - "WorldBorder"
+  - "Wither"
+
+# Exclusions: disasters that CANNOT be active at the same time
+exclusions:
+  # Movement-related disasters
+  grounded:
+  - "NoJump" # Both affect jumping
+  - "ZeroGravity" # Incompatible with being stuck to the ground
+
+  nojump:
+  - "Grounded" # Both affect jumping
+  - "ZeroGravity" # Incompatible with super jump
+
+  zerogravity:
+  - "Grounded" # Incompatible with levitation
+  - "NoJump" # Incompatible with super jump
+  # Weather-related disasters
+  acidrain:
+  - "HotSun" # Cannot have rain and strong sun at the same time
+
+  hotsun:
+  - "AcidRain" # Cannot have rain and strong sun at the same time
+  # PvP-related disasters
+  allowfight:
+  - "Murder" # Both allow PvP in different ways
+
+  murder:
+  - "AllowFight" # Both allow PvP in different ways
+  # Block-related disasters
+  blockdisappear:
+  - "FloorIsLava" # Both modify the blocks beneath players
+
+  floorislava:
+  - "BlockDisappear" # Both modify the blocks beneath players
+  # WorldBorder is very intense, avoid combining it with other heavy disasters
+  worldborder:
+  - "Apocalypse"
+  - "Wither"
+  - "ExplosiveSheep"
+
+# Specific configurations for each disaster
+disaster-settings:
+  worldborder:
+    shrink-rate: 0.5 # Blocks per tick
+
+  apocalypse:
+    zombies-per-pulse: 2
+    spawn-radius: 10
+
+  explosivesheep:
+    spawn-radius: 10
+    explosion-power: 4.0
+
+  floorislava:
+    ticks-per-stage: 40
+
+  lightning:
+    strike-radius: 5
+
+  hotsun:
+    damage-per-pulse: 0.5
+
+# DO NOT TOUCH THIS!
+config-version: 1

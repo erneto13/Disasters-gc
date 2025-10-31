@@ -53,8 +53,10 @@ class DisastersCommand(
     fun reload(actor: BukkitCommandActor) {
         FileManager.get("config")!!.reloadFile()
         FileManager.get("lang")!!.reloadFile()
+        FileManager.get("disasters")!!.reloadFile()
         arenaManager.reloadArenas()
         sidebarService.updateSidebar()
+        DisasterRegistry.reloadConfig()
         Msg.send(actor.sender(), "messages.reload-success")
     }
 
