@@ -2,10 +2,10 @@
 disabled-disasters:
 - "HotPotato"
 
-# Prioridades de desastres (controlan cuándo aparecen según el % de juego)
-# LOW: 0-30% del tiempo de juego (desastres ligeros al inicio)
-# MEDIUM: 30-70% del tiempo de juego (desastres normales)
-# HIGH: 70-100% del tiempo de juego (desastres destructivos al final)
+# Prioridades de desastres
+# HIGH: Desastres destructivos/intensos
+# MEDIUM: Desastres normales
+# LOW: Desastres ligeros
 priorities:
   low:
   - "Blind"
@@ -32,46 +32,58 @@ priorities:
   - "WorldBorder"
   - "Wither"
 
-# Exclusiones: desastres que NO pueden estar activos al mismo tiempo
-# Cuando un desastre está activo, los de su lista de exclusión no podrán aparecer
+# Define la secuencia de desastres que aparecerán en el juego
+# Cada entrada es una "oleada" que se activará en orden
+# Formato: "PRIORIDAD:CANTIDAD"
+# Ejemplo: "high:1" = 1 desastre aleatorio de prioridad HIGH
+disaster-pattern:
+- "high:1" # Oleada 1: 1 desastre fuerte aleatorio
+- "medium:2" # Oleada 2: 2 desastres medios aleatorios
+- "medium:1" # Oleada 3: 1 desastre medio aleatorio
+- "high:1" # Oleada 4: 1 desastre fuerte aleatorio
+- "medium:1" # Oleada 5: 1 desastre medio aleatorio
+- "low:3" # Oleada 6: 3 desastres ligeros aleatorios
+- "low:2" # Oleada 7: 2 desastres ligeros aleatorios
+- "high:1" # Oleada 8: 1 desastre fuerte aleatorio
+
+repeat-pattern: true
+
 exclusions:
-  # Desastres de movimiento incompatibles
   grounded:
-  - "NoJump" # Ambos afectan el salto
-  - "ZeroGravity" # Incompatible con estar pegado al suelo
+  - "NoJump"
+  - "ZeroGravity"
 
   nojump:
-  - "Grounded" # Ambos afectan el salto
-  - "ZeroGravity" # Incompatible con super salto
+  - "Grounded"
+  - "ZeroGravity"
 
   zerogravity:
-  - "Grounded" # Incompatible con levitación
-  - "NoJump" # Incompatible con super salto
-  # Desastres de clima incompatibles
+  - "Grounded"
+  - "NoJump"
+
   acidrain:
-  - "HotSun" # No puede haber lluvia y sol fuerte al mismo tiempo
+  - "HotSun"
 
   hotsun:
-  - "AcidRain" # No puede haber sol y lluvia al mismo tiempo
-  # Desastres de PvP incompatibles
+  - "AcidRain"
+
   allowfight:
-  - "Murder" # Ambos permiten PvP de formas diferentes
+  - "Murder"
 
   murder:
-  - "AllowFight" # Ambos permiten PvP de formas diferentes
-  # Desastres de bloques incompatibles
+  - "AllowFight"
+
   blockdisappear:
-  - "FloorIsLava" # Ambos modifican los bloques bajo los jugadores
+  - "FloorIsLava"
 
   floorislava:
-  - "BlockDisappear" # Ambos modifican los bloques bajo los jugadores
-  # WorldBorder es muy intenso, evitar combinarlo con otros desastres pesados
+  - "BlockDisappear"
+
   worldborder:
   - "Apocalypse"
   - "Wither"
   - "ExplosiveSheep"
 
-# Configuraciones específicas por desastre (opcional)
 disaster-settings:
   worldborder:
     shrink-rate: 0.5
@@ -93,5 +105,5 @@ disaster-settings:
   hotsun:
     damage-per-pulse: 0.5
 
-# NO TOCAR
+# DO NOT TOUCH THIS!
 config-version: 1
