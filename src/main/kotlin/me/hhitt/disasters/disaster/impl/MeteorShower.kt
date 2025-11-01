@@ -3,6 +3,7 @@ import kotlin.random.Random
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
+import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Head
 import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
@@ -13,24 +14,40 @@ import org.bukkit.util.Vector
 
 class MeteorShower : Disaster {
     private val arenas = mutableListOf<Arena>()
+
+    // Valores configurables desde Disasters/MeteorShower.yml
     private var spawnRate = 5
     private var intensity = 40
-    private val meteorSpawnDistance = 30.0
+    private var meteorSpawnDistance = 30.0
+    private var minSize = 0.8
+    private var maxSize = 2.5
+    private var explosionMultiplier = 3.5f
+    private var fallSpeed = 0.4
+    private var downwardForce = -0.6
+    private var spawnHeightMin = 20.0
+    private var spawnHeightMax = 60.0
+    private var lateralOffsetMultiplier = 2.0
+    private var maxLifetimeTicks = 300
+    private var intensityIncreaseRate = 60
+    private var intensityIncreaseAmount = 2
+    private var maxIntensity = 40
 
     private val meteorHeads =
             listOf(
                     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2IwODJhOTFjZjRkM2M2YThjNmM5YjQwNzQzZmMwNzlhY2JhYWE0YzczMDM0YTQ3Mjc0MzA4NzIyY2QxZmNiOSJ9fX0=",
-                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQyNjAwYmE5YTk3YzNhMTk3NTljZjk5M2U5Yzk3Nzk2Y2U2OGNiNmQ0NTg3NTYxOTJkMzM1ZmZmZWQ1ZDJkZSJ9fX0=",
-                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2I3NTliNDczNmNlOWY2NjZjNjllZTgxNzcyMTgzYTZkNGEyYTAzY2QxYWQ2N2I0NTM0Yzg4NTdjNTk2NDIxOCJ9fX0="
             )
 
     override fun start(arena: Arena) {
+        loadConfig()
+
         arenas.add(arena)
         Notify.disaster(arena, "meteor-shower")
     }
 
     override fun pulse(time: Int) {
-        if (time % 60 == 0 && intensity < 40) intensity += 2
+        if (time % intensityIncreaseRate == 0 && intensity < maxIntensity) {
+            intensity += intensityIncreaseAmount
+        }
         if (time % spawnRate != 0) return
 
         for (arena in arenas.toList()) {
@@ -40,8 +57,35 @@ class MeteorShower : Disaster {
 
     override fun stop(arena: Arena) {
         arenas.remove(arena)
-        spawnRate = 8
-        intensity = 10
+        val config = DisasterFileManager.getDisasterConfig("meteor-shower")
+        intensity = config?.getInt("initial-intensity") ?: 40
+    }
+
+    private fun loadConfig() {
+        val config = DisasterFileManager.getDisasterConfig("meteor-shower")
+
+        if (config == null) {
+            Disasters.getInstance()
+                    .logger
+                    .warning("MeteorShower config not found! Using default values.")
+            return
+        }
+
+        spawnRate = config.getInt("spawn-rate", 5)
+        intensity = config.getInt("initial-intensity", 40)
+        maxIntensity = config.getInt("max-intensity", 40)
+        meteorSpawnDistance = config.getDouble("spawn-distance", 30.0)
+        minSize = config.getDouble("min-size", 0.8)
+        maxSize = config.getDouble("max-size", 2.5)
+        explosionMultiplier = config.getDouble("explosion-multiplier", 3.5).toFloat()
+        fallSpeed = config.getDouble("fall-speed", 0.4)
+        downwardForce = config.getDouble("downward-force", -0.6)
+        spawnHeightMin = config.getDouble("spawn-height-min", 20.0)
+        spawnHeightMax = config.getDouble("spawn-height-max", 60.0)
+        lateralOffsetMultiplier = config.getDouble("lateral-offset-multiplier", 2.0)
+        maxLifetimeTicks = config.getInt("max-lifetime-ticks", 300)
+        intensityIncreaseRate = config.getInt("intensity-increase-rate", 60)
+        intensityIncreaseAmount = config.getInt("intensity-increase-amount", 2)
     }
 
     private fun spawnMeteor(arena: Arena) {
@@ -61,7 +105,7 @@ class MeteorShower : Disaster {
 
         // generar desde un lateral (más lejos)
         val spawnFromSide = Random.nextBoolean()
-        val lateralOffset = meteorSpawnDistance * 2
+        val lateralOffset = meteorSpawnDistance * lateralOffsetMultiplier
         val spawnX =
                 if (spawnFromSide) {
                     if (Random.nextBoolean()) minX - lateralOffset else maxX + lateralOffset
@@ -72,12 +116,12 @@ class MeteorShower : Disaster {
                 } else targetZ + Random.nextDouble(-lateralOffset, lateralOffset)
 
         // viene alto y en diagonal
-        val spawnY = maxY + Random.nextDouble(20.0, 60.0)
+        val spawnY = maxY + Random.nextDouble(spawnHeightMin, spawnHeightMax)
         val spawnLoc = Location(world, spawnX, spawnY, spawnZ)
 
         // tamaño y poder
-        val size = Random.nextDouble(0.8, 2.5)
-        val explosionPower = size.toFloat() * 3.5f
+        val size = Random.nextDouble(minSize, maxSize)
+        val explosionPower = size.toFloat() * explosionMultiplier
 
         val headData = meteorHeads.random()
         val skull = Head.fromBase64(headData)
@@ -88,9 +132,9 @@ class MeteorShower : Disaster {
         stand.setGravity(false)
         stand.equipment.helmet = skull
 
-        // dirección diagonal más lenta y más plana
-        val direction = targetLoc.toVector().subtract(spawnLoc.toVector()).normalize().multiply(0.4)
-        direction.y = -0.6 // fuerza hacia abajo
+        val direction =
+                targetLoc.toVector().subtract(spawnLoc.toVector()).normalize().multiply(fallSpeed)
+        direction.y = downwardForce
 
         fallMeteor(stand, direction, explosionPower)
     }
@@ -112,7 +156,6 @@ class MeteorShower : Disaster {
                         loc.world.spawnParticle(Particle.SMOKE, loc, 6, 0.4, 0.4, 0.4, 0.02)
                         loc.world.spawnParticle(Particle.FLAME, loc, 10, 0.3, 0.3, 0.3, 0.02)
 
-                        // Detecta contacto con bloque sólido o si ya llegó al suelo
                         if (loc.block.type.isSolid || loc.y <= 2.0) {
                             loc.world.createExplosion(loc, explosionPower, true, true)
                             stand.remove()
@@ -120,7 +163,7 @@ class MeteorShower : Disaster {
                         }
 
                         ticks++
-                        if (ticks > 300) { // seguridad
+                        if (ticks > maxLifetimeTicks) {
                             stand.remove()
                             cancel()
                         }

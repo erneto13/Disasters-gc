@@ -1,0 +1,46 @@
+# Cada cuántos ticks se generan meteoritos (20 ticks = 1 segundo)
+spawn-rate: 5
+
+# Intensidad inicial (meteoritos por oleada)
+initial-intensity: 10
+
+# Intensidad máxima
+max-intensity: 40
+
+# Cada cuántos ticks aumenta la intensidad
+intensity-increase-rate: 60
+
+# Cuánto aumenta la intensidad cada vez
+intensity-increase-amount: 2
+
+# Distancia base desde la arena donde aparecen los meteoritos
+spawn-distance: 30.0
+
+# Multiplicador de distancia lateral (cubre más área)
+lateral-offset-multiplier: 2.0
+
+# Altura mínima sobre el punto máximo de la arena
+spawn-height-min: 20.0
+
+# Altura máxima sobre el punto máximo de la arena
+spawn-height-max: 60.0
+
+# Tamaño mínimo del meteorito
+min-size: 0.8
+
+# Tamaño máximo del meteorito
+max-size: 2.5
+
+# Multiplicador de poder de explosión basado en tamaño
+explosion-multiplier: 3.5
+
+# Velocidad de caída horizontal
+fall-speed: 0.4
+
+# Fuerza hacia abajo (negativo = hacia abajo)
+downward-force: -0.6
+
+# Tiempo máximo de vida del meteorito en ticks (seguridad)
+max-lifetime-ticks: 300
+
+config-version: 1

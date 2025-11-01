@@ -37,7 +37,8 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        if (time > 0 && time % arena.rate == 0) {
+        val cooldownSeconds = 10
+        if (time >= cooldownSeconds && (time - cooldownSeconds) % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
             nextDisasterIn = arena.rate
         }

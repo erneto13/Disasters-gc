@@ -5,6 +5,7 @@ import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.disaster.DisasterRegistry
 import me.hhitt.disasters.sidebar.SidebarService
 import me.hhitt.disasters.storage.file.FileManager
+import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Lobby
 import me.hhitt.disasters.util.Msg
 import org.bukkit.entity.Player
@@ -51,6 +52,7 @@ class DisastersCommand(
         FileManager.get("config")!!.reloadFile()
         FileManager.get("lang")!!.reloadFile()
         FileManager.get("disasters")!!.reloadFile()
+        DisasterFileManager.reloadAll()
         arenaManager.reloadArenas()
         sidebarService.updateSidebar()
         DisasterRegistry.reloadConfig()
