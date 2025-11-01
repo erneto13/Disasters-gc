@@ -10,12 +10,14 @@ import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.entity.ArmorStand
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 
 class MeteorShower : Disaster {
     private val arenas = mutableListOf<Arena>()
 
-    // Valores configurables desde Disasters/MeteorShower.yml
+    private val activeMeteorTasks = mutableListOf<BukkitTask>()
+
     private var spawnRate = 5
     private var intensity = 40
     private var meteorSpawnDistance = 30.0
@@ -57,8 +59,22 @@ class MeteorShower : Disaster {
 
     override fun stop(arena: Arena) {
         arenas.remove(arena)
+
+        activeMeteorTasks.forEach { task ->
+            if (!task.isCancelled) {
+                task.cancel()
+            }
+        }
+        activeMeteorTasks.clear()
+
+        arena.entityCleanupService.cleanupMeteors()
+
         val config = DisasterFileManager.getDisasterConfig("meteor-shower")
         intensity = config?.getInt("initial-intensity") ?: 40
+
+        Disasters.getInstance()
+                .logger
+                .info("MeteorShower stopped and cleaned up for arena: ${arena.name}")
     }
 
     private fun loadConfig() {
@@ -136,16 +152,32 @@ class MeteorShower : Disaster {
                 targetLoc.toVector().subtract(spawnLoc.toVector()).normalize().multiply(fallSpeed)
         direction.y = downwardForce
 
-        fallMeteor(stand, direction, explosionPower)
+        fallMeteor(stand, direction, explosionPower, arena)
     }
 
-    private fun fallMeteor(stand: ArmorStand, direction: Vector, explosionPower: Float) {
-        object : BukkitRunnable() {
+    private fun fallMeteor(
+            stand: ArmorStand,
+            direction: Vector,
+            explosionPower: Float,
+            arena: Arena
+    ) {
+        var scheduledTask: BukkitTask? = null
+
+        val task =
+                object : BukkitRunnable() {
                     var ticks = 0
                     override fun run() {
+                        if (!arenas.contains(arena)) {
+                            stand.remove()
+                            cancel()
+                            scheduledTask?.let { activeMeteorTasks.remove(it) }
+                            return
+                        }
+
                         if (!stand.isValid || stand.location.y <= 0) {
                             stand.remove()
                             cancel()
+                            scheduledTask?.let { activeMeteorTasks.remove(it) }
                             return
                         }
 
@@ -157,18 +189,31 @@ class MeteorShower : Disaster {
                         loc.world.spawnParticle(Particle.FLAME, loc, 10, 0.3, 0.3, 0.3, 0.02)
 
                         if (loc.block.type.isSolid || loc.y <= 2.0) {
-                            loc.world.createExplosion(loc, explosionPower, true, true)
+                            // Only explode if arena is still active
+                            if (arenas.contains(arena)) {
+                                loc.world.createExplosion(loc, explosionPower, true, true)
+                            }
                             stand.remove()
                             cancel()
+                            scheduledTask?.let { activeMeteorTasks.remove(it) }
                         }
 
                         ticks++
                         if (ticks > maxLifetimeTicks) {
                             stand.remove()
                             cancel()
+                            scheduledTask?.let { activeMeteorTasks.remove(it) }
                         }
                     }
+
+                    override fun cancel() {
+                        super.cancel()
+                        scheduledTask?.let { activeMeteorTasks.remove(it) }
+                    }
                 }
-                .runTaskTimer(Disasters.getInstance(), 1L, 1L)
+
+        val scheduled = task.runTaskTimer(Disasters.getInstance(), 1L, 1L)
+        scheduledTask = scheduled
+        activeMeteorTasks.add(scheduled)
     }
 }

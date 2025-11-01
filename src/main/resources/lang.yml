@@ -26,6 +26,10 @@ messages:
   - "&a/arena forcestop &7- Force stop the arena."
   - "&7For more help, check the documentation or use &a/tab-complete&7."
 
+celebration:
+  start: "<rainbow><bold>VICTORY!"
+  end: "<gold>Returning to lobby..."
+
 arena-setup:
   # Existing messages
   arena-already-exists: "<red>An arena with that name already exists!"

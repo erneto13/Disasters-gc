@@ -9,6 +9,7 @@ import me.hhitt.disasters.disaster.impl.BlockDisappear
 import me.hhitt.disasters.disaster.impl.FloorIsLava
 import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.game.GameState
+import me.hhitt.disasters.game.celebration.CelebrationManager
 import me.hhitt.disasters.storage.data.Data
 import me.hhitt.disasters.util.Lobby
 import me.hhitt.disasters.util.Notify
@@ -18,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable
 class GameTimer(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
 
     private val plugin = Disasters.getInstance()
+    private val celebrationManager = CelebrationManager(plugin)
     var time = 0
     var remaining = arena.maxTime
     private var nextDisasterIn = arena.rate
@@ -77,6 +79,39 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             }
         }
 
+        executeCommands()
+
+        arena.state = GameState.RESTARTING
+        super.cancel()
+
+        Notify.gameEnd(arena)
+
+        celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
+    }
+
+    private fun completeCelebrationAndReset() {
+        plugin.logger.info("Completing celebration and resetting arena: ${arena.name}")
+
+        DisasterRegistry.removeDisasters(arena)
+
+        arena.entityCleanupService.cleanupMeteors()
+        arena.entityCleanupService.cleanupFireworks()
+        arena.entityCleanupService.cleanupExtendedArea(50)
+
+        Lobby.teleportAtEnd(arena)
+
+        time = 0
+        remaining = arena.maxTime
+        nextDisasterIn = arena.rate
+
+        arena.state = GameState.RECRUITING
+
+        arena.resetService.paste()
+
+        plugin.logger.info("Arena reset completed: ${arena.name}")
+    }
+
+    private fun executeCommands() {
         arena.playing.forEach { player ->
             if (!arena.alive.contains(player)) {
                 for (command in arena.losersCommands) {
@@ -95,16 +130,5 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
             }
         }
-
-        Lobby.teleportAtEnd(arena)
-        arena.state = GameState.RESTARTING
-        super.cancel()
-        Notify.gameEnd(arena)
-        DisasterRegistry.removeDisasters(arena)
-        time = 0
-        remaining = arena.maxTime
-        nextDisasterIn = arena.rate
-        arena.state = GameState.RECRUITING
-        arena.resetService.paste()
     }
 }
