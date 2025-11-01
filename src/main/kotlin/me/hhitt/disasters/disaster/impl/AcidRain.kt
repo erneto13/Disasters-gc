@@ -3,8 +3,10 @@ package me.hhitt.disasters.disaster.impl
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
+import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Notify
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket
@@ -21,7 +23,18 @@ class AcidRain : Disaster {
     private val damagingBlocks = mutableMapOf<Block, Int>()
     private var damageCounter = 0
 
+    private var playerDamageInterval = 40
+    private var initialDamage = 0.5
+    private var maxDamage = 2.0
+    private var damageIncreaseRate = 80
+    private var blockDamageCheckInterval = 5
+    private var blocksToDamagePerPulse = 15
+    private var blockDamageTicksToBreak = 100
+    private var breakStageInterval = 11
+
     override fun start(arena: Arena) {
+        loadConfig()
+        
         arena.playing.forEach {
             val player: CraftPlayer = it as CraftPlayer
             player.handle.connection.player.setPlayerWeather(WeatherType.DOWNFALL, true)
@@ -34,10 +47,10 @@ class AcidRain : Disaster {
 
     override fun pulse(time: Int) {
         arenas.toList().forEach { arena ->
-            if (damageCounter % 40 == 0) {
+            if (damageCounter % playerDamageInterval == 0) {
                 arena.alive.toList().forEach { player ->
                     if (!isCovered(player.location.block)) {
-                        val damageAmount = min(2.0, 0.5 + (damageCounter / 80.0) * 0.5)
+                        val damageAmount = min(maxDamage, initialDamage + (damageCounter / damageIncreaseRate) * 0.5)
                         player.damage(damageAmount)
 
                         spawnAcidParticles(player)
@@ -48,7 +61,7 @@ class AcidRain : Disaster {
 
             processBlockDamage(arena)
 
-            if (damageCounter % 5 == 0) {
+            if (damageCounter % blockDamageCheckInterval == 0) {
                 findNewBlocksToDamage(arena)
             }
 
@@ -76,6 +89,26 @@ class AcidRain : Disaster {
         arenas.remove(arena)
     }
 
+    private fun loadConfig() {
+        val config = DisasterFileManager.getDisasterConfig("acid-rain")
+
+        if (config == null) {
+            Disasters.getInstance()
+                    .logger
+                    .warning("AcidRain config not found! Using default values.")
+            return
+        }
+
+        playerDamageInterval = config.getInt("player-damage-interval", 40)
+        initialDamage = config.getDouble("initial-damage", 0.5)
+        maxDamage = config.getDouble("max-damage", 2.0)
+        damageIncreaseRate = config.getInt("damage-increase-rate", 80)
+        blockDamageCheckInterval = config.getInt("block-damage-check-interval", 5)
+        blocksToDamagePerPulse = config.getInt("blocks-to-damage-per-pulse", 15)
+        blockDamageTicksToBreak = config.getInt("block-damage-ticks-to-break", 100)
+        breakStageInterval = config.getInt("break-stage-interval", 11)
+    }
+
     private fun isCovered(block: Block): Boolean {
         val world = block.world
         val playerY = block.y
@@ -97,8 +130,7 @@ class AcidRain : Disaster {
         val maxZ = max(arena.corner1.blockZ, arena.corner2.blockZ)
         val maxY = max(arena.corner1.blockY, arena.corner2.blockY)
 
-        // seleccionar bloques aleatorios para dañar (5 por pulse)
-        repeat(15) {
+        repeat(blocksToDamagePerPulse) {
             val x = Random.nextInt(minX, maxX + 1)
             val z = Random.nextInt(minZ, maxZ + 1)
 
@@ -133,7 +165,7 @@ class AcidRain : Disaster {
                 spawnBlockDamageParticles(block)
             }
 
-            val breakStage = min(9, (newDamage / 11))
+            val breakStage = min(9, (newDamage / breakStageInterval))
             if (breakStage >= 0) {
                 val blockPos = BlockPos(block.x, block.y, block.z)
                 val blockId = block.hashCode()
@@ -144,7 +176,7 @@ class AcidRain : Disaster {
                 }
             }
 
-            if (newDamage >= 100) {
+            if (newDamage >= blockDamageTicksToBreak) {
                 val blockPos = BlockPos(block.x, block.y, block.z)
                 val blockId = block.hashCode()
                 val clearPacket = ClientboundBlockDestructionPacket(blockId, blockPos, -1)
