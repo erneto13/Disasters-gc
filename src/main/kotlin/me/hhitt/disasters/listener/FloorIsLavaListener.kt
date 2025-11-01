@@ -27,34 +27,29 @@ class FloorIsLavaListener(private val arenaManager: ArenaManager) : Listener {
 
         if (!arena.disasters.any { it is FloorIsLava }) return
 
-        player.sendMessage("§7[DEBUG] Floor is Lava activo")
-
         if (!arena.borderService.isLocationInArenaTp(player)) return
 
-        val solidBlockBelow = findSolidBlockBelow(event.to)
-        if (solidBlockBelow != null) {
-            player.sendMessage("§7[DEBUG] Bloque encontrado: ${solidBlockBelow.block.type}")
-            DisasterRegistry.addBlockToFloorIsLava(arena, solidBlockBelow)
-        } else {
-            player.sendMessage("§c[DEBUG] No se encontró bloque sólido")
+        val blockUnderFeet = getBlockPlayerIsStandingOn(event.to)
+
+        if (blockUnderFeet != null) {
+            DisasterRegistry.addBlockToFloorIsLava(arena, blockUnderFeet)
         }
     }
 
-    private fun findSolidBlockBelow(location: Location): Location? {
-        val world = location.world ?: return null
-        val startY = location.blockY
+    private fun getBlockPlayerIsStandingOn(playerLocation: Location): Location? {
+        val world = playerLocation.world ?: return null
 
-        for (y in startY downTo (startY - 5).coerceAtLeast(world.minHeight)) {
-            val checkBlock = world.getBlockAt(location.blockX, y, location.blockZ)
+        val blockY = (playerLocation.y - 0.1).toInt()
 
-            if (checkBlock.type.isSolid &&
-                            checkBlock.type != Material.AIR &&
-                            checkBlock.type != Material.WATER &&
-                            checkBlock.type != Material.LAVA &&
-                            !checkBlock.type.name.contains("LEAVES")
-            ) {
-                return checkBlock.location
-            }
+        val blockUnderFeet = world.getBlockAt(playerLocation.blockX, blockY, playerLocation.blockZ)
+
+        // Verificar que sea un bloque sólido válido
+        if (blockUnderFeet.type.isSolid &&
+                        blockUnderFeet.type != Material.AIR &&
+                        blockUnderFeet.type != Material.WATER &&
+                        blockUnderFeet.type != Material.LAVA
+        ) {
+            return blockUnderFeet.location
         }
 
         return null

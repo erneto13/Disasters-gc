@@ -1,53 +1,105 @@
 package me.hhitt.disasters.disaster.impl
 
 import java.util.concurrent.CopyOnWriteArrayList
+import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.model.block.DisasterFloor
+import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Notify
+import org.bukkit.Material
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 
 class FloorIsLava : Disaster {
 
     private val blocks = CopyOnWriteArrayList<DisasterFloor>()
-    private val trackedLocations = mutableSetOf<String>()
-    private var tickCounter = 0
-    private val ticksPerStage = 40
+    private var stages: List<Material> = listOf()
+    private var fastTickTask: BukkitTask? = null
+    private val arenas = mutableListOf<Arena>()
 
     override fun start(arena: Arena) {
+        loadConfig()
+        arenas.add(arena)
         Notify.disaster(arena, "floor-is-lava")
-        tickCounter = 0
-
-        arena.playing.forEach { player ->
-            player.sendMessage("§a[Floor is Lava] Desastre iniciado!")
-        }
+        startFastTicker()
     }
 
-    override fun pulse(time: Int) {
-        tickCounter++
-
-        if (tickCounter % ticksPerStage == 0) {
-            blocks.forEach { it.updateMaterial() }
-        }
-    }
+    override fun pulse(time: Int) {}
 
     override fun stop(arena: Arena) {
+        arenas.remove(arena)
         blocks.clear()
-        trackedLocations.clear()
+        stopFastTicker()
+    }
+
+    private fun startFastTicker() {
+        fastTickTask =
+                object : BukkitRunnable() {
+                            override fun run() {
+                                if (arenas.isEmpty()) {
+                                    cancel()
+                                    return
+                                }
+                                blocks.forEach { it.tick() }
+                            }
+                        }
+                        .runTaskTimer(Disasters.getInstance(), 0L, 1L)
+    }
+
+    private fun stopFastTicker() {
+        fastTickTask?.cancel()
+        fastTickTask = null
     }
 
     fun addBlock(block: DisasterFloor) {
-        val locationKey =
-                "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
-
-        if (trackedLocations.add(locationKey)) {
-            blocks.add(block)
-        }
+        blocks.add(block)
     }
 
     fun removeBlock(block: DisasterFloor) {
-        val locationKey =
-                "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
-        trackedLocations.remove(locationKey)
         blocks.remove(block)
     }
+
+    private fun loadConfig() {
+        val config = DisasterFileManager.getDisasterConfig("floor-is-lava")
+
+        if (config == null) {
+            Disasters.getInstance()
+                    .logger
+                    .warning("FloorIsLava config not found! Using default values.")
+            stages =
+                    listOf(
+                            Material.YELLOW_WOOL,
+                            Material.ORANGE_WOOL,
+                            Material.RED_WOOL,
+                            Material.LAVA
+                    )
+            return
+        }
+
+        val stageNames = config.getStringList("stages")
+        stages =
+                stageNames.mapNotNull { stageName ->
+                    try {
+                        Material.valueOf(stageName.uppercase())
+                    } catch (e: IllegalArgumentException) {
+                        Disasters.getInstance()
+                                .logger
+                                .warning("Invalid material in floor-is-lava config: $stageName")
+                        null
+                    }
+                }
+
+        if (stages.isEmpty()) {
+            stages =
+                    listOf(
+                            Material.YELLOW_WOOL,
+                            Material.ORANGE_WOOL,
+                            Material.RED_WOOL,
+                            Material.LAVA
+                    )
+        }
+    }
+
+    fun getStages(): List<Material> = stages
 }
