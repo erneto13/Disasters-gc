@@ -81,6 +81,8 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         executeCommands()
 
+        DisasterRegistry.removeDisasters(arena)
+
         arena.state = GameState.RESTARTING
         super.cancel()
 
@@ -90,8 +92,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
     }
 
     private fun completeCelebrationAndReset() {
-        plugin.logger.info("Completing celebration and resetting arena: ${arena.name}")
-
         DisasterRegistry.removeDisasters(arena)
 
         arena.entityCleanupService.cleanupMeteors()
@@ -107,8 +107,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
         arena.state = GameState.RECRUITING
 
         arena.resetService.paste()
-
-        plugin.logger.info("Arena reset completed: ${arena.name}")
     }
 
     private fun executeCommands() {
