@@ -26,7 +26,8 @@ object DisasterFileManager {
 
     private fun loadDisasterConfigs() {
         createDefaultDisasterConfig("meteor-shower")
-
+        createDefaultDisasterConfig("acid-rain")
+        
         val disasterFiles =
                 disastersFolder.listFiles { _, name -> name.endsWith(".yml", ignoreCase = true) }
                         ?: return
