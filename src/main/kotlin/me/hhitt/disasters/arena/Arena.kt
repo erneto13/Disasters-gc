@@ -1,9 +1,7 @@
 package me.hhitt.disasters.arena
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin
-import me.hhitt.disasters.arena.service.BorderService
-import me.hhitt.disasters.arena.service.ResetArenaService
-import me.hhitt.disasters.arena.service.RespawnService
+import me.hhitt.disasters.arena.service.*
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.disaster.impl.WorldBorder
 import me.hhitt.disasters.game.GameSession
@@ -42,6 +40,8 @@ class Arena(
     var state = GameState.RECRUITING
     val borderService = BorderService(corner1, corner2)
     val resetService = ResetArenaService(this, worldEdit)
+    val entityCleanupService = EntityCleanupService(this)
+    val fluidCleanupService = FluidCleanupService(this)
     private val respawnService = RespawnService(this)
     private val gameSession = GameSession(this)
 
