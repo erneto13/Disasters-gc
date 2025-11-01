@@ -49,26 +49,5 @@ exclusions:
   - "NoJump"
   - "ZeroGravity"
 
-disaster-settings:
-  worldborder:
-    shrink-rate: 0.5
-
-  apocalypse:
-    zombies-per-pulse: 2
-    spawn-radius: 10
-
-  explosivesheep:
-    spawn-radius: 10
-    explosion-power: 4.0
-
-  floorislava:
-    ticks-per-stage: 40
-
-  lightning:
-    strike-radius: 5
-
-  hotsun:
-    damage-per-pulse: 0.5
-
 # DO NOT TOUCH THIS!
 config-version: 1
