@@ -15,14 +15,16 @@ class Swap : Disaster {
 
     override fun pulse(time: Int) {
 
-        if(time % 10 != 0) return
+        if (time % 10 != 0) return
 
-        arenas.forEach {
-            val players = it.alive
-            players.shuffle()
-            for (i in 0 until players.size - 1 step 2) {
-                val player1 = players[i]
-                val player2 = players[i + 1]
+        arenas.toList().forEach { arena ->
+            val players = arena.alive.toList()
+            if (players.size < 2) return@forEach
+
+            val shuffled = players.shuffled().toMutableList()
+            for (i in 0 until shuffled.size - 1 step 2) {
+                val player1 = shuffled[i]
+                val player2 = shuffled[i + 1]
 
                 val loc1 = player1.location
                 val loc2 = player2.location

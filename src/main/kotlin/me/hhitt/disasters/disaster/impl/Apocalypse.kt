@@ -1,17 +1,16 @@
 package me.hhitt.disasters.disaster.impl
 
+import kotlin.random.Random
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify
-
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import org.bukkit.World
-import kotlin.random.Random
 
-class Apocalypse: Disaster {
+class Apocalypse : Disaster {
 
     private val arenas = mutableListOf<Arena>()
 
@@ -21,11 +20,9 @@ class Apocalypse: Disaster {
     }
 
     override fun pulse(time: Int) {
-        if(time % 2 != 0) return
-        arenas.forEach { arena ->
-            arena.alive.forEach { player ->
-                spawnZombiesNearPlayer(player, 10, 2)
-            }
+        if (time % 2 != 0) return
+        arenas.toList().forEach { arena ->
+            arena.alive.toList().forEach { player -> spawnZombiesNearPlayer(player, 10, 2) }
         }
     }
 
@@ -37,9 +34,7 @@ class Apocalypse: Disaster {
         val world: World = player.world
         repeat(amount) {
             val spawnLocation = findSafeSpawnLocation(player.location, radius)
-            spawnLocation?.let {
-                world.spawnEntity(it, EntityType.ZOMBIE)
-            }
+            spawnLocation?.let { world.spawnEntity(it, EntityType.ZOMBIE) }
         }
     }
 
@@ -47,7 +42,8 @@ class Apocalypse: Disaster {
         repeat(10) {
             val randomX = location.x + Random.nextDouble(-radius.toDouble(), radius.toDouble())
             val randomZ = location.z + Random.nextDouble(-radius.toDouble(), radius.toDouble())
-            val highestY = location.world.getHighestBlockYAt(randomX.toInt(), randomZ.toInt()).toDouble()
+            val highestY =
+                    location.world.getHighestBlockYAt(randomX.toInt(), randomZ.toInt()).toDouble()
             val potentialLocation = Location(location.world, randomX, highestY + 1, randomZ)
 
             if (isSafeLocation(potentialLocation)) {

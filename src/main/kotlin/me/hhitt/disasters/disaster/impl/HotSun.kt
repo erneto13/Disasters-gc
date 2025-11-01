@@ -19,7 +19,7 @@ class HotSun : Disaster {
     override fun pulse(time: Int) {
         if (time % 2 != 0) return
 
-        players.forEach { player ->
+        players.toList().forEach { player ->
             val loc = player.location
 
             val exposed =

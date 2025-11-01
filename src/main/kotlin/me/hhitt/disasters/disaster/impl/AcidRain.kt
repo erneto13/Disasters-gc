@@ -8,7 +8,7 @@ import org.bukkit.WeatherType
 import org.bukkit.block.Block
 import org.bukkit.craftbukkit.entity.CraftPlayer
 
-class AcidRain: Disaster {
+class AcidRain : Disaster {
 
     private val arenas = mutableListOf<Arena>()
 
@@ -19,15 +19,14 @@ class AcidRain: Disaster {
         }
         arenas.add(arena)
         Notify.disaster(arena, "acid-rain")
-
     }
 
     override fun pulse(time: Int) {
-        arenas.forEach {
-            it.alive.forEach {
-                val player: CraftPlayer = it as CraftPlayer
-                if(!isCoveredAndBreak(player.location.block)) {
-                    player.damage(2.0)
+        arenas.toList().forEach { arena ->
+            arena.alive.toList().forEach { player ->
+                val craftPlayer: CraftPlayer = player as CraftPlayer
+                if (!isCoveredAndBreak(craftPlayer.location.block)) {
+                    craftPlayer.damage(2.0)
                 }
             }
         }

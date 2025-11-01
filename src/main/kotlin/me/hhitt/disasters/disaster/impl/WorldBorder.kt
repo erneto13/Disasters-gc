@@ -12,7 +12,6 @@ import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 
-
 class WorldBorder : Disaster {
 
     private val arenaSizes = mutableMapOf<Arena, Double>()
@@ -22,12 +21,13 @@ class WorldBorder : Disaster {
         Notify.disaster(arena, "world-border")
         val corner1 = arena.corner1
         val corner2 = arena.corner2
-        val center = Location(
-            corner1.world,
-            (corner1.x + corner2.x) / 2,
-            (corner1.y + corner2.y) / 2,
-            (corner1.z + corner2.z) / 2
-        )
+        val center =
+                Location(
+                        corner1.world,
+                        (corner1.x + corner2.x) / 2,
+                        (corner1.y + corner2.y) / 2,
+                        (corner1.z + corner2.z) / 2
+                )
         val initialRadius = corner1.distance(corner2) / 2
         arenaSizes[arena] = initialRadius
 
@@ -46,13 +46,14 @@ class WorldBorder : Disaster {
                 iterator.remove()
             } else {
                 arenaSizes[arena] = newRadius
-                val center = Location(
-                    arena.corner1.world,
-                    (arena.corner1.x + arena.corner2.x) / 2,
-                    (arena.corner1.y + arena.corner2.y) / 2,
-                    (arena.corner1.z + arena.corner2.z) / 2
-                )
-                for (player in arena.playing) {
+                val center =
+                        Location(
+                                arena.corner1.world,
+                                (arena.corner1.x + arena.corner2.x) / 2,
+                                (arena.corner1.y + arena.corner2.y) / 2,
+                                (arena.corner1.z + arena.corner2.z) / 2
+                        )
+                arena.playing.toList().forEach { player ->
                     sendWorldBorder(player, center, newRadius)
                 }
                 checkPlayersOutsideBorderAndApplyDamage(arena, center, newRadius)
@@ -62,9 +63,7 @@ class WorldBorder : Disaster {
 
     override fun stop(arena: Arena) {
         arenaSizes.remove(arena)
-        for (player in arena.playing) {
-            resetWorldBorder(player)
-        }
+        arena.playing.toList().forEach { player -> resetWorldBorder(player) }
     }
 
     private fun sendWorldBorder(player: Player, center: Location, size: Double) {
@@ -95,9 +94,13 @@ class WorldBorder : Disaster {
         (player as CraftPlayer).handle.connection.send(packet)
     }
 
-    private fun checkPlayersOutsideBorderAndApplyDamage(arena: Arena, center: Location, radius: Double) {
+    private fun checkPlayersOutsideBorderAndApplyDamage(
+            arena: Arena,
+            center: Location,
+            radius: Double
+    ) {
         val radiusSquared = radius * radius
-        for (player in arena.alive.toList()) {
+        arena.alive.toList().forEach { player ->
             val loc = player.location
             if (loc.world == center.world) {
                 val distanceSquared = loc.distanceSquared(center)
@@ -107,7 +110,4 @@ class WorldBorder : Disaster {
             }
         }
     }
-
-
 }
-
