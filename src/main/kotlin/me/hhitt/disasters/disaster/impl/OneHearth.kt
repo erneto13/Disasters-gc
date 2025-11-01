@@ -9,19 +9,22 @@ class OneHearth : Disaster {
     override fun start(arena: Arena) {
         Notify.disaster(arena, "one-hearth")
         arena.playing.forEach { player ->
-            player.health = 2.0
+            val maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH)
+            maxHealthAttribute?.baseValue = 10.0
+
+            player.health = 10.0
             player.absorptionAmount = 0.0
         }
     }
 
-    override fun pulse(time: Int) {
-
-    }
+    override fun pulse(time: Int) {}
 
     override fun stop(arena: Arena) {
         arena.playing.forEach { player ->
-            val maxHealth = player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
-            player.health = maxHealth
+            val maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH)
+            maxHealthAttribute?.baseValue = 20.0
+
+            player.health = 20.0
         }
     }
 }

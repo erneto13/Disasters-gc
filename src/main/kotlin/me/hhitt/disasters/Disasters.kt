@@ -12,8 +12,8 @@ import me.hhitt.disasters.hook.PlaceholderAPIHook
 import me.hhitt.disasters.listener.*
 import me.hhitt.disasters.sidebar.SidebarService
 import me.hhitt.disasters.storage.data.Data
-import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.storage.file.DisasterFileManager
+import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.util.Filer
 import me.hhitt.disasters.util.Lobby
 import me.hhitt.disasters.visual.CuboidVisualizer
@@ -119,6 +119,8 @@ class Disasters : ZapperJavaPlugin() {
         server.pluginManager.registerEvents(ArenaEditGUIListener(), this)
         server.pluginManager.registerEvents(BlockDisappearListener(arenaManager), this)
         server.pluginManager.registerEvents(FloorIsLavaListener(arenaManager), this)
+        server.pluginManager.registerEvents(FoodLevelChangeListener(arenaManager), this)
+        server.pluginManager.registerEvents(VoidDamageListener(arenaManager), this)
 
         server.pluginManager.registerEvents(
                 SelectionListener(arenaSetupManager, cuboidVisualizer),
