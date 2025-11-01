@@ -81,16 +81,19 @@ class Arena(
         playing.remove(player)
         alive.remove(player)
 
-        if (isWaiting()) {
-            val requiredPlayers = if (isTestMode) 1 else minPlayers
-            if (playing.size < requiredPlayers) {
+        if (isTestMode) {
+            if (playing.isEmpty()) {
                 stop()
             }
         } else {
-            if (isTestMode && alive.isEmpty()) {
-                stop()
-            } else if (!isTestMode && alive.size < aliveToEnd) {
-                stop()
+            if (isWaiting()) {
+                if (playing.size < minPlayers) {
+                    stop()
+                }
+            } else {
+                if (alive.size < aliveToEnd) {
+                    stop()
+                }
             }
         }
         Notify.playerLeft(player, this)
