@@ -6,7 +6,6 @@ import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.arena.ArenaSetupManager
 import me.hhitt.disasters.command.ArenaCommand
 import me.hhitt.disasters.command.ArenaSetupCommand
-import me.hhitt.disasters.command.DisasterAdminCommand
 import me.hhitt.disasters.command.DisastersCommand
 import me.hhitt.disasters.disaster.DisasterTask
 import me.hhitt.disasters.hook.PlaceholderAPIHook
@@ -97,7 +96,6 @@ class Disasters : ZapperJavaPlugin() {
                 ArenaCommand(arenaManager),
                 DisastersCommand(this, arenaManager, sidebarService),
                 ArenaSetupCommand(arenaManager, arenaSetupManager, cuboidVisualizer),
-                DisasterAdminCommand()
         )
 
         logger.info("Commands registered")

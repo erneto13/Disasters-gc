@@ -4,32 +4,14 @@ import kotlin.reflect.KClass
 import me.hhitt.disasters.storage.file.FileManager
 import org.bukkit.configuration.file.FileConfiguration
 
-/** DisasterConfig manages disaster configuration including priorities, exclusions, and patterns. */
 object DisasterConfig {
 
-    enum class Priority {
-        LOW, // Ligeros
-        MEDIUM, // Normales
-        HIGH // Destructivos
-    }
-
     data class DisasterWave(val priority: Priority, val count: Int)
-
     private lateinit var config: FileConfiguration
-
-    // Mapa de desastres incompatibles entre sí
     private val exclusions = mutableMapOf<String, Set<String>>()
-
-    // Mapa de prioridades de desastres
     private val priorities = mutableMapOf<String, Priority>()
-
-    // Desastres deshabilitados
     private val disabledDisasters = mutableSetOf<String>()
-
-    // Patrón de oleadas de desastres
     private val disasterPattern = mutableListOf<DisasterWave>()
-
-    // Si se debe repetir el patrón
     private var repeatPattern = true
 
     fun load() {
@@ -46,9 +28,7 @@ object DisasterConfig {
         loadDisasterPattern()
     }
 
-    private fun createDefaultConfig() {
-        // El archivo será creado con valores por defecto
-    }
+    private fun createDefaultConfig() {}
 
     private fun loadExclusions() {
         exclusions.clear()
@@ -98,7 +78,6 @@ object DisasterConfig {
             }
         }
 
-        // Si no hay patrón definido, usar uno por defecto
         if (disasterPattern.isEmpty()) {
             disasterPattern.add(DisasterWave(Priority.HIGH, 1))
             disasterPattern.add(DisasterWave(Priority.MEDIUM, 2))
@@ -106,23 +85,17 @@ object DisasterConfig {
         }
     }
 
-    /** Verifica si un desastre está habilitado */
     fun isEnabled(disasterClass: KClass<out Disaster>): Boolean {
         val name = disasterClass.simpleName?.lowercase() ?: return false
         val enabled = !disabledDisasters.contains(name)
-        if (!enabled) {
-            println("[DisasterConfig] ${disasterClass.simpleName} está DESHABILITADO")
-        }
         return enabled
     }
 
-    /** Obtiene la prioridad de un desastre */
     fun getPriority(disasterClass: KClass<out Disaster>): Priority {
         val name = disasterClass.simpleName?.lowercase() ?: return Priority.MEDIUM
         return priorities[name] ?: Priority.MEDIUM
     }
 
-    /** Verifica si dos desastres son compatibles */
     fun areCompatible(disaster1: KClass<out Disaster>, disaster2: KClass<out Disaster>): Boolean {
         val name1 = disaster1.simpleName?.lowercase() ?: return true
         val name2 = disaster2.simpleName?.lowercase() ?: return true
@@ -133,7 +106,6 @@ object DisasterConfig {
         return !excluded1.contains(name2) && !excluded2.contains(name1)
     }
 
-    /** Verifica si un desastre es compatible con los desastres activos */
     fun isCompatibleWithActive(
             disasterClass: KClass<out Disaster>,
             activeDisasters: List<Disaster>
@@ -141,11 +113,6 @@ object DisasterConfig {
         return activeDisasters.all { active -> areCompatible(disasterClass, active::class) }
     }
 
-    /**
-     * Obtiene la oleada actual según el número de activaciones
-     * @param activationCount Número de veces que se han activado desastres
-     * @return La oleada correspondiente
-     */
     fun getCurrentWave(activationCount: Int): DisasterWave {
         if (disasterPattern.isEmpty()) {
             return DisasterWave(Priority.MEDIUM, 1)
@@ -170,20 +137,11 @@ object DisasterConfig {
         }
     }
 
-    /** Obtiene configuración específica de un desastre */
     fun getDisasterConfig(disasterClass: KClass<out Disaster>, key: String): Any? {
         val name = disasterClass.simpleName?.lowercase() ?: return null
         return config.get("disaster-settings.$name.$key")
     }
 
-    /** Obtiene el patrón actual como string para mostrar */
-    fun getPatternDescription(): List<String> {
-        return disasterPattern.mapIndexed { index, wave ->
-            "Oleada ${index + 1}: ${wave.count}x ${wave.priority}"
-        }
-    }
-
-    /** Recarga la configuración */
     fun reload() {
         FileManager.reload("disasters")
         load()

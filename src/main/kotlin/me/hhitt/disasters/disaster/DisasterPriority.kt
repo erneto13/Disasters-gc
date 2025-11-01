@@ -1,7 +1,7 @@
 package me.hhitt.disasters.disaster
 
 enum class Priority {
-    HIGH,
+    LOW,
     MEDIUM,
-    LOW
+    HIGH
 }

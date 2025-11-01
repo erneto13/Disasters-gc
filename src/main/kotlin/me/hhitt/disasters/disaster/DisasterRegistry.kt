@@ -53,23 +53,11 @@ object DisasterRegistry {
 
         val wave = DisasterConfig.getCurrentWave(currentCount)
 
-        println(
-                "[DisasterRegistry] Arena ${arena.name} - Oleada $currentCount: ${wave.count}x ${wave.priority}"
-        )
-
-        // Obtener desastres de la prioridad correcta
         val availableByPriority =
                 DisasterConfig.getDisastersByPriority(disasterClasses, wave.priority)
 
-        println(
-                "[DisasterRegistry] Desastres disponibles de ${wave.priority}: ${availableByPriority.map { it.simpleName }}"
-        )
-
-        // Filtrar desastres ya activos
         val notActive =
                 availableByPriority.filter { cls -> currentDisasters.none { it::class == cls } }
-
-        println("[DisasterRegistry] No activos: ${notActive.map { it.simpleName }}")
 
         val compatible = mutableListOf<KClass<out Disaster>>()
         for (cls in notActive) {
@@ -78,10 +66,7 @@ object DisasterRegistry {
             }
         }
 
-        println("[DisasterRegistry] Compatibles: ${compatible.map { it.simpleName }}")
-
         if (compatible.isEmpty()) {
-            println("[DisasterRegistry] ⚠ No hay desastres compatibles disponibles")
             activationCounts[arena] = currentCount + 1
             return
         }
@@ -95,17 +80,11 @@ object DisasterRegistry {
             while (currentDisasters.size >= maxDisasters) {
                 val toRemove = currentDisasters.removeAt(0)
                 toRemove.stop(arena)
-                println(
-                        "[DisasterRegistry] ✖ Removido desastre antiguo: ${toRemove.javaClass.simpleName}"
-                )
             }
 
             val selectedClass = shuffled[i]
 
             if (!DisasterConfig.isCompatibleWithActive(selectedClass, currentDisasters)) {
-                println(
-                        "[DisasterRegistry] ⚠ ${selectedClass.simpleName} incompatible con desastres recién agregados"
-                )
                 continue
             }
 
@@ -115,22 +94,12 @@ object DisasterRegistry {
                 currentDisasters.add(newDisaster)
                 arena.disasters.add(newDisaster)
                 actuallyAdded++
-                println("[DisasterRegistry] ✓ Activado: ${selectedClass.simpleName}")
-            } catch (e: Exception) {
-                println(
-                        "[DisasterRegistry] ✖ Error al activar ${selectedClass.simpleName}: ${e.message}"
-                )
-            }
+            } catch (e: Exception) {}
         }
 
         if (actuallyAdded > 0) {
             activationCounts[arena] = currentCount + 1
-            println("[DisasterRegistry] Contador incrementado a ${currentCount + 1}")
         }
-
-        println(
-                "[DisasterRegistry] Total activos: ${currentDisasters.size} - ${currentDisasters.map { it.javaClass.simpleName }}"
-        )
     }
 
     fun pulseAll(time: Int) {
@@ -187,13 +156,7 @@ object DisasterRegistry {
     fun isMurder(arena: Arena, player: Player): Boolean {
         return getDisaster<Murder>(arena)?.isMurder(player) ?: false
     }
-
-    fun getPatternInfo(arena: Arena): String {
-        val currentCount = activationCounts[arena] ?: 0
-        val wave = DisasterConfig.getCurrentWave(currentCount)
-        return "Oleada ${currentCount + 1}: ${wave.count}x ${wave.priority}"
-    }
-
+    
     fun reloadConfig() {
         DisasterConfig.reload()
     }

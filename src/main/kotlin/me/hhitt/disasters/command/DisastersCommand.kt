@@ -1,8 +1,6 @@
 package me.hhitt.disasters.command
 
-import com.sk89q.worldedit.regions.CuboidRegion
 import me.hhitt.disasters.Disasters
-import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.arena.ArenaManager
 import me.hhitt.disasters.disaster.DisasterRegistry
 import me.hhitt.disasters.sidebar.SidebarService
@@ -10,21 +8,17 @@ import me.hhitt.disasters.storage.file.FileManager
 import me.hhitt.disasters.util.Lobby
 import me.hhitt.disasters.util.Msg
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
 import revxrsal.commands.annotation.Command
-import revxrsal.commands.annotation.Named
 import revxrsal.commands.annotation.Subcommand
-import revxrsal.commands.annotation.Suggest
 import revxrsal.commands.bukkit.actor.BukkitCommandActor
 import revxrsal.commands.bukkit.annotation.CommandPermission
-import kotlin.collections.subtract
 
 @Command("dg")
 @CommandPermission("disasters.admin")
 class DisastersCommand(
-    private val plugin: Disasters,
-    private val arenaManager: ArenaManager,
-    private val sidebarService: SidebarService
+        private val plugin: Disasters,
+        private val arenaManager: ArenaManager,
+        private val sidebarService: SidebarService
 ) {
 
     val version = plugin.pluginMeta.version
@@ -40,7 +34,10 @@ class DisastersCommand(
         }
 
         Msg.sendList(actor.sender(), "messages.help")
-        Msg.sendParsed(actor.sender() as Player, "<#c1c1c1><i> Version $version ($customBuild) - by erneto13")
+        Msg.sendParsed(
+                actor.sender() as Player,
+                "<#c1c1c1><i> Version $version ($customBuild) - by erneto13"
+        )
         Msg.sendParsed(actor.sender() as Player, "")
     }
 
@@ -78,65 +75,4 @@ class DisastersCommand(
         Lobby.setLocation()
         Msg.send(actor.sender(), "messages.lobby-set")
     }
-
-    @Subcommand("test")
-    fun testDisaster(
-        actor: BukkitCommandActor,
-        @Named("disaster_name") disasterName: String,
-        @Named("duration") duration: Int?
-    ) {
-        if (!actor.isPlayer) {
-            Msg.send(actor.sender(), "messages.only-players")
-            return
-        }
-
-        val player = actor.asPlayer()!!
-        val disasterClass = DisasterRegistry.getDisasterClassByName(disasterName)
-        if (disasterClass == null) {
-            Msg.sendParsed(player, "<#e33131>Disaster '$disasterName' does not exist.")
-            return
-        }
-
-        // Crear arena temporal para la prueba
-        val testArena = Arena(
-            "temp", "temp-arena",
-            1, 1, 1,
-            300, 0, 0, 1,
-            player.location, player.location, player.location,
-            emptyList(), emptyList(), emptyList(), null
-        )
-        testArena.alive.add(player)
-
-        // Instanciar el desastre
-        val disaster = disasterClass.constructors.first().call()
-
-        // 🔹 Registrar el desastre en el sistema global
-        DisasterRegistry.registerDisaster(testArena, disaster)
-
-        // Iniciar el desastre
-        disaster.start(testArena)
-        Msg.sendParsed(player, "<#fbed3a>Starting test disaster: ${disasterClass.simpleName}")
-
-        // Duración del test
-        val durationTicks = (duration ?: 30) * 20L
-        var ticksPassed = 0L
-
-        val task = object : BukkitRunnable() {
-            override fun run() {
-                if (ticksPassed >= durationTicks || testArena.alive.isEmpty()) {
-                    disaster.stop(testArena)
-                    Msg.sendParsed(player, "<#fbed3a>The test disaster is over.")
-                    DisasterRegistry.removeDisasters(testArena)
-                    cancel()
-                    return
-                }
-
-                // 🔹 Pulsar todos los desastres activos (para FloorIsLava)
-                DisasterRegistry.pulseAll(ticksPassed.toInt())
-                ticksPassed++
-            }
-        }
-        task.runTaskTimer(plugin, 0L, 1L)
-    }
-
 }
