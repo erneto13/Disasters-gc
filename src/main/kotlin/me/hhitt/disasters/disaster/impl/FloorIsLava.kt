@@ -1,12 +1,12 @@
 package me.hhitt.disasters.disaster.impl
 
+import java.util.concurrent.CopyOnWriteArrayList
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.model.block.DisasterFloor
 import me.hhitt.disasters.util.Notify
-import java.util.concurrent.CopyOnWriteArrayList
 
-class FloorIsLava: Disaster {
+class FloorIsLava : Disaster {
 
     private val blocks = CopyOnWriteArrayList<DisasterFloor>()
     private val trackedLocations = mutableSetOf<String>()
@@ -16,6 +16,10 @@ class FloorIsLava: Disaster {
     override fun start(arena: Arena) {
         Notify.disaster(arena, "floor-is-lava")
         tickCounter = 0
+
+        arena.playing.forEach { player ->
+            player.sendMessage("§a[Floor is Lava] Desastre iniciado!")
+        }
     }
 
     override fun pulse(time: Int) {
@@ -32,7 +36,8 @@ class FloorIsLava: Disaster {
     }
 
     fun addBlock(block: DisasterFloor) {
-        val locationKey = "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
+        val locationKey =
+                "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
 
         if (trackedLocations.add(locationKey)) {
             blocks.add(block)
@@ -40,7 +45,8 @@ class FloorIsLava: Disaster {
     }
 
     fun removeBlock(block: DisasterFloor) {
-        val locationKey = "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
+        val locationKey =
+                "${block.location.blockX},${block.location.blockY},${block.location.blockZ}"
         trackedLocations.remove(locationKey)
         blocks.remove(block)
     }

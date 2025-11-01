@@ -10,14 +10,6 @@ import org.bukkit.craftbukkit.CraftWorld
 import net.minecraft.world.level.block.Blocks
 import org.bukkit.craftbukkit.entity.CraftPlayer
 
-/**
- * DisasterFloor is a class that represents a floor block in the arena that changes its material
- * based on the current stage of the disaster.
- *
- * @param arena The arena where the disaster is taking place.
- * @param location The location of the block in the arena.
- */
-
 class DisasterFloor(private val arena: Arena, val location: Location) {
     private val materials = listOf(
         Material.YELLOW_WOOL,
@@ -33,22 +25,39 @@ class DisasterFloor(private val arena: Arena, val location: Location) {
             return
         }
 
-        setBlockMaterial(location, materials[currentStage])
+        val targetMaterial = materials[currentStage]
+        
+        arena.playing.firstOrNull()?.sendMessage("§7[DEBUG] Cambiando bloque a $targetMaterial en stage $currentStage")
+        
+        setBlockMaterial(location, targetMaterial)
         currentStage++
     }
 
     private fun setBlockMaterial(location: Location, material: Material) {
-        val worldServer = (location.world as CraftWorld).handle
-        val blockPosition = BlockPos(location.blockX, location.blockY, location.blockZ)
-        val blockData = when (material) {
-            Material.YELLOW_WOOL -> Blocks.YELLOW_WOOL.defaultBlockState()
-            Material.ORANGE_WOOL -> Blocks.ORANGE_WOOL.defaultBlockState()
-            Material.RED_WOOL -> Blocks.RED_WOOL.defaultBlockState()
-            Material.LAVA -> Blocks.LAVA.defaultBlockState()
-            else -> return
+        try {
+            val worldServer = (location.world as CraftWorld).handle
+            val blockPosition = BlockPos(location.blockX, location.blockY, location.blockZ)
+            
+            val blockData = when (material) {
+                Material.YELLOW_WOOL -> Blocks.YELLOW_WOOL.defaultBlockState()
+                Material.ORANGE_WOOL -> Blocks.ORANGE_WOOL.defaultBlockState()
+                Material.RED_WOOL -> Blocks.RED_WOOL.defaultBlockState()
+                Material.LAVA -> Blocks.LAVA.defaultBlockState()
+                else -> {
+                    arena.playing.firstOrNull()?.sendMessage("§c[DEBUG] Material no soportado: $material")
+                    return
+                }
+            }
+            
+            worldServer.setBlockAndUpdate(blockPosition, blockData)
+            
+            val packet = ClientboundBlockUpdatePacket(worldServer, blockPosition)
+            arena.playing.forEach { player -> 
+                (player as CraftPlayer).handle.connection.send(packet) 
+            }
+        } catch (e: Exception) {
+            arena.playing.firstOrNull()?.sendMessage("§c[DEBUG] Error al cambiar bloque: ${e.message}")
+            e.printStackTrace()
         }
-        worldServer.setBlockAndUpdate(blockPosition, blockData)
-        val packet = ClientboundBlockUpdatePacket(worldServer, blockPosition)
-        arena.playing.forEach { player -> (player as CraftPlayer).handle.connection.send(packet) }
     }
 }

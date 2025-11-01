@@ -117,6 +117,8 @@ class Disasters : ZapperJavaPlugin() {
         server.pluginManager.registerEvents(PlayerJumpListener(arenaManager), this)
         server.pluginManager.registerEvents(ChatInputListener(), this)
         server.pluginManager.registerEvents(ArenaEditGUIListener(), this)
+        server.pluginManager.registerEvents(BlockDisappearListener(arenaManager), this)
+        server.pluginManager.registerEvents(FloorIsLavaListener(arenaManager), this)
 
         server.pluginManager.registerEvents(
                 SelectionListener(arenaSetupManager, cuboidVisualizer),

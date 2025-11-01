@@ -2,12 +2,7 @@ package me.hhitt.disasters.listener
 
 import kotlin.random.Random
 import me.hhitt.disasters.arena.ArenaManager
-import me.hhitt.disasters.disaster.DisasterRegistry
-import me.hhitt.disasters.disaster.impl.BlockDisappear
-import me.hhitt.disasters.disaster.impl.FloorIsLava
 import me.hhitt.disasters.disaster.impl.Lag
-import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
@@ -16,45 +11,13 @@ class PlayerMoveListener(private val arenaManager: ArenaManager) : Listener {
 
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
-        if (event.from.block == event.to.block) {
-            return
-        }
-
-        // If player is in the same block, we don't care and return
-        if (event.from.blockX == event.to.blockX &&
-                        event.from.blockY == event.to.blockY &&
-                        event.from.blockZ == event.to.blockZ
-        ) {
-            return
-        }
-
         val arena = arenaManager.getArena(event.player) ?: return
 
-        if (arena.isWaiting()) {
-            return
-        }
-
-        if (arena.disasters.any { it is FloorIsLava }) {
-            if (arena.borderService.isLocationInArenaTp(event.player)) {
-                val solidBlockBelow = findSolidBlockBelow(event.to)
-                if (solidBlockBelow != null) {
-                    DisasterRegistry.addBlockToFloorIsLava(arena, solidBlockBelow)
-                }
-            }
-        }
-
-        if (arena.disasters.any { it is BlockDisappear }) {
-            if (arena.borderService.isLocationInArenaTp(event.player)) {
-                val solidBlockBelow = findSolidBlockBelow(event.to)
-                if (solidBlockBelow != null) {
-                    DisasterRegistry.addBlockToDisappear(arena, solidBlockBelow)
-                }
-            }
-        }
-
+        // Solo procesar el efecto Lag
         if (!arena.disasters.any { it is Lag }) return
 
         if (Random.nextDouble() > 0.45) return // 45% chance to lag the player
+
         when (Random.nextInt(5)) {
             0 -> { // Simply lag effect
                 event.isCancelled = true
@@ -85,24 +48,5 @@ class PlayerMoveListener(private val arenaManager: ArenaManager) : Listener {
             4 -> { // Nothing
             }
         }
-    }
-
-    private fun findSolidBlockBelow(location: Location): Location? {
-        val world = location.world ?: return null
-        val startY = location.blockY
-
-        for (y in startY downTo (startY - 5).coerceAtLeast(world.minHeight)) {
-            val checkBlock = world.getBlockAt(location.blockX, y, location.blockZ)
-
-            if (checkBlock.type.isSolid &&
-                            checkBlock.type != Material.AIR &&
-                            checkBlock.type != Material.WATER &&
-                            checkBlock.type != Material.LAVA
-            ) {
-                return checkBlock.location
-            }
-        }
-
-        return null
     }
 }

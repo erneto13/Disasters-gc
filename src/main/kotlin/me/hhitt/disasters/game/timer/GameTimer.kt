@@ -5,8 +5,6 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
-import me.hhitt.disasters.disaster.impl.BlockDisappear
-import me.hhitt.disasters.disaster.impl.FloorIsLava
 import me.hhitt.disasters.game.GameSession
 import me.hhitt.disasters.game.GameState
 import me.hhitt.disasters.game.celebration.CelebrationManager
@@ -43,18 +41,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
         if (time >= cooldownSeconds && (time - cooldownSeconds) % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
             nextDisasterIn = arena.rate
-        }
-
-        if (arena.disasters.contains(FloorIsLava())) {
-            arena.alive.forEach { player ->
-                DisasterRegistry.addBlockToFloorIsLava(arena, player.location)
-            }
-        }
-
-        if (arena.disasters.contains(BlockDisappear())) {
-            arena.alive.forEach { player ->
-                DisasterRegistry.addBlockToDisappear(arena, player.location)
-            }
         }
 
         time++
