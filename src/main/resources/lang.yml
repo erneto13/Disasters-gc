@@ -14,17 +14,17 @@ messages:
   no-arenas: "<red>No arenas available!"
 
   help:
-    - "<white>"
-    - "<green>Disasters v1.4.0 b2"
-    - "<#c1c1c1>Custom plugin for GalaxyCraft"
-    - "&a/disasters reload &7- Reload the configuration."
-    - "&a/disasters setspawn &7- Set the lobby spawn."
-    - "&a/arena join <arena> &7- Join an arena."
-    - "&a/arena quickjoin &7- Join the best available arena."
-    - "&a/arena leave &7- Leave the current arena."
-    - "&a/arena forcestart &7- Force start the arena."
-    - "&a/arena forcestop &7- Force stop the arena."
-    - "&7For more help, check the documentation or use &a/tab-complete&7."
+  - "<white>"
+  - "<green>Disasters v1.4.0 b2"
+  - "<#c1c1c1>Custom plugin for GalaxyCraft"
+  - "&a/disasters reload &7- Reload the configuration."
+  - "&a/disasters setspawn &7- Set the lobby spawn."
+  - "&a/arena join <arena> &7- Join an arena."
+  - "&a/arena quickjoin &7- Join the best available arena."
+  - "&a/arena leave &7- Leave the current arena."
+  - "&a/arena forcestart &7- Force start the arena."
+  - "&a/arena forcestop &7- Force stop the arena."
+  - "&7For more help, check the documentation or use &a/tab-complete&7."
 
 arena-setup:
   # Existing messages
@@ -42,13 +42,12 @@ arena-setup:
   # Setup instructions
   setup-activated: "<green>Setup mode activated for arena <yellow>%arena%"
   setup-instructions-axe:
-    - "<gray>Use the axe to select corners:"
-    - "<gray>- Left click = Corner 1"
-    - "<gray>- Right click = Corner 2"
-    - "<gray>Use <yellow>/arena setspawn <gray>to set the spawn"
-    - "<gray>Use <yellow>/arena save <gray>to save the arena"
-    - "<gray>Use <yellow>/arena cancel <gray>to cancel"
-
+  - "<gray>Use the axe to select corners:"
+  - "<gray>- Left click = Corner 1"
+  - "<gray>- Right click = Corner 2"
+  - "<gray>Use <yellow>/arena setspawn <gray>to set the spawn"
+  - "<gray>Use <yellow>/arena save <gray>to save the arena"
+  - "<gray>Use <yellow>/arena cancel <gray>to cancel"
   # Corner selection
   first-corner-selected: "<green>Corner 1 set at <yellow>%x%, %y%, %z%"
   second-corner-selected: "<green>Corner 2 set at <yellow>%x%, %y%, %z%"
@@ -100,117 +99,117 @@ gui:
     max-players:
       name: "<green>Max Players"
       lore:
-        - "<gray>Current: <yellow>%value%"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value%"
+      - "<gray>Click to modify"
 
     min-players:
       name: "<green>Min Players"
       lore:
-        - "<gray>Current: <yellow>%value%"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value%"
+      - "<gray>Click to modify"
 
     alive-to-end:
       name: "<green>Alive to End"
       lore:
-        - "<gray>Current: <yellow>%value%"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value%"
+      - "<gray>Click to modify"
 
     countdown:
       name: "<green>Countdown"
       lore:
-        - "<gray>Current: <yellow>%value% seconds"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value% seconds"
+      - "<gray>Click to modify"
 
     game-time:
       name: "<green>Game Time"
       lore:
-        - "<gray>Current: <yellow>%value% seconds"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value% seconds"
+      - "<gray>Click to modify"
 
     disaster-rate:
       name: "<green>Disaster Rate"
       lore:
-        - "<gray>Current: <yellow>%value% seconds"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value% seconds"
+      - "<gray>Click to modify"
 
     max-disasters:
       name: "<green>Max Disasters"
       lore:
-        - "<gray>Current: <yellow>%value%"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value%"
+      - "<gray>Click to modify"
 
     display-name:
       name: "<green>Display Name"
       lore:
-        - "<gray>Current: <yellow>%value%"
-        - "<gray>Click to modify"
+      - "<gray>Current: <yellow>%value%"
+      - "<gray>Click to modify"
 
     spawn-location:
       name: "<green>Spawn Location"
       lore:
-        - "<gray>World: <yellow>%world%"
-        - "<gray>X: <yellow>%x%"
-        - "<gray>Y: <yellow>%y%"
-        - "<gray>Z: <yellow>%z%"
-        - "<gray>Click to teleport"
+      - "<gray>World: <yellow>%world%"
+      - "<gray>X: <yellow>%x%"
+      - "<gray>Y: <yellow>%y%"
+      - "<gray>Z: <yellow>%z%"
+      - "<gray>Click to teleport"
 
     corner1:
       name: "<green>Corner 1"
       lore:
-        - "<gray>World: <yellow>%world%"
-        - "<gray>X: <yellow>%x%"
-        - "<gray>Y: <yellow>%y%"
-        - "<gray>Z: <yellow>%z%"
-        - "<gray>Click to teleport"
+      - "<gray>World: <yellow>%world%"
+      - "<gray>X: <yellow>%x%"
+      - "<gray>Y: <yellow>%y%"
+      - "<gray>Z: <yellow>%z%"
+      - "<gray>Click to teleport"
 
     corner2:
       name: "<green>Corner 2"
       lore:
-        - "<gray>World: <yellow>%world%"
-        - "<gray>X: <yellow>%x%"
-        - "<gray>Y: <yellow>%y%"
-        - "<gray>Z: <yellow>%z%"
-        - "<gray>Click to teleport"
+      - "<gray>World: <yellow>%world%"
+      - "<gray>X: <yellow>%x%"
+      - "<gray>Y: <yellow>%y%"
+      - "<gray>Z: <yellow>%z%"
+      - "<gray>Click to teleport"
 
     test-mode:
       name: "<gold>Test Mode"
       lore:
-        - "<gray>Status: <yellow>%value%"
-        - ""
-        - "<gray>When enabled:"
-        - "<gray>- Arena starts with 1 player"
-        - "<gray>- Game ends when player dies"
-        - "<gray>- Perfect for testing disasters"
-        - ""
-        - "<yellow>Click to toggle"
+      - "<gray>Status: <yellow>%value%"
+      - ""
+      - "<gray>When enabled:"
+      - "<gray>- Arena starts with 1 player"
+      - "<gray>- Game ends when player dies"
+      - "<gray>- Perfect for testing disasters"
+      - ""
+      - "<yellow>Click to toggle"
 
     winner-commands:
       name: "<green>Winner Commands"
       lore:
-        - "<gray>Click to edit"
-        - "<gray>winner commands"
+      - "<gray>Click to edit"
+      - "<gray>winner commands"
 
     loser-commands:
       name: "<green>Loser Commands"
       lore:
-        - "<gray>Click to edit"
-        - "<gray>loser commands"
+      - "<gray>Click to edit"
+      - "<gray>loser commands"
 
     all-commands:
       name: "<green>All Player Commands"
       lore:
-        - "<gray>Click to edit"
-        - "<gray>commands for all players"
+      - "<gray>Click to edit"
+      - "<gray>commands for all players"
 
     save:
       name: "<green><bold>Save and Close"
       lore:
-        - "<gray>Save all changes"
+      - "<gray>Save all changes"
 
     close:
       name: "<red><bold>Close without Saving"
       lore:
-        - "<gray>Discard changes"
+      - "<gray>Discard changes"
 
 game-broadcast:
   player-joined: "<green>%joined% has joined the game! (%disasters_game_players%/%disasters_game_max_players%)"
@@ -262,155 +261,164 @@ disaster:
     title: "<red>Acid Rain!"
     subtitle: "<red>Take cover!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Acid Rain is falling from the sky!"
-      - "<red>Take cover!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Acid Rain is falling from the sky!"
+    - "<red>Take cover!"
+    - "<gold>----------------------------------"
 
   apocalypse:
     title: "<red>Apocalypse!"
     subtitle: "<red>Run for your life!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Apocalypse is happening!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Apocalypse is happening!"
+    - "<gold>----------------------------------"
 
   explosive-sheep:
     title: "<red>Explosive Sheep!"
     subtitle: "<red>Watch out!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Explosive Sheep are spawning!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Explosive Sheep are spawning!"
+    - "<gold>----------------------------------"
 
   floor-is-lava:
     title: "<red>Floor is Lava!"
     subtitle: "<red>Don't touch the ground!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Floor is Lava!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Floor is Lava!"
+    - "<gold>----------------------------------"
 
   grounded:
     title: "<red>Grounded!"
     subtitle: "<red>Stay on the ground!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Grounded! You can't jump!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Grounded! You can't jump!"
+    - "<gold>----------------------------------"
 
   lightning:
     title: "<red>Lightning!"
     subtitle: "<red>Take cover!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Take cover!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Take cover!"
+    - "<gold>----------------------------------"
 
   one-hearth:
     title: "<red>One Heart!"
     subtitle: "<red>Don't get hit!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>One Heart! Don't get hit!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>One Heart! Don't get hit!"
+    - "<gold>----------------------------------"
 
   swap:
     title: "<red>Swap!"
     subtitle: "<red>Switch places!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Swap! Switch places!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Swap! Switch places!"
+    - "<gold>----------------------------------"
 
   world-border:
     title: "<red>World Border!"
     subtitle: "<red>Run to the center!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>World Border is shrinking!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>World Border is shrinking!"
+    - "<gold>----------------------------------"
 
   blind:
     title: "<red>Blind!"
     subtitle: "<red>Your vision will be impaired!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Now you can't see anything!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Now you can't see anything!"
+    - "<gold>----------------------------------"
 
   cobweb:
     title: "<red>Cobweb!"
     subtitle: "<red>You will be caught by cobwebs!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Cobwebs are spawning every 5 seconds!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Cobwebs are spawning every 5 seconds!"
+    - "<gold>----------------------------------"
 
   lag:
     title: "<red>Lag!"
     subtitle: "<red>You will experience lag!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Now you are so lagged!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Now you are so lagged!"
+    - "<gold>----------------------------------"
 
   zero-gravity:
     title: "<red>No Gravity!"
     subtitle: "<red>You will experience levitation!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>You will experience some levitation!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>You will experience some levitation!"
+    - "<gold>----------------------------------"
 
   wither:
     title: "<red>Wither Attack!"
     subtitle: "<red>A wither boss has arrived!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>A wither boss has arrived!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>A wither boss has arrived!"
+    - "<gold>----------------------------------"
 
   hot-sun:
     title: "<red>Hot Sun!"
     subtitle: "<red>The sun will burn you!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>The sun will burn you, take cover!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>The sun will burn you, take cover!"
+    - "<gold>----------------------------------"
 
   murder:
     title: "<red>Murder!"
     subtitle: "<red>Players with swords can kill you!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Now players with swords can kill you!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Now players with swords can kill you!"
+    - "<gold>----------------------------------"
 
   allow-fight:
     title: "<red>PvP Enabled!"
     subtitle: "<red>Now you can hit players!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Now players can kill you, pay attention!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Now players can kill you, pay attention!"
+    - "<gold>----------------------------------"
 
   disappear-blocks:
     title: "<red>Blocks Disappear!"
     subtitle: "<red>Blocks under you will disappear!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Now blocks under you will disappear!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Now blocks under you will disappear!"
+    - "<gold>----------------------------------"
 
   no-jump:
     title: "<red>No Jump!"
     subtitle: "<red>Super jump effect duplicated!"
     chat:
-      - "<gold>----------------------------------"
-      - "<red>Jump Boost effects granted!"
-      - "<red>Try not to jump to survive!"
-      - "<gold>----------------------------------"
+    - "<gold>----------------------------------"
+    - "<red>Jump Boost effects granted!"
+    - "<red>Try not to jump to survive!"
+    - "<gold>----------------------------------"
+
+  meteor-shower:
+    title: "<red>☄ Meteor Shower!"
+    subtitle: "<yellow>Take cover!"
+    chat:
+    - "<gold>----------------------------------"
+    - "<red>Meteors are falling from the sky!"
+    - "<yellow>Avoid the shadows on the ground!"
+    - "<gold>----------------------------------"
 
 # DO NOT TOUCH THIS!
 config-version: 1

@@ -7,6 +7,7 @@ import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import MeteorShower
 
 object DisasterRegistry {
 
@@ -32,6 +33,7 @@ object DisasterRegistry {
                     Swap::class,
                     WorldBorder::class,
                     NoJump::class,
+                    MeteorShower::class
             )
 
     init {

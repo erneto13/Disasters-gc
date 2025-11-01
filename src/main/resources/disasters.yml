@@ -28,6 +28,7 @@ priorities:
   - "FloorIsLava"
   - "WorldBorder"
   - "Wither"
+  - "MeteorShower"
 
 # Patrón de desastres (orden de oleadas)
 disaster-pattern:
