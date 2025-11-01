@@ -1,9 +1,16 @@
 package me.hhitt.disasters.disaster.impl
 
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.random.Random
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify
+import net.minecraft.core.BlockPos
+import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.WeatherType
 import org.bukkit.block.Block
 import org.bukkit.craftbukkit.entity.CraftPlayer
@@ -11,6 +18,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 class AcidRain : Disaster {
 
     private val arenas = mutableListOf<Arena>()
+    private val damagingBlocks = mutableMapOf<Block, Int>()
+    private var damageCounter = 0
 
     override fun start(arena: Arena) {
         arena.playing.forEach {
@@ -18,17 +27,32 @@ class AcidRain : Disaster {
             player.handle.connection.player.setPlayerWeather(WeatherType.DOWNFALL, true)
         }
         arenas.add(arena)
+        damagingBlocks.clear()
+        damageCounter = 0
         Notify.disaster(arena, "acid-rain")
     }
 
     override fun pulse(time: Int) {
         arenas.toList().forEach { arena ->
-            arena.alive.toList().forEach { player ->
-                val craftPlayer: CraftPlayer = player as CraftPlayer
-                if (!isCoveredAndBreak(craftPlayer.location.block)) {
-                    craftPlayer.damage(2.0)
+            if (damageCounter % 40 == 0) {
+                arena.alive.toList().forEach { player ->
+                    if (!isCovered(player.location.block)) {
+                        val damageAmount = min(2.0, 0.5 + (damageCounter / 80.0) * 0.5)
+                        player.damage(damageAmount)
+
+                        spawnAcidParticles(player)
+                        player.playSound(player.location, Sound.BLOCK_FIRE_EXTINGUISH, 0.3f, 1.5f)
+                    }
                 }
             }
+
+            processBlockDamage(arena)
+
+            if (damageCounter % 5 == 0) {
+                findNewBlocksToDamage(arena)
+            }
+
+            damageCounter++
         }
     }
 
@@ -37,26 +61,132 @@ class AcidRain : Disaster {
             val player: CraftPlayer = it as CraftPlayer
             player.handle.connection.player.setPlayerWeather(WeatherType.CLEAR, true)
         }
+
+        damagingBlocks.keys.forEach { block ->
+            val blockPos = BlockPos(block.x, block.y, block.z)
+            val blockId = block.hashCode()
+            val clearPacket = ClientboundBlockDestructionPacket(blockId, blockPos, -1)
+
+            arena.playing.forEach { player ->
+                (player as CraftPlayer).handle.connection.send(clearPacket)
+            }
+        }
+
+        damagingBlocks.clear()
         arenas.remove(arena)
     }
 
-    private fun isCoveredAndBreak(block: Block): Boolean {
+    private fun isCovered(block: Block): Boolean {
         val world = block.world
         val playerY = block.y
-        var topBlock: Block? = null
 
         for (y in playerY + 1 until world.maxHeight) {
             val aboveBlock = world.getBlockAt(block.x, y, block.z)
             if (aboveBlock.type != Material.AIR) {
-                topBlock = aboveBlock
+                return true
             }
         }
-
-        topBlock?.let {
-            it.breakNaturally()
-            return true
-        }
-
         return false
+    }
+
+    private fun findNewBlocksToDamage(arena: Arena) {
+        val world = arena.corner1.world
+        val minX = min(arena.corner1.blockX, arena.corner2.blockX)
+        val maxX = max(arena.corner1.blockX, arena.corner2.blockX)
+        val minZ = min(arena.corner1.blockZ, arena.corner2.blockZ)
+        val maxZ = max(arena.corner1.blockZ, arena.corner2.blockZ)
+        val maxY = max(arena.corner1.blockY, arena.corner2.blockY)
+
+        // seleccionar bloques aleatorios para dañar (5 por pulse)
+        repeat(15) {
+            val x = Random.nextInt(minX, maxX + 1)
+            val z = Random.nextInt(minZ, maxZ + 1)
+
+            for (y in maxY downTo 0) {
+                val block = world.getBlockAt(x, y, z)
+                if (block.type != Material.AIR && !damagingBlocks.containsKey(block)) {
+                    if (!isCovered(block)) {
+                        damagingBlocks[block] = 0
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processBlockDamage(arena: Arena) {
+        val iterator = damagingBlocks.iterator()
+
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            val block = entry.key
+            val damage = entry.value
+
+            if (block.type == Material.AIR || block.type == Material.VOID_AIR) {
+                iterator.remove()
+                continue
+            }
+
+            val newDamage = damage + 1
+
+            if (newDamage % 5 == 0) {
+                spawnBlockDamageParticles(block)
+            }
+
+            val breakStage = min(9, (newDamage / 11))
+            if (breakStage >= 0) {
+                val blockPos = BlockPos(block.x, block.y, block.z)
+                val blockId = block.hashCode()
+                val packet = ClientboundBlockDestructionPacket(blockId, blockPos, breakStage)
+
+                arena.playing.forEach { player ->
+                    (player as CraftPlayer).handle.connection.send(packet)
+                }
+            }
+
+            if (newDamage >= 100) {
+                val blockPos = BlockPos(block.x, block.y, block.z)
+                val blockId = block.hashCode()
+                val clearPacket = ClientboundBlockDestructionPacket(blockId, blockPos, -1)
+
+                arena.playing.forEach { player ->
+                    (player as CraftPlayer).handle.connection.send(clearPacket)
+                }
+
+                block.breakNaturally()
+                iterator.remove()
+
+                spawnBlockBreakParticles(block)
+                arena.playing.forEach { player ->
+                    player.playSound(block.location, Sound.BLOCK_STONE_BREAK, 0.5f, 0.8f)
+                }
+            } else {
+                damagingBlocks[block] = newDamage
+            }
+        }
+    }
+
+    private fun spawnAcidParticles(player: org.bukkit.entity.Player) {
+        val location = player.location.add(0.0, 1.5, 0.0)
+
+        player.spawnParticle(Particle.SCRAPE, location, 15, 0.3, 0.3, 0.3, 0.02)
+        player.spawnParticle(Particle.CRIT, location, 10, 0.2, 0.2, 0.2, 0.01)
+        player.spawnParticle(Particle.SMOKE, location, 5, 0.2, 0.2, 0.2, 0.01)
+    }
+
+    private fun spawnBlockDamageParticles(block: Block) {
+        val location = block.location.add(0.5, 1.0, 0.5)
+
+        block.world.spawnParticle(Particle.SMOKE, location, 3, 0.3, 0.1, 0.3, 0.01)
+
+        block.world.spawnParticle(Particle.SCRAPE, location, 2, 0.2, 0.1, 0.2, 0.01)
+    }
+
+    private fun spawnBlockBreakParticles(block: Block) {
+        val location = block.location.add(0.5, 0.5, 0.5)
+
+        block.world.spawnParticle(Particle.BLOCK, location, 30, 0.3, 0.3, 0.3, 0.1, block.blockData)
+
+        block.world.spawnParticle(Particle.CRIT, location, 10, 0.3, 0.3, 0.3, 0.05)
     }
 }
