@@ -7,6 +7,8 @@ import me.hhitt.disasters.disaster.impl.*
 import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
 import org.bukkit.Location
+import org.bukkit.attribute.Attribute
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 object DisasterRegistry {

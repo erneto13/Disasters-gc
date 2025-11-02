@@ -1,0 +1,46 @@
+# Dragons Disaster Configuration
+
+# Number of dragons to spawn
+dragon-count: 2
+
+# Spawn height offset from arena center (in blocks)
+spawn-height-offset: 20
+
+# Horizontal spread between dragons (in blocks)
+horizontal-spread: 15
+
+# Dragon AI settings
+enable-ai: true
+
+# Dragon movement settings
+# How often dragons change their target location (in ticks, 20 = 1 second)
+retarget-interval: 40
+
+# Maximum height above arena floor
+max-height-above-floor: 30
+
+# Minimum height above arena floor
+min-height-above-floor: 15
+
+# Dragon phase (0 = circling, 10 = aggressive hover)
+dragon-phase: 0
+
+# Arena boundary enforcement
+# Keep dragons within arena bounds
+enforce-boundaries: true
+
+# Boundary padding (blocks from arena edges)
+boundary-padding: 5
+
+# Dragon behavior settings
+# Allow dragons to attack players
+can-attack-players: true
+
+# Dragon health multiplier (1.0 = normal)
+health-multiplier: 1.0
+
+# Whether dragons drop loot when killed
+drop-loot: false
+
+# DO NOT TOUCH THIS!
+config-version: 1
