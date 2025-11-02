@@ -18,8 +18,7 @@
 # Spawn Settings
 # --------------
 
-# How often meteors should spawn (in ticks)
-# 20 ticks = 1 second
+# How often meteors should spawn (in ticks, 20 ticks = 1 second)
 # Example: 5 = meteors spawn every 0.25 seconds
 spawn-rate: 5
 
@@ -28,8 +27,8 @@ spawn-rate: 5
 spawn-distance: 30.0
 
 # Multiplier for how far to the sides meteors can spawn
-# Example: 2.0 = meteors may come from wider lateral angles
-lateral-offset-multiplier: 2.0
+# Example: 1.0 = normal angles, 2.0 = wider lateral angles
+lateral-offset-multiplier: 1.0
 
 # Minimum height above the arena where meteors spawn (in blocks)
 # Example: 20.0 = meteors will spawn at least 20 blocks above
@@ -69,17 +68,6 @@ min-size: 0.8
 # Example: 2.5 = huge meteors
 max-size: 2.5
 
-# Meteor block materials (randomly selected for each meteor)
-# These materials form the "body" of the meteor
-# Available: MAGMA_BLOCK, NETHERRACK, BLACKSTONE, COAL_BLOCK, OBSIDIAN,
-#            BASALT, ANCIENT_DEBRIS, CRYING_OBSIDIAN
-meteor-materials:
-- MAGMA_BLOCK
-- NETHERRACK
-- BLACKSTONE
-- COAL_BLOCK
-- OBSIDIAN
-
 # Explosion power multiplier (applied to meteor size)
 # Example: 3.5 = explosion power = meteor size * 3.5
 explosion-multiplier: 3.5
@@ -88,12 +76,8 @@ explosion-multiplier: 3.5
 # -----------------
 
 # The falling speed of each meteor
-# Example: 0.4 = medium speed; lower = slower, higher = faster
-fall-speed: 0.4
-
-# The downward force applied to the meteor trajectory
-# Example: -0.6 = strong vertical descent; closer to 0 makes it more diagonal
-downward-force: -0.6
+# Example: 0.8 = medium speed; lower = slower, higher = faster
+fall-speed: 0.8
 
 # The maximum lifetime of a meteor before it disappears (in ticks)
 # Example: 300 = 15 seconds before despawning if no impact occurs
@@ -102,8 +86,8 @@ max-lifetime-ticks: 300
 # Visual & Audio Effects
 # ----------------------
 
-# Enable particle effects for meteors
-# Includes: flame trail, smoke, sparks, and explosion particles
+# Enable particle effects for meteors (simplified trail only)
+# Includes: flame trail and light smoke
 enable-particles: true
 
 # Enable sound effects for meteors
