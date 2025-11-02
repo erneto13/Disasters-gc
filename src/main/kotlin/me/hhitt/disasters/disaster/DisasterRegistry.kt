@@ -33,7 +33,8 @@ object DisasterRegistry {
                     Swap::class,
                     WorldBorder::class,
                     NoJump::class,
-                    MeteorShower::class
+                    MeteorShower::class,
+                    Dragons::class
             )
 
     init {

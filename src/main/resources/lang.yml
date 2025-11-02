@@ -421,12 +421,20 @@ disaster:
     - "<gold>----------------------------------"
 
   meteor-shower:
-    title: "<red>☄ Meteor Shower!"
-    subtitle: "<yellow>Take cover!"
+    title: "<red>Meteor Shower!"
+    subtitle: "<red>Take cover!"
     chat:
     - "<gold>----------------------------------"
     - "<red>Meteors are falling from the sky!"
-    - "<yellow>Avoid the shadows on the ground!"
+    - "<red>Avoid the shadows on the ground!"
+    - "<gold>----------------------------------"
+
+  dragons:
+    title: "<red>Dragons!"
+    subtitle: "<red>Two dragons have spawned!"
+    chat:
+    - "<gold>----------------------------------"
+    - "<red>Beware of the dragons flying above!"
     - "<gold>----------------------------------"
 
 # DO NOT TOUCH THIS!

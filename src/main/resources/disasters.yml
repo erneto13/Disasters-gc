@@ -29,6 +29,7 @@ priorities:
   - "WorldBorder"
   - "Wither"
   - "MeteorShower"
+  - "Dragons"
 
 # Patrón de desastres (orden de oleadas)
 disaster-pattern:
