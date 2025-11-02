@@ -15,7 +15,7 @@ object DisasterFileManager {
 
     fun initialize() {
         this.plugin = Disasters.getInstance()
-        this.disastersFolder = File(plugin.dataFolder, "DisastersConfigs")
+        this.disastersFolder = File(plugin.dataFolder, "config")
 
         if (!disastersFolder.exists()) {
             disastersFolder.mkdirs()

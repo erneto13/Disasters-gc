@@ -11,10 +11,10 @@ object Filer {
 
     // Create the folders needed for the plugin
     fun createFolders() {
-        val arenasFolder = File("plugins/Disasters/Arenas")
+        val arenasFolder = File("plugins/Disasters/arenas")
         if (!arenasFolder.exists()) arenasFolder.mkdirs()
 
-        val disastersFolder = File("plugins/Disasters/DisastersConfigs")
+        val disastersFolder = File("plugins/Disasters/config")
         if (!disastersFolder.exists()) disastersFolder.mkdirs()
     }
 }

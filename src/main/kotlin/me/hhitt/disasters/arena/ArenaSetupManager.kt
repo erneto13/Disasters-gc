@@ -31,7 +31,7 @@ class ArenaSetupManager {
 
     // Save the arena configuration to a YAML file
     fun saveArena(session: ArenaSetupSession) {
-        val arenaFile = File("plugins/Disasters/Arenas/${session.arenaName}.yml")
+        val arenaFile = File("plugins/Disasters/arenas/${session.arenaName}.yml")
         arenaFile.parentFile.mkdirs()
 
         val config = YamlConfiguration()

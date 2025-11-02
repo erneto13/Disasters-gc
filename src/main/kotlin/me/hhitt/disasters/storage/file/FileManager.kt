@@ -6,13 +6,13 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings
+import java.io.File
+import java.io.IOException
+import java.util.logging.Level
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.util.Filer.fixName
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
-import java.io.IOException
-import java.util.logging.Level
 
 object FileManager {
 
@@ -64,28 +64,28 @@ object FileManager {
                 addConfigVersion(configFile)
             }
 
-            val config = YamlDocument.create(
-                configFile,
-                defaultResource,
-                GeneralSettings.DEFAULT,
-                LoaderSettings.builder()
-                    .setAutoUpdate(true)
-                    .build(),
-                DumperSettings.builder()
-                    .setEncoding(DumperSettings.Encoding.UNICODE)
-                    .build(),
-                UpdaterSettings.builder()
-                    .setVersioning(BasicVersioning("config-version"))
-                    .setOptionSorting(UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS)
-                    .setKeepAll(true)
-                    .build()
-            )
+            val config =
+                    YamlDocument.create(
+                            configFile,
+                            defaultResource,
+                            GeneralSettings.DEFAULT,
+                            LoaderSettings.builder().setAutoUpdate(true).build(),
+                            DumperSettings.builder()
+                                    .setEncoding(DumperSettings.Encoding.UNICODE)
+                                    .build(),
+                            UpdaterSettings.builder()
+                                    .setVersioning(BasicVersioning("config-version"))
+                                    .setOptionSorting(
+                                            UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS
+                                    )
+                                    .setKeepAll(true)
+                                    .build()
+                    )
 
             if (config.update()) {
                 plugin.logger.info("Updated configuration: $fileName")
                 config.save()
             }
-
         } catch (e: IOException) {
             plugin.logger.log(Level.SEVERE, "Error updating config: $fileName", e)
         } catch (e: Exception) {
@@ -152,8 +152,7 @@ object FileManager {
     }
 
     fun getArenaConfig(name: String): Configuration? {
-        val file = File("plugins/Disasters/Arenas", fixName(name))
+        val file = File("plugins/Disasters/arenas", fixName(name))
         return Configuration(file, name)
     }
-
 }

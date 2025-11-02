@@ -19,14 +19,14 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
     }
 
     private fun createDefaultArenaFile() {
-        val arenasFolder = File(plugin.dataFolder, "Arenas")
+        val arenasFolder = File(plugin.dataFolder, "arenas")
         if (!arenasFolder.exists()) {
             arenasFolder.mkdirs()
         }
     }
 
     private fun loadArenas() {
-        val arenasFolder = File(plugin.dataFolder, "Arenas")
+        val arenasFolder = File(plugin.dataFolder, "arenas")
 
         if (!arenasFolder.exists() || !arenasFolder.isDirectory) {
             plugin.logger.severe("Arenas folder does not exist or is not a directory.")
@@ -37,7 +37,7 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
                 arenasFolder.listFiles { _, name -> name.endsWith(".yml", ignoreCase = true) }
                         ?: return
         if (arenaFiles.isEmpty()) {
-            plugin.logger.warning("No arena files found in the Arenas folder.")
+            plugin.logger.warning("No arena files found in the arenas folder.")
             return
         }
 
