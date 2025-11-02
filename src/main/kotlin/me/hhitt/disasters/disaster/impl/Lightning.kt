@@ -1,6 +1,7 @@
 package me.hhitt.disasters.disaster.impl
 
 import kotlin.random.Random
+import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Notify
@@ -11,6 +12,7 @@ class Lightning : Disaster {
     private val arenas = mutableListOf<Arena>()
     private val radius = 5
     private val random = Random
+    private val debrisManager = Disasters.getInstance().getDebrisManager()
 
     override fun start(arena: Arena) {
         arenas.add(arena)
@@ -33,7 +35,11 @@ class Lightning : Disaster {
                     strikeLocation.world?.getHighestBlockYAt(strikeLocation)?.toDouble()
                             ?: strikeLocation.y
             strikeLocation.y = highestBlockY
+
             strikeLocation.world?.strikeLightning(strikeLocation)
+
+            strikeLocation.world?.createExplosion(strikeLocation, 1.5f, false, true)
+
             strikeLocation.block.type = Material.AIR
         }
     }
