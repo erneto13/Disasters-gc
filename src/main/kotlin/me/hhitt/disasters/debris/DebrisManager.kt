@@ -4,6 +4,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 import me.hhitt.disasters.Disasters
+import me.hhitt.disasters.storage.file.DisasterFileManager
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -31,7 +32,7 @@ class DebrisManager(private val plugin: Disasters) {
     }
 
     private fun loadConfig() {
-        val config = me.hhitt.disasters.storage.file.DisasterFileManager.getDisasterConfig("debris")
+        val config = DisasterFileManager.getDisasterConfig("debris")
 
         if (config == null) {
             plugin.logger.warning("Debris config not found! Using default values.")
@@ -61,9 +62,9 @@ class DebrisManager(private val plugin: Disasters) {
     }
 
     fun createDebrisFromExplosion(center: Location, blocks: List<Block>, force: Float) {
-        if (blocks.isEmpty()) return
+        if (!enabled || blocks.isEmpty()) return
 
-        val maxDebris = 15
+        val maxDebris = maxDebrisPerExplosion
         val debrisBlocks =
                 if (blocks.size > maxDebris) {
                     blocks.shuffled().take(maxDebris)
@@ -84,61 +85,93 @@ class DebrisManager(private val plugin: Disasters) {
     ) {
         if (material == Material.AIR ||
                         material == Material.CAVE_AIR ||
-                        material == Material.VOID_AIR
+                        material == Material.VOID_AIR ||
+                        material == Material.WATER ||
+                        material == Material.LAVA ||
+                        blacklistedMaterials.contains(material)
         ) {
-            return
-        }
-
-        if (material == Material.WATER || material == Material.LAVA) {
             return
         }
 
         val world = blockLocation.world ?: return
 
-        val direction = blockLocation.toVector().subtract(explosionCenter.toVector()).normalize()
+        val direction = blockLocation.toVector().subtract(explosionCenter.toVector())
 
-        val randomX = Random.nextDouble(-0.3, 0.3)
-        val randomY = Random.nextDouble(0.1, 0.5)
-        val randomZ = Random.nextDouble(-0.3, 0.3)
+        val distance = direction.length()
 
-        direction.add(Vector(randomX, randomY, randomZ)).normalize()
+        if (distance < 0.1) {
+            val angle = Random.nextDouble() * 2 * Math.PI
+            val pitch = Random.nextDouble() * Math.PI / 4
+            direction.x = cos(angle) * cos(pitch)
+            direction.y = sin(pitch) + upwardBias
+            direction.z = sin(angle) * cos(pitch)
+        } else {
+            direction.normalize()
+        }
 
-        val distance = blockLocation.distance(explosionCenter)
-        val velocityMultiplier = (force / 4.0) * (1.0 - (distance / 20.0).coerceIn(0.0, 0.8))
+        if (randomVelocityVariation) {
+            val randomX = Random.nextDouble(-velocityRandomness, velocityRandomness)
+            val randomY = Random.nextDouble(0.1, velocityRandomness + upwardBias)
+            val randomZ = Random.nextDouble(-velocityRandomness, velocityRandomness)
+            direction.add(Vector(randomX, randomY, randomZ))
+        }
+
+        if (!direction.isFinite()) {
+            plugin.logger.warning("Invalid direction calculated for debris, skipping")
+            return
+        }
+
+        direction.normalize()
+
+        val velocityMultiplier =
+                (force * explosionForceMultiplier / 4.0) *
+                        (1.0 - (distance / 20.0).coerceIn(0.0, 0.8))
         val velocity = direction.multiply(velocityMultiplier.coerceIn(0.3, 2.0))
+
+        if (!velocity.isFinite()) {
+            plugin.logger.warning("Invalid velocity calculated for debris, using default")
+            velocity.x = 0.0
+            velocity.y = 1.0
+            velocity.z = 0.0
+        }
 
         val spawnLocation = blockLocation.clone().add(0.5, 0.5, 0.5)
 
-        val fallingBlock =
-                world.spawn(spawnLocation, FallingBlock::class.java) { fb ->
-                    fb.blockData = material.createBlockData()
-                }
+        try {
+            val fallingBlock =
+                    world.spawn(spawnLocation, FallingBlock::class.java) { fb ->
+                        fb.blockData = material.createBlockData()
+                    }
 
-        fallingBlock.dropItem = false
-        fallingBlock.setHurtEntities(true)
-        fallingBlock.velocity = velocity
+            fallingBlock.dropItem = false
+            fallingBlock.setHurtEntities(hurtEntities)
+            fallingBlock.velocity = velocity
+            fallingBlock.setGravity(enableGravity)
 
-        fallingBlock.setGravity(true)
+            object : BukkitRunnable() {
+                        var ticksAlive = 0
+                        val maxTicks = maxLifetimeSeconds * 20
 
-        object : BukkitRunnable() {
-                    var ticksAlive = 0
+                        override fun run() {
+                            ticksAlive++
 
-                    override fun run() {
-                        ticksAlive++
-
-                        if (!fallingBlock.isValid || ticksAlive > 200) {
-                            fallingBlock.remove()
-                            cancel()
+                            if (!fallingBlock.isValid || ticksAlive > maxTicks) {
+                                fallingBlock.remove()
+                                cancel()
+                            }
                         }
                     }
-                }
-                .runTaskTimer(plugin, 0L, 1L)
+                    .runTaskTimer(plugin, 0L, 1L)
+        } catch (e: Exception) {
+            plugin.logger.warning("Failed to spawn debris: ${e.message}")
+        }
     }
 
     fun createDebrisFromBlock(blockLocation: Location, material: Material, force: Float = 1.5f) {
         if (material == Material.AIR ||
                         material == Material.CAVE_AIR ||
-                        material == Material.VOID_AIR
+                        material == Material.VOID_AIR ||
+                        blacklistedMaterials.contains(material)
         ) {
             return
         }
@@ -149,32 +182,36 @@ class DebrisManager(private val plugin: Disasters) {
         val upwardForce = Random.nextDouble(0.5, 1.0)
 
         val direction = Vector(cos(angle) * 0.5, upwardForce, sin(angle) * 0.5).normalize()
-
         val velocity = direction.multiply(force * Random.nextDouble(0.8, 1.2))
 
         val spawnLocation = blockLocation.clone().add(0.5, 0.5, 0.5)
-        val fallingBlock =
-                world.spawn(spawnLocation, FallingBlock::class.java) { fb ->
-                    fb.blockData = material.createBlockData()
-                }
 
-        fallingBlock.dropItem = false
-        fallingBlock.setHurtEntities(true)
-        fallingBlock.velocity = velocity
-        fallingBlock.setGravity(true)
+        try {
+            val fallingBlock =
+                    world.spawn(spawnLocation, FallingBlock::class.java) { fb ->
+                        fb.blockData = material.createBlockData()
+                    }
 
-        object : BukkitRunnable() {
-                    var ticksAlive = 0
+            fallingBlock.dropItem = false
+            fallingBlock.setHurtEntities(hurtEntities)
+            fallingBlock.velocity = velocity
+            fallingBlock.setGravity(enableGravity)
 
-                    override fun run() {
-                        ticksAlive++
-                        if (!fallingBlock.isValid || ticksAlive > 200) {
-                            fallingBlock.remove()
-                            cancel()
+            object : BukkitRunnable() {
+                        var ticksAlive = 0
+
+                        override fun run() {
+                            ticksAlive++
+                            if (!fallingBlock.isValid || ticksAlive > 200) {
+                                fallingBlock.remove()
+                                cancel()
+                            }
                         }
                     }
-                }
-                .runTaskTimer(plugin, 0L, 1L)
+                    .runTaskTimer(plugin, 0L, 1L)
+        } catch (e: Exception) {
+            plugin.logger.warning("Failed to spawn debris from block: ${e.message}")
+        }
     }
 
     fun createDebrisBurst(
@@ -184,5 +221,9 @@ class DebrisManager(private val plugin: Disasters) {
             force: Float = 2.0f
     ) {
         repeat(count) { createDebrisFromBlock(center, material, force) }
+    }
+
+    private fun Vector.isFinite(): Boolean {
+        return x.isFinite() && y.isFinite() && z.isFinite()
     }
 }

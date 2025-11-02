@@ -104,6 +104,8 @@ min-debris-distance: 1.0
 # Blocks further than this won't become debris (prevents excessive spread)
 max-debris-distance: 10.0
 
+# TODO: future update, not working
+
 # Visual Settings (Future)
 # -------------------------
 
