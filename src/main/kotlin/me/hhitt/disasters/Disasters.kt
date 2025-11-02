@@ -121,6 +121,7 @@ class Disasters : ZapperJavaPlugin() {
         server.pluginManager.registerEvents(FloorIsLavaListener(arenaManager), this)
         server.pluginManager.registerEvents(FoodLevelChangeListener(arenaManager), this)
         server.pluginManager.registerEvents(VoidDamageListener(arenaManager), this)
+        server.pluginManager.registerEvents(BlockDropItemListener(arenaManager), this)
 
         server.pluginManager.registerEvents(
                 SelectionListener(arenaSetupManager, cuboidVisualizer),

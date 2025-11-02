@@ -10,12 +10,13 @@ class ExplosionListener(private val arenaManager: ArenaManager) : Listener {
     @EventHandler
     fun onEntityExplode(event: EntityExplodeEvent) {
         for (arena in arenaManager.getArenas()) {
-
             if (arena.borderService.isLocationInArena(event.location)) {
                 event.yield = 0f
+
+                event.blockList().clear()
+
                 return
             }
         }
     }
-
 }
