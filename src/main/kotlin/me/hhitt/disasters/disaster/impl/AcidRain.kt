@@ -8,8 +8,10 @@ import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Notify
+import me.hhitt.disasters.util.PS
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket
+import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -31,10 +33,12 @@ class AcidRain : Disaster {
     private var blocksToDamagePerPulse = 15
     private var blockDamageTicksToBreak = 100
     private var breakStageInterval = 11
+    private var enableParticles = true
+    private var enableSounds = true
 
     override fun start(arena: Arena) {
         loadConfig()
-        
+
         arena.playing.forEach {
             val player: CraftPlayer = it as CraftPlayer
             player.handle.connection.player.setPlayerWeather(WeatherType.DOWNFALL, true)
@@ -50,11 +54,20 @@ class AcidRain : Disaster {
             if (damageCounter % playerDamageInterval == 0) {
                 arena.alive.toList().forEach { player ->
                     if (!isCovered(player.location.block)) {
-                        val damageAmount = min(maxDamage, initialDamage + (damageCounter / damageIncreaseRate) * 0.5)
+                        val damageAmount =
+                                min(
+                                        maxDamage,
+                                        initialDamage + (damageCounter / damageIncreaseRate) * 0.5
+                                )
                         player.damage(damageAmount)
 
-                        spawnAcidParticles(player)
-                        player.playSound(player.location, Sound.BLOCK_FIRE_EXTINGUISH, 0.3f, 1.5f)
+                        if (enableParticles) {
+                            spawnAcidParticles(player)
+                        }
+
+                        if (enableSounds) {
+                            PS.playSound(player, Sound.BLOCK_FIRE_EXTINGUISH, 0.3f, 1.5f)
+                        }
                     }
                 }
             }
@@ -107,6 +120,8 @@ class AcidRain : Disaster {
         blocksToDamagePerPulse = config.getInt("blocks-to-damage-per-pulse", 15)
         blockDamageTicksToBreak = config.getInt("block-damage-ticks-to-break", 100)
         breakStageInterval = config.getInt("break-stage-interval", 11)
+        enableParticles = config.getBoolean("enable-particles", true)
+        enableSounds = config.getBoolean("enable-sounds", true)
     }
 
     private fun isCovered(block: Block): Boolean {
@@ -161,7 +176,7 @@ class AcidRain : Disaster {
 
             val newDamage = damage + 1
 
-            if (newDamage % 5 == 0) {
+            if (enableParticles && newDamage % 5 == 0) {
                 spawnBlockDamageParticles(block)
             }
 
@@ -188,9 +203,12 @@ class AcidRain : Disaster {
                 block.breakNaturally()
                 iterator.remove()
 
-                spawnBlockBreakParticles(block)
-                arena.playing.forEach { player ->
-                    player.playSound(block.location, Sound.BLOCK_STONE_BREAK, 0.5f, 0.8f)
+                if (enableParticles) {
+                    spawnBlockBreakParticles(block)
+                }
+
+                if (enableSounds) {
+                    PS.playSound(block.location, Sound.BLOCK_STONE_BREAK, 0.5f, 0.8f)
                 }
             } else {
                 damagingBlocks[block] = newDamage
@@ -201,24 +219,32 @@ class AcidRain : Disaster {
     private fun spawnAcidParticles(player: org.bukkit.entity.Player) {
         val location = player.location.add(0.0, 1.5, 0.0)
 
-        player.spawnParticle(Particle.SCRAPE, location, 15, 0.3, 0.3, 0.3, 0.02)
-        player.spawnParticle(Particle.CRIT, location, 10, 0.2, 0.2, 0.2, 0.01)
-        player.spawnParticle(Particle.SMOKE, location, 5, 0.2, 0.2, 0.2, 0.01)
+        PS.spawnParticles(location, Particle.SCRAPE, 15, 0.3, 0.3, 0.3, 0.02)
+        PS.spawnParticles(location, Particle.CRIT, 10, 0.2, 0.2, 0.2, 0.01)
+        PS.spawnParticles(location, Particle.SMOKE, 5, 0.2, 0.2, 0.2, 0.01)
+        PS.spawnParticles(
+                location,
+                Particle.DUST,
+                8,
+                0.25,
+                0.25,
+                0.25,
+                0.01,
+                Particle.DustOptions(Color.fromRGB(50, 200, 50), 1.0f)
+        )
     }
 
     private fun spawnBlockDamageParticles(block: Block) {
         val location = block.location.add(0.5, 1.0, 0.5)
 
-        block.world.spawnParticle(Particle.SMOKE, location, 3, 0.3, 0.1, 0.3, 0.01)
-
-        block.world.spawnParticle(Particle.SCRAPE, location, 2, 0.2, 0.1, 0.2, 0.01)
+        PS.spawnParticles(location, Particle.SMOKE, 3, 0.3, 0.1, 0.3, 0.01)
+        PS.spawnParticles(location, Particle.SCRAPE, 2, 0.2, 0.1, 0.2, 0.01)
     }
 
     private fun spawnBlockBreakParticles(block: Block) {
         val location = block.location.add(0.5, 0.5, 0.5)
 
-        block.world.spawnParticle(Particle.BLOCK, location, 30, 0.3, 0.3, 0.3, 0.1, block.blockData)
-
-        block.world.spawnParticle(Particle.CRIT, location, 10, 0.3, 0.3, 0.3, 0.05)
+        PS.spawnParticles(location, Particle.BLOCK, 30, 0.3, 0.3, 0.3, 0.1, block.blockData)
+        PS.spawnParticles(location, Particle.CRIT, 10, 0.3, 0.3, 0.3, 0.05)
     }
 }

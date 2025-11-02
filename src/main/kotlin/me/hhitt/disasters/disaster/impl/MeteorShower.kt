@@ -7,10 +7,13 @@ import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.Head
 import me.hhitt.disasters.util.Notify
+import me.hhitt.disasters.util.PS
 import org.bukkit.*
 import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.FallingBlock
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 
 class MeteorShower : Disaster {
@@ -32,6 +35,17 @@ class MeteorShower : Disaster {
     private var intensityIncreaseRate = 60
     private var intensityIncreaseAmount = 2
     private var maxIntensity = 40
+    private var enableParticles = true
+    private var enableSounds = true
+    private var enableImpactWave = true
+    private var meteorMaterials =
+            listOf(
+                    Material.MAGMA_BLOCK,
+                    Material.NETHERRACK,
+                    Material.BLACKSTONE,
+                    Material.COAL_BLOCK,
+                    Material.OBSIDIAN
+            )
 
     private val meteorHeads =
             listOf(
@@ -94,6 +108,27 @@ class MeteorShower : Disaster {
         maxLifetimeTicks = config.getInt("max-lifetime-ticks", 300)
         intensityIncreaseRate = config.getInt("intensity-increase-rate", 60)
         intensityIncreaseAmount = config.getInt("intensity-increase-amount", 2)
+        enableParticles = config.getBoolean("enable-particles", true)
+        enableSounds = config.getBoolean("enable-sounds", true)
+        enableImpactWave = config.getBoolean("enable-impact-wave", true)
+
+        // load meteor materials
+        val materialNames = config.getStringList("meteor-materials")
+        if (materialNames.isNotEmpty()) {
+            meteorMaterials =
+                    materialNames
+                            .mapNotNull { materialName ->
+                                try {
+                                    Material.valueOf(materialName.uppercase())
+                                } catch (e: IllegalArgumentException) {
+                                    Disasters.getInstance()
+                                            .logger
+                                            .warning("Invalid meteor material: $materialName")
+                                    null
+                                }
+                            }
+                            .ifEmpty { meteorMaterials }
+        }
     }
 
     private fun spawnMeteor(arena: Arena) {
@@ -137,62 +172,56 @@ class MeteorShower : Disaster {
         val size = Random.nextDouble(minSize, maxSize)
         val explosionPower = size.toFloat() * explosionMultiplier
 
-        val skull = Head.fromBase64(meteorHeads.random())
+        // create falling block for meteor body
+        val meteorMaterial = getMeteorMaterial()
+        val fallingBlock = world.spawnFallingBlock(spawnLoc, meteorMaterial.createBlockData())
+        fallingBlock.setGravity(false)
+        fallingBlock.dropItem = false
+        fallingBlock.setHurtEntities(false)
 
+        // create armor stand for the skull/head
         val stand = world.spawn(spawnLoc, ArmorStand::class.java)
         stand.isVisible = false
         stand.isSmall = false
         stand.setGravity(false)
+        stand.isMarker = true
+
+        val skull = Head.fromBase64(meteorHeads.random())
         stand.equipment.helmet = skull
+
+        // add rotation for visual effect
+        stand.headPose =
+                EulerAngle(
+                        Random.nextDouble() * Math.PI,
+                        Random.nextDouble() * Math.PI,
+                        Random.nextDouble() * Math.PI
+                )
+
+        // mount armor stand on falling block for size control
+        fallingBlock.addPassenger(stand)
 
         val direction =
                 targetLoc.toVector().subtract(spawnLoc.toVector()).normalize().multiply(fallSpeed)
         direction.y = downwardForce
 
-        debugMeteorSpawn(arena, spawnLoc, targetLoc)
+        if (enableSounds) {
+            PS.playSound(spawnLoc, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 0.8f)
+        }
 
-        fallMeteor(stand, direction, explosionPower, arena)
+        fallMeteor(fallingBlock, stand, direction, explosionPower, arena, size)
     }
 
-    private fun debugMeteorSpawn(arena: Arena, spawnLoc: Location, targetLoc: Location) {
-        val world = spawnLoc.world
-
-        // Azul = spawn, Rojo = impacto
-        world.spawnParticle(
-                Particle.DUST,
-                spawnLoc,
-                20,
-                0.4,
-                0.4,
-                0.4,
-                0.0,
-                Particle.DustOptions(Color.fromRGB(64, 128, 255), 1.5f)
-        )
-        world.spawnParticle(
-                Particle.DUST,
-                targetLoc,
-                20,
-                0.4,
-                0.4,
-                0.4,
-                0.0,
-                Particle.DustOptions(Color.fromRGB(255, 64, 64), 1.5f)
-        )
-
-        for (player in world.players) {
-            if (player.isOp || player.hasPermission("disasters.debug")) {
-                player.sendMessage(
-                        "§8[§cMeteorDebug§8] §7Spawn §b${spawnLoc.blockX}, ${spawnLoc.blockY}, ${spawnLoc.blockZ}§7 → Target §e${targetLoc.blockX}, ${targetLoc.blockY}, ${targetLoc.blockZ}"
-                )
-            }
-        }
+    private fun getMeteorMaterial(): Material {
+        return meteorMaterials.random()
     }
 
     private fun fallMeteor(
+            fallingBlock: org.bukkit.entity.FallingBlock,
             stand: ArmorStand,
             direction: Vector,
             explosionPower: Float,
-            arena: Arena
+            arena: Arena,
+            size: Double
     ) {
         var scheduledTask: BukkitTask? = null
 
@@ -202,29 +231,69 @@ class MeteorShower : Disaster {
                     override fun run() {
                         if (!arenas.contains(arena)) {
                             stand.remove()
+                            fallingBlock.remove()
                             cancel()
                             scheduledTask?.let { activeMeteorTasks.remove(it) }
                             return
                         }
 
-                        if (!stand.isValid || stand.location.y <= 0) {
+                        if (!fallingBlock.isValid || fallingBlock.location.y <= 0) {
                             stand.remove()
+                            fallingBlock.remove()
                             cancel()
                             scheduledTask?.let { activeMeteorTasks.remove(it) }
                             return
                         }
 
-                        val loc = stand.location
+                        val loc = fallingBlock.location
                         loc.add(direction)
-                        stand.teleport(loc)
+                        fallingBlock.teleport(loc)
 
-                        loc.world.spawnParticle(Particle.SMOKE, loc, 6, 0.4, 0.4, 0.4, 0.02)
-                        loc.world.spawnParticle(Particle.FLAME, loc, 10, 0.3, 0.3, 0.3, 0.02)
+                        // rotate meteor skull
+                        if (stand.isValid) {
+                            val currentPose = stand.headPose
+                            stand.headPose =
+                                    EulerAngle(
+                                            currentPose.x + 0.2,
+                                            currentPose.y + 0.15,
+                                            currentPose.z + 0.1
+                                    )
+                        }
+
+                        // enhanced particle trail
+                        if (enableParticles) {
+                            spawnMeteorTrail(loc, size)
+                        }
 
                         if (loc.block.type.isSolid || loc.y <= 2.0) {
-                            if (arenas.contains(arena))
-                                    loc.world.createExplosion(loc, explosionPower, true, true)
+                            if (arenas.contains(arena)) {
+                                loc.world.createExplosion(loc, explosionPower, true, true)
+
+                                if (enableParticles) {
+                                    spawnExplosionEffect(loc, size)
+                                }
+
+                                if (enableSounds) {
+                                    PS.playSound(
+                                            loc,
+                                            Sound.ENTITY_GENERIC_EXPLODE,
+                                            explosionPower * 0.5f,
+                                            0.8f
+                                    )
+                                    PS.playSound(
+                                            loc,
+                                            Sound.ENTITY_LIGHTNING_BOLT_IMPACT,
+                                            explosionPower * 0.3f,
+                                            1.0f
+                                    )
+                                }
+
+                                if (enableImpactWave) {
+                                    spawnImpactWave(loc, size)
+                                }
+                            }
                             stand.remove()
+                            fallingBlock.remove()
                             cancel()
                             scheduledTask?.let { activeMeteorTasks.remove(it) }
                         }
@@ -232,6 +301,7 @@ class MeteorShower : Disaster {
                         ticks++
                         if (ticks > maxLifetimeTicks) {
                             stand.remove()
+                            fallingBlock.remove()
                             cancel()
                             scheduledTask?.let { activeMeteorTasks.remove(it) }
                         }
@@ -246,5 +316,92 @@ class MeteorShower : Disaster {
         val scheduled = task.runTaskTimer(Disasters.getInstance(), 1L, 1L)
         scheduledTask = scheduled
         activeMeteorTasks.add(scheduled)
+    }
+
+    private fun spawnMeteorTrail(location: Location, size: Double) {
+        val particleCount = (15 * size).toInt()
+
+        // core flame trail
+        PS.spawnParticles(location, Particle.FLAME, particleCount, 0.3, 0.3, 0.3, 0.02)
+
+        // smoke trail
+        PS.spawnParticles(
+                location,
+                Particle.SMOKE,
+                (particleCount * 0.6).toInt(),
+                0.4,
+                0.4,
+                0.4,
+                0.02
+        )
+
+        // lava sparks
+        PS.spawnParticles(
+                location,
+                Particle.LAVA,
+                (particleCount * 0.3).toInt(),
+                0.2,
+                0.2,
+                0.2,
+                0.01
+        )
+
+        // firework particles
+        PS.spawnParticles(
+                location,
+                Particle.FIREWORK,
+                (particleCount * 0.4).toInt(),
+                0.3,
+                0.3,
+                0.3,
+                0.05
+        )
+
+        // orange dust trail
+        PS.spawnParticles(
+                location,
+                Particle.DUST,
+                (particleCount * 0.5).toInt(),
+                0.4,
+                0.4,
+                0.4,
+                0.03,
+                Particle.DustOptions(Color.fromRGB(255, 100, 0), 1.5f)
+        )
+    }
+
+    private fun spawnExplosionEffect(location: Location, size: Double) {
+        val particleCount = (50 * size).toInt()
+
+        // main explosion
+        PS.spawnParticles(location, Particle.EXPLOSION, particleCount, 1.0, 1.0, 1.0, 0.0)
+
+        // fire burst
+        PS.spawnParticles(location, Particle.FLAME, particleCount * 2, 1.5, 1.5, 1.5, 0.1)
+
+        // smoke cloud
+        PS.spawnParticles(location, Particle.SMOKE, particleCount, 2.0, 2.0, 2.0, 0.05)
+
+        // lava splatter
+        PS.spawnParticles(
+                location,
+                Particle.LAVA,
+                (particleCount * 0.5).toInt(),
+                1.0,
+                1.0,
+                1.0,
+                0.0
+        )
+    }
+
+    private fun spawnImpactWave(location: Location, size: Double) {
+        PS.spawnCircularParticles(
+                location,
+                Particle.DUST,
+                size * 2,
+                (size * 20).toInt(),
+                Color.fromRGB(255, 100, 0),
+                2.0f
+        )
     }
 }

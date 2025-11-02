@@ -1,5 +1,22 @@
-# Dragons Disaster Configuration
-# MAXIMUM DESTRUCTION MODE - Dragons destroy everything!
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster spawns dragons that fly around the arena
+# causing destruction with fireballs and chaos.
+# ==========================================
+
+# Spawn Settings
+# --------------
 
 # Number of dragons to spawn (more = more destruction!)
 dragon-count: 4
@@ -13,7 +30,9 @@ horizontal-spread: 25
 # Dragon AI settings
 enable-ai: true
 
-# Dragon movement settings
+# Flight Settings
+# ----------------
+
 # How often dragons change their target location (in ticks, 20 = 1 second)
 # Lower = more erratic flight pattern
 retarget-interval: 25
@@ -46,7 +65,9 @@ health-multiplier: 3.0
 # Whether dragons drop loot when killed
 drop-loot: false
 
-# DESTRUCTION SETTINGS
+# Destruction Settings
+# ---------------------
+
 # Fireball explosion power (higher = bigger explosions)
 # 2.0 = TNT level, 4.0 = creeper charged level
 fireball-explosion-power: 3.0
