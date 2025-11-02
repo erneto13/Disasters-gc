@@ -7,6 +7,7 @@ import me.hhitt.disasters.arena.ArenaSetupManager
 import me.hhitt.disasters.command.ArenaCommand
 import me.hhitt.disasters.command.ArenaSetupCommand
 import me.hhitt.disasters.command.DisastersCommand
+import me.hhitt.disasters.debris.DebrisManager
 import me.hhitt.disasters.disaster.DisasterTask
 import me.hhitt.disasters.hook.PlaceholderAPIHook
 import me.hhitt.disasters.listener.*
@@ -34,15 +35,18 @@ class Disasters : ZapperJavaPlugin() {
     private lateinit var sidebarService: SidebarService
 
     private lateinit var cuboidVisualizer: CuboidVisualizer
+    private lateinit var debrisManager: DebrisManager
 
     override fun onEnable() {
         instance = this
         initStorage()
         initHooks()
+        initDebrisManager()
         initVisualizers()
         initSidebar()
         registerCommands()
         registerListeners()
+        initDisasters()
         initDisasters()
 
         logger.info("Disasters plugin enabled successfully!")
@@ -85,6 +89,11 @@ class Disasters : ZapperJavaPlugin() {
     private fun initVisualizers() {
         cuboidVisualizer = CuboidVisualizer(this)
         logger.info("Visualizers initialized")
+    }
+
+    private fun initDebrisManager() {
+        debrisManager = DebrisManager(this)
+        logger.info("Debris manager initialized")
     }
 
     private fun initSidebar() {
@@ -140,4 +149,5 @@ class Disasters : ZapperJavaPlugin() {
     fun getSetupManager(): ArenaSetupManager = arenaSetupManager
     fun getSidebarService(): SidebarService = sidebarService
     fun getCuboidVisualizer(): CuboidVisualizer = cuboidVisualizer
+    fun getDebrisManager(): DebrisManager = debrisManager
 }
