@@ -7,6 +7,8 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
 import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.Location
+import org.bukkit.block.Block
 
 class ExplosionListener(private val arenaManager: ArenaManager) : Listener {
 
@@ -24,8 +26,8 @@ class ExplosionListener(private val arenaManager: ArenaManager) : Listener {
     }
 
     private fun handleExplosion(
-            location: org.bukkit.Location,
-            blockList: MutableList<org.bukkit.block.Block>,
+            location: Location,
+            blockList: MutableList<Block>,
             yield: Float
     ) {
         for (arena in arenaManager.getArenas()) {
