@@ -31,6 +31,11 @@ class Dragons : Disaster {
     private var canAttackPlayers = true
     private var healthMultiplier = 1.0
     private var dropLoot = false
+    private var fireballExplosionPower = 3.0f
+    private var fireballRate = 15
+    private var fireballDestroyBlocks = true
+    private var randomFireballChance = 0.6f
+    private var playExplosionSounds = true
 
     override fun start(arena: Arena) {
         loadConfig()
@@ -39,25 +44,43 @@ class Dragons : Disaster {
         val minX = min(arena.corner1.x, arena.corner2.x)
         val maxX = max(arena.corner1.x, arena.corner2.x)
         val minY = min(arena.corner1.y, arena.corner2.y)
-        val maxY = max(arena.corner1.y, arena.corner2.y)
         val minZ = min(arena.corner1.z, arena.corner2.z)
         val maxZ = max(arena.corner1.z, arena.corner2.z)
 
         val centerX = (minX + maxX) / 2
-        val centerY = (minY + maxY) / 2
         val centerZ = (minZ + maxZ) / 2
+        val floorY = minY
 
         val world = arena.corner1.world
 
         for (i in 0 until dragonCount) {
-            val offsetX = if (i == 0) horizontalSpread else -horizontalSpread
-            val spawnLoc = Location(world, centerX + offsetX, centerY + spawnHeightOffset, centerZ)
+            val angle = (2 * Math.PI * i) / dragonCount
+            val offsetX = Math.cos(angle) * horizontalSpread
+            val offsetZ = Math.sin(angle) * horizontalSpread
+
+            val spawnLoc =
+                    Location(
+                            world,
+                            centerX + offsetX,
+                            floorY + spawnHeightOffset,
+                            centerZ + offsetZ
+                    )
 
             val dragon = world.spawnEntity(spawnLoc, EntityType.ENDER_DRAGON) as EnderDragon
 
             dragon.isCustomNameVisible = false
             dragon.setAI(true)
-            dragon.phase = EnderDragon.Phase.values()[dragonPhase]
+
+            val phase =
+                    when (dragonPhase) {
+                        0 -> EnderDragon.Phase.CIRCLING
+                        1 -> EnderDragon.Phase.CHARGE_PLAYER
+                        2 -> EnderDragon.Phase.LAND_ON_PORTAL
+                        3 -> EnderDragon.Phase.STRAFING
+                        10 -> EnderDragon.Phase.HOVER
+                        else -> EnderDragon.Phase.CIRCLING
+                    }
+            dragon.phase = phase
 
             EntityUtils.setScaledHealth(dragon, healthMultiplier)
 
@@ -78,9 +101,26 @@ class Dragons : Disaster {
                 continue
             }
 
+            // keep dragons in bounds and moving
             if (enforceBoundaries && tickCounter % retargetInterval == 0) {
                 val arena = arenas.firstOrNull() ?: continue
                 keepDragonInBounds(dragon, arena)
+            }
+
+            // ensure dragon stays in aggressive phase
+            if (tickCounter % 20 == 0) {
+                val targetPhase =
+                        when (dragonPhase) {
+                            0 -> EnderDragon.Phase.CIRCLING
+                            1 -> EnderDragon.Phase.CHARGE_PLAYER
+                            3 -> EnderDragon.Phase.STRAFING
+                            10 -> EnderDragon.Phase.HOVER
+                            else -> EnderDragon.Phase.CIRCLING
+                        }
+
+                if (dragon.phase != targetPhase) {
+                    dragon.phase = targetPhase
+                }
             }
         }
     }
@@ -117,34 +157,96 @@ class Dragons : Disaster {
         retargetInterval = config.getInt("retarget-interval", 40)
         maxHeightAboveFloor = config.getInt("max-height-above-floor", 30)
         minHeightAboveFloor = config.getInt("min-height-above-floor", 15)
-        dragonPhase = config.getInt("dragon-phase", 0).coerceIn(0, 10)
+
+        // load dragon phase and validate
+        val configPhase = config.getInt("dragon-phase", 0)
+        dragonPhase =
+                when (configPhase) {
+                    in 0..10 -> configPhase
+                    else -> {
+                        Disasters.getInstance()
+                                .logger
+                                .warning("Invalid dragon-phase: $configPhase, using 0")
+                        0
+                    }
+                }
+
         enforceBoundaries = config.getBoolean("enforce-boundaries", true)
         boundaryPadding = config.getInt("boundary-padding", 5)
         canAttackPlayers = config.getBoolean("can-attack-players", true)
         healthMultiplier = config.getDouble("health-multiplier", 1.0)
         dropLoot = config.getBoolean("drop-loot", false)
+
+        Disasters.getInstance()
+                .logger
+                .info(
+                        "Dragons config loaded - Phase: $dragonPhase, Height: $minHeightAboveFloor-$maxHeightAboveFloor"
+                )
     }
 
     private fun keepDragonInBounds(dragon: EnderDragon, arena: Arena) {
         val minX = min(arena.corner1.x, arena.corner2.x) + boundaryPadding
         val maxX = max(arena.corner1.x, arena.corner2.x) - boundaryPadding
-        val minY = min(arena.corner1.y, arena.corner2.y) + minHeightAboveFloor
-        val maxY = min(arena.corner1.y, arena.corner2.y) + maxHeightAboveFloor
+        val minY = min(arena.corner1.y, arena.corner2.y)
         val minZ = min(arena.corner1.z, arena.corner2.z) + boundaryPadding
         val maxZ = max(arena.corner1.z, arena.corner2.z) - boundaryPadding
 
+        val currentY = dragon.location.y
+        val floorY = minY
+
+        // calculate target height based on floor
+        val targetMinY = floorY + minHeightAboveFloor
+        val targetMaxY = floorY + maxHeightAboveFloor
+
+        // if dragon is too high or too low, bring it back
+        val targetY =
+                if (currentY > targetMaxY) {
+                    targetMaxY.toDouble()
+                } else if (currentY < targetMinY) {
+                    targetMinY.toDouble()
+                } else {
+                    Random.nextDouble(targetMinY.toDouble(), targetMaxY.toDouble())
+                }
+
         val targetX = Random.nextDouble(minX, maxX)
-        val targetY = Random.nextDouble(minY.toDouble(), maxY.toDouble())
         val targetZ = Random.nextDouble(minZ, maxZ)
 
         val targetLoc = Location(arena.corner1.world, targetX, targetY, targetZ)
 
-        dragon.phase = EnderDragon.Phase.CIRCLING
+        // set phase based on config
+        val targetPhase =
+                when (dragonPhase) {
+                    0 -> EnderDragon.Phase.CIRCLING
+                    1 -> EnderDragon.Phase.CHARGE_PLAYER
+                    3 -> EnderDragon.Phase.STRAFING
+                    10 -> EnderDragon.Phase.HOVER
+                    else -> EnderDragon.Phase.CIRCLING
+                }
 
-        val currentLoc = dragon.location
-        val direction = targetLoc.toVector().subtract(currentLoc.toVector()).normalize()
-        val newLoc = currentLoc.add(direction.multiply(0.5))
+        dragon.phase = targetPhase
 
-        dragon.velocity = direction.multiply(0.3)
+        // if there are players, sometimes target them
+        if (arena.alive.isNotEmpty() && Random.nextFloat() < 0.4f) {
+            val randomPlayer = arena.alive.random()
+            val playerLoc = randomPlayer.location
+
+            // target near player but at configured height
+            val nearPlayerLoc =
+                    Location(
+                            arena.corner1.world,
+                            playerLoc.x + Random.nextDouble(-5.0, 5.0),
+                            floorY +
+                                    minHeightAboveFloor +
+                                    Random.nextInt(0, maxHeightAboveFloor - minHeightAboveFloor),
+                            playerLoc.z + Random.nextDouble(-5.0, 5.0)
+                    )
+
+            val direction =
+                    nearPlayerLoc.toVector().subtract(dragon.location.toVector()).normalize()
+            dragon.velocity = direction.multiply(0.5)
+        } else {
+            val direction = targetLoc.toVector().subtract(dragon.location.toVector()).normalize()
+            dragon.velocity = direction.multiply(0.4)
+        }
     }
 }

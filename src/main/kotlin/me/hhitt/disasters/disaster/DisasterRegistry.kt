@@ -1,6 +1,5 @@
 package me.hhitt.disasters.disaster
 
-import MeteorShower
 import kotlin.reflect.KClass
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*

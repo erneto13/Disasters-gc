@@ -18,7 +18,7 @@ class ArenaEditGUI(
 ) {
 
     private lateinit var inventory: Inventory
-    private val arenaFile = File("plugins/Disasters/Arenas/${arena.name}.yml")
+    private val arenaFile = File("plugins/Disasters/arenas/${arena.name}.yml")
     private val config = YamlConfiguration.loadConfiguration(arenaFile)
 
     //companion object to manage active GUIs

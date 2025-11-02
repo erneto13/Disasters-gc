@@ -1,31 +1,84 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This configuration controls the behavior of the Meteor Shower disaster.
+# Each setting affects spawn frequency, explosion strength, and visuals.
+# ==============================================================
+# Units:
+# - Time is measured in ticks (20 ticks = 1 second)
+# - Distances are measured in blocks
+# ==============================================================
+
+# How often meteors should spawn (in ticks)
+# Example: 5 = meteors spawn every 0.25 seconds
 spawn-rate: 5
 
+# The initial amount of meteors spawned per wave
+# Example: 10 = start with 10 meteors each spawn cycle
 initial-intensity: 10
 
+# The maximum intensity (limit of meteors spawned per cycle)
+# Example: 40 = even if the intensity keeps increasing, it will never exceed 40
 max-intensity: 40
 
+# How often the intensity should increase (in ticks)
+# Example: 60 = every 3 seconds the intensity will increase
 intensity-increase-rate: 60
 
+# How many meteors are added to the intensity each increase
+# Example: 2 = every 60 ticks, 2 extra meteors will be added
 intensity-increase-amount: 2
 
+# Distance from the arena where meteors are spawned
+# Example: 30.0 = meteors start 30 blocks away from the arena center
 spawn-distance: 30.0
 
+# Multiplier for how far to the sides meteors can spawn
+# Example: 2.0 = meteors may come from wider lateral angles
 lateral-offset-multiplier: 2.0
 
+# Minimum height above the arena where meteors spawn
+# Example: 20.0 = meteors will spawn at least 20 blocks above
 spawn-height-min: 20.0
 
+# Maximum height above the arena where meteors spawn
+# Example: 60.0 = meteors can spawn up to 60 blocks higher
 spawn-height-max: 60.0
 
+# The minimum visual and physical size of meteors
+# Example: 0.8 = small meteors
 min-size: 0.8
 
+# The maximum visual and physical size of meteors
+# Example: 2.5 = huge meteors
 max-size: 2.5
 
+# Explosion power multiplier (applied to meteor size)
+# Example: 3.5 = explosion power = meteor size * 3.5
 explosion-multiplier: 3.5
 
+# The falling speed of each meteor
+# Example: 0.4 = medium speed; lower = slower, higher = faster
 fall-speed: 0.4
 
+# The downward force applied to the meteor trajectory
+# Example: -0.6 = strong vertical descent; closer to 0 makes it more diagonal
 downward-force: -0.6
 
+# The maximum lifetime of a meteor before it disappears (in ticks)
+# Example: 300 = 15 seconds before despawning if no impact occurs
 max-lifetime-ticks: 300
 
+# Version of this configuration file
+# Do not modify unless updating from a new version
 config-version: 1

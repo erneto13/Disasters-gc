@@ -1,46 +1,69 @@
 # Dragons Disaster Configuration
+# MAXIMUM DESTRUCTION MODE - Dragons destroy everything!
 
-# Number of dragons to spawn
-dragon-count: 2
+# Number of dragons to spawn (more = more destruction!)
+dragon-count: 4
 
-# Spawn height offset from arena center (in blocks)
-spawn-height-offset: 20
+# Spawn height offset from arena FLOOR (in blocks)
+spawn-height-offset: 12
 
 # Horizontal spread between dragons (in blocks)
-horizontal-spread: 15
+horizontal-spread: 25
 
 # Dragon AI settings
 enable-ai: true
 
 # Dragon movement settings
 # How often dragons change their target location (in ticks, 20 = 1 second)
-retarget-interval: 40
+# Lower = more erratic flight pattern
+retarget-interval: 25
 
 # Maximum height above arena floor
-max-height-above-floor: 30
+max-height-above-floor: 20
 
 # Minimum height above arena floor
-min-height-above-floor: 15
+# Lower = dragons fly closer to ground = more destruction
+min-height-above-floor: 3
 
-# Dragon phase (0 = circling, 10 = aggressive hover)
-dragon-phase: 0
+# Dragon phase (0 = circling, 3 = strafing, 10 = hover)
+# Use 3 for maximum fireball spam
+dragon-phase: 3
 
 # Arena boundary enforcement
-# Keep dragons within arena bounds
 enforce-boundaries: true
 
 # Boundary padding (blocks from arena edges)
-boundary-padding: 5
+# Small padding so dragons cover entire arena
+boundary-padding: 2
 
 # Dragon behavior settings
-# Allow dragons to attack players
+# Allow dragons to attack (they'll shoot fireballs everywhere)
 can-attack-players: true
 
-# Dragon health multiplier (1.0 = normal)
-health-multiplier: 1.0
+# Dragon health multiplier (higher = longer destruction time)
+health-multiplier: 3.0
 
 # Whether dragons drop loot when killed
 drop-loot: false
+
+# DESTRUCTION SETTINGS
+# Fireball explosion power (higher = bigger explosions)
+# 2.0 = TNT level, 4.0 = creeper charged level
+fireball-explosion-power: 3.0
+
+# How often dragons shoot fireballs (in ticks, 20 = 1 second)
+# Lower = more fireballs = more destruction
+fireball-rate: 15
+
+# Should fireballs destroy blocks?
+fireball-destroy-blocks: true
+
+# Random fireball chance (0.0 to 1.0)
+# Chance to shoot a random fireball even without player target
+random-fireball-chance: 0.6
+
+# Explosion sound effect
+play-explosion-sounds: true
 
 # DO NOT TOUCH THIS!
 config-version: 1
