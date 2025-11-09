@@ -37,6 +37,7 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
+        // cooldown de 10 segundos antes de empezar los disasters
         val cooldownSeconds = 10
         if (time >= cooldownSeconds && (time - cooldownSeconds) % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
@@ -74,17 +75,19 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         Notify.gameEnd(arena)
 
+        Notify.winners(arena)
+
         celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
     }
 
     private fun completeCelebrationAndReset() {
         DisasterRegistry.removeDisasters(arena)
+        
+        Lobby.teleportAtEnd(arena)
 
         arena.entityCleanupService.cleanupMeteors()
         arena.entityCleanupService.cleanupFireworks()
         arena.entityCleanupService.cleanupExtendedArea(50)
-
-        Lobby.teleportAtEnd(arena)
 
         time = 0
         remaining = arena.maxTime

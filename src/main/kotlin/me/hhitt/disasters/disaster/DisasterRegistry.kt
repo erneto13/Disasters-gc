@@ -5,9 +5,8 @@ import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.impl.*
 import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
+import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
-import org.bukkit.attribute.Attribute
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 object DisasterRegistry {
@@ -78,6 +77,7 @@ object DisasterRegistry {
         val toAdd = wave.count.coerceAtMost(compatible.size)
         val shuffled = compatible.shuffled()
 
+        val newDisasters = mutableListOf<Disaster>()
         var actuallyAdded = 0
 
         for (i in 0 until toAdd) {
@@ -97,12 +97,14 @@ object DisasterRegistry {
                 newDisaster.start(arena)
                 currentDisasters.add(newDisaster)
                 arena.disasters.add(newDisaster)
+                newDisasters.add(newDisaster)
                 actuallyAdded++
             } catch (e: Exception) {}
         }
 
         if (actuallyAdded > 0) {
             activationCounts[arena] = currentCount + 1
+            newDisasters.forEach { disaster -> Notify.disaster(arena, disaster) }
         }
     }
 

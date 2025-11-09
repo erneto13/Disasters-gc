@@ -266,176 +266,120 @@ countdown-canceled:
   subtitle: "<red>Game will not start, please wait!"
 
 disaster:
-  acid-rain:
-    title: "<red>Acid Rain!"
-    subtitle: "<red>Take cover!"
+  announcement:
+    title: "<red><bold>⚠ NEW DISASTER!"
+    subtitle: "<gray>A new threat has arrived"
     chat:
-    - "<gold>----------------------------------"
-    - "<red>Acid Rain is falling from the sky!"
-    - "<red>Take cover!"
-    - "<gold>----------------------------------"
+    - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    - "<red><bold>⚠ DISASTER ACTIVATED!"
+    - ""
+    - "%disaster_name%"
+    - "%disaster_description%"
+    - ""
+    - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+  acid-rain:
+    name: "<red>Acid Rain"
+    description: "<gray>Take cover from the toxic rain!"
 
   apocalypse:
-    title: "<red>Apocalypse!"
-    subtitle: "<red>Run for your life!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Apocalypse is happening!"
-    - "<gold>----------------------------------"
+    name: "<red>Zombie Apocalypse"
+    description: "<gray>Hordes of zombies are spawning!"
 
   explosive-sheep:
-    title: "<red>Explosive Sheep!"
-    subtitle: "<red>Watch out!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Explosive Sheep are spawning!"
-    - "<gold>----------------------------------"
+    name: "<red>Explosive Sheep"
+    description: "<gray>Watch out for the TNT sheep!"
 
   floor-is-lava:
-    title: "<red>Floor is Lava!"
-    subtitle: "<red>Don't touch the ground!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Floor is Lava!"
-    - "<gold>----------------------------------"
+    name: "<red>Floor is Lava"
+    description: "<gray>Don't touch the ground!"
 
   grounded:
-    title: "<red>Grounded!"
-    subtitle: "<red>Stay on the ground!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Grounded! You can't jump!"
-    - "<gold>----------------------------------"
+    name: "<red>Grounded"
+    description: "<gray>You can't jump anymore!"
 
   lightning:
-    title: "<red>Lightning!"
-    subtitle: "<red>Take cover!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Take cover!"
-    - "<gold>----------------------------------"
+    name: "<red>Lightning Storm"
+    description: "<gray>Lightning strikes everywhere!"
 
   one-hearth:
-    title: "<red>One Heart!"
-    subtitle: "<red>Don't get hit!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>One Heart! Don't get hit!"
-    - "<gold>----------------------------------"
+    name: "<red>One Heart"
+    description: "<gray>Your health is reduced to minimum!"
 
   swap:
-    title: "<red>Swap!"
-    subtitle: "<red>Switch places!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Swap! Switch places!"
-    - "<gold>----------------------------------"
+    name: "<gradient:#ff00ff:#00ffff>Swap"
+    description: "<gray>Players swap positions randomly!"
 
   world-border:
-    title: "<red>World Border!"
-    subtitle: "<red>Run to the center!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>World Border is shrinking!"
-    - "<gold>----------------------------------"
+    name: "<red>World Border"
+    description: "<gray>The border is shrinking!"
 
   blind:
-    title: "<red>Blind!"
-    subtitle: "<red>Your vision will be impaired!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Now you can't see anything!"
-    - "<gold>----------------------------------"
+    name: "<red>Blindness"
+    description: "<gray>Your vision is impaired!"
 
   cobweb:
-    title: "<red>Cobweb!"
-    subtitle: "<red>You will be caught by cobwebs!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Cobwebs are spawning every 5 seconds!"
-    - "<gold>----------------------------------"
+    name: "<red>Cobwebs"
+    description: "<gray>Cobwebs spawn under your feet!"
 
   lag:
-    title: "<red>Lag!"
-    subtitle: "<red>You will experience lag!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Now you are so lagged!"
-    - "<gold>----------------------------------"
+    name: "<red>Lag"
+    description: "<gray>Experience severe lag!"
 
   zero-gravity:
-    title: "<red>No Gravity!"
-    subtitle: "<red>You will experience levitation!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>You will experience some levitation!"
-    - "<gold>----------------------------------"
+    name: "<red>Zero Gravity"
+    description: "<gray>Levitation effect activated!"
 
   wither:
-    title: "<red>Wither Attack!"
-    subtitle: "<red>A wither boss has arrived!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>A wither boss has arrived!"
-    - "<gold>----------------------------------"
+    name: "<red>Wither Boss"
+    description: "<gray>A wither has spawned!"
 
   hot-sun:
-    title: "<red>Hot Sun!"
-    subtitle: "<red>The sun will burn you!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>The sun will burn you, take cover!"
-    - "<gold>----------------------------------"
+    name: "<red>Hot Sun"
+    description: "<gray>The sun burns exposed players!"
 
   murder:
-    title: "<red>Murder!"
-    subtitle: "<red>Players with swords can kill you!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Now players with swords can kill you!"
-    - "<gold>----------------------------------"
+    name: "<red>Murder"
+    description: "<gray>Some players have swords!"
 
   allow-fight:
-    title: "<red>PvP Enabled!"
-    subtitle: "<red>Now you can hit players!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Now players can kill you, pay attention!"
-    - "<gold>----------------------------------"
+    name: "<red>PvP Enabled"
+    description: "<gray>Players can attack each other!"
 
   disappear-blocks:
-    title: "<red>Blocks Disappear!"
-    subtitle: "<red>Blocks under you will disappear!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Now blocks under you will disappear!"
-    - "<gold>----------------------------------"
+    name: "<red>Disappearing Blocks"
+    description: "<gray>Blocks vanish under your feet!"
 
   no-jump:
-    title: "<red>No Jump!"
-    subtitle: "<red>Super jump effect duplicated!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Jump Boost effects granted!"
-    - "<red>Try not to jump to survive!"
-    - "<gold>----------------------------------"
+    name: "<red>No Jump"
+    description: "<gray>Jump boost applied - don't jump!"
 
   meteor-shower:
-    title: "<red>Meteor Shower!"
-    subtitle: "<red>Take cover!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Meteors are falling from the sky!"
-    - "<red>Avoid the shadows on the ground!"
-    - "<gold>----------------------------------"
+    name: "<red>Meteor Shower"
+    description: "<gray>Meteors fall from the sky!"
 
   dragons:
-    title: "<red>Dragons!"
-    subtitle: "<red>Two dragons have spawned!"
-    chat:
-    - "<gold>----------------------------------"
-    - "<red>Beware of the dragons flying above!"
-    - "<gold>----------------------------------"
+    name: "<red>Dragon Attack"
+    description: "<gray>Dragons are flying above!"
+
+game-winners:
+  title: "<gold><bold>WINNERS</bold>"
+  chat:
+  - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - "<gold><bold>GAME WINNERS</bold>"
+  - ""
+  - "%winners_list%"
+  - ""
+  - "<gray>Congratulations to all survivors!"
+  - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  winner-entry: "<yellow>★ <white>%player_name% <gray>- <green>%disasters_wins% wins"
+
+  no-winners:
+  - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - "<red><bold>NO SURVIVORS</bold>"
+  - ""
+  - "<gray>Everyone perished in the disasters!"
+  - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # DO NOT TOUCH THIS!
 config-version: 1
