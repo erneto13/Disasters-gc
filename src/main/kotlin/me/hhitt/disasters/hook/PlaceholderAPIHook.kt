@@ -165,7 +165,7 @@ class PlaceholderAPIHook(private val arenaManager: ArenaManager) : PlaceholderEx
             .replace(Regex("([a-z])([A-Z])"), "$1-$2")
             .lowercase()
 
-        val titlePath = "disaster.$key.title"
+        val titlePath = "disaster.$key.name"
         val rawTitle = lang?.getString(titlePath) ?: key
 
         return Msg.placeholder(rawTitle, player)

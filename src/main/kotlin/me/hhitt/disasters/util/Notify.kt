@@ -16,7 +16,7 @@ object Notify {
         val title = config.getString("$path.title") ?: ""
         val subtitle = config.getString("$path.subtitle") ?: ""
         sendTitleToArena(arena, title, subtitle)
-        sound(arena, Sound.ENTITY_PLAYER_LEVELUP)
+        sound(arena, Sound.UI_BUTTON_CLICK, 1.0f, 1.5f)
     }
 
     fun countdownCanceled(arena: Arena) {
@@ -59,7 +59,6 @@ object Notify {
                 }
 
         sendChatMessagesToArena(arena, chatMessages)
-        sound(arena, Sound.ENTITY_ENDER_DRAGON_SHOOT)
     }
 
     fun playerJoined(player: Player, arena: Arena) {
@@ -113,7 +112,6 @@ object Notify {
                 }
 
         sendChatMessagesToArena(arena, chatMessages)
-        sound(arena, Sound.ENTITY_ENDER_DRAGON_DEATH)
     }
 
     private fun sendTitleToArena(arena: Arena, title: String, subtitle: String) {
@@ -133,7 +131,7 @@ object Notify {
         arena.playing.forEach { player -> Msg.sendParsed(player, message) }
     }
 
-    private fun sound(arena: Arena, sound: Sound) {
-        arena.playing.forEach { player -> player.playSound(player.location, sound, 1.0f, 1.0f) }
+    private fun sound(arena: Arena, sound: Sound, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        arena.playing.forEach { player -> player.playSound(player.location, sound, volume, pitch) }
     }
 }
