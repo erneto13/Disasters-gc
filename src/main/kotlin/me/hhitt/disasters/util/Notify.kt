@@ -16,7 +16,7 @@ object Notify {
         val title = config.getString("$path.title") ?: ""
         val subtitle = config.getString("$path.subtitle") ?: ""
         sendTitleToArena(arena, title, subtitle)
-        sound(arena, Sound.UI_BUTTON_CLICK, 1.0f, 1.5f)
+        sound(arena, Sound.UI_BUTTON_CLICK, 1.0f, 2.0f)
     }
 
     fun countdownCanceled(arena: Arena) {
@@ -40,22 +40,63 @@ object Notify {
         sound(arena, Sound.BLOCK_NOTE_BLOCK_BASS)
     }
 
+    // single disaster announcement (kept for backwards compatibility)
     fun disaster(arena: Arena, disaster: Disaster) {
-        val key =
-                disaster.javaClass.simpleName.replace(Regex("([a-z])([A-Z])"), "$1-$2").lowercase()
+        disasters(arena, listOf(disaster))
+    }
 
-        val name = config.getString("disaster.$key.name") ?: key
-        val description = config.getString("disaster.$key.description") ?: ""
+    // grouped disaster announcements
+    fun disasters(arena: Arena, disasterList: List<Disaster>) {
+        if (disasterList.isEmpty()) return
 
         val title = config.getString("disaster.announcement.title") ?: ""
         val subtitle = config.getString("disaster.announcement.subtitle") ?: ""
-
         sendTitleToArena(arena, title, subtitle)
 
+        // build disaster list text
+        val disasterNames =
+                disasterList.map { disaster ->
+                    val key =
+                            disaster.javaClass
+                                    .simpleName
+                                    .replace(Regex("([a-z])([A-Z])"), "$1-$2")
+                                    .lowercase()
+                    config.getString("disaster.$key.name") ?: key
+                }
+
+        val disasterDescriptions =
+                disasterList.map { disaster ->
+                    val key =
+                            disaster.javaClass
+                                    .simpleName
+                                    .replace(Regex("([a-z])([A-Z])"), "$1-$2")
+                                    .lowercase()
+                    config.getString("disaster.$key.description") ?: ""
+                }
+
+        // build chat messages
+        val chatTemplate =
+                if (disasterList.size == 1) {
+                    config.getStringList("disaster.announcement.chat-single")
+                } else {
+                    config.getStringList("disaster.announcement.chat-multiple")
+                }
+
+        // create disaster list string
+        val disasterListStr =
+                disasterNames
+                        .mapIndexed { index, name -> "$name ${disasterDescriptions[index]}" }
+                        .joinToString("\n")
+
         val chatMessages =
-                config.getStringList("disaster.announcement.chat").map { line ->
-                    line.replace("%disaster_name%", name)
-                            .replace("%disaster_description%", description)
+                chatTemplate.map { line ->
+                    line.replace("%disaster_name%", disasterNames.firstOrNull() ?: "")
+                            .replace(
+                                    "%disaster_description%",
+                                    disasterDescriptions.firstOrNull() ?: ""
+                            )
+                            .replace("%disaster_list%", disasterListStr)
+                            .replace("%disaster_count%", disasterList.size.toString())
                 }
 
         sendChatMessagesToArena(arena, chatMessages)
@@ -89,23 +130,19 @@ object Notify {
 
     fun winners(arena: Arena) {
         if (arena.alive.isEmpty()) {
-            // no hay ganadores
             val noWinnersMessages = config.getStringList("game-winners.no-winners")
             sendChatMessagesToArena(arena, noWinnersMessages)
             return
         }
 
-        // construir lista de ganadores
         val winnerEntry =
                 config.getString("game-winners.winner-entry") ?: "<yellow>★ <white>%player_name%"
         val winnersList =
                 arena.alive.joinToString("\n") { player -> Msg.placeholder(winnerEntry, player) }
 
-        // title
         val title = config.getString("game-winners.title") ?: ""
         sendTitleToArena(arena, title, "")
 
-        // mensajes de chat
         val chatMessages =
                 config.getStringList("game-winners.chat").map { line ->
                     line.replace("%winners_list%", winnersList)

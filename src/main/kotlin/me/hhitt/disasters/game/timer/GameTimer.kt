@@ -12,6 +12,7 @@ import me.hhitt.disasters.storage.data.Data
 import me.hhitt.disasters.util.Lobby
 import me.hhitt.disasters.util.Notify
 import org.bukkit.Bukkit
+import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 
 class GameTimer(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
@@ -21,6 +22,8 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
     var time = 0
     var remaining = arena.maxTime
     private var nextDisasterIn = arena.rate
+    private val cooldownSeconds = 10
+    private var lastSoundSecond = -1
 
     override fun run() {
         if (time >= arena.maxTime) {
@@ -37,19 +40,56 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        // cooldown de 10 segundos antes de empezar los disasters
-        val cooldownSeconds = 10
+        // play countdown sounds for initial cooldown
+        if (time < cooldownSeconds) {
+            val remainingCooldown = cooldownSeconds - time
+            if (remainingCooldown <= 5 && remainingCooldown != lastSoundSecond) {
+                playCooldownSound(remainingCooldown)
+                lastSoundSecond = remainingCooldown
+            }
+        }
+
+        // play countdown sounds for next disaster
+        if (time >= cooldownSeconds) {
+            val timeUntilDisaster = nextDisasterIn
+            if (timeUntilDisaster <= 5 &&
+                            timeUntilDisaster > 0 &&
+                            timeUntilDisaster != lastSoundSecond
+            ) {
+                playCooldownSound(timeUntilDisaster)
+                lastSoundSecond = timeUntilDisaster
+            }
+        }
+
+        // spawn disasters after cooldown
         if (time >= cooldownSeconds && (time - cooldownSeconds) % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
             nextDisasterIn = arena.rate
+            lastSoundSecond = -1 // reset for next cycle
         }
 
         time++
         remaining--
-        nextDisasterIn--
+        if (nextDisasterIn > 0) {
+            nextDisasterIn--
+        }
+    }
+
+    private fun playCooldownSound(secondsLeft: Int) {
+        arena.playing.forEach { player ->
+            when (secondsLeft) {
+                5, 4, 3, 2, 1 ->
+                        player.playSound(player.location, Sound.UI_BUTTON_CLICK, 1.0f, 2.0f)
+            }
+        }
     }
 
     fun getNextDisasterIn(): Int {
+        // if still in cooldown, return cooldown time
+        if (time < cooldownSeconds) {
+            return cooldownSeconds - time
+        }
+        // otherwise return time until next disaster
         return nextDisasterIn.coerceAtLeast(0)
     }
 
@@ -82,7 +122,7 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
     private fun completeCelebrationAndReset() {
         DisasterRegistry.removeDisasters(arena)
-        
+
         Lobby.teleportAtEnd(arena)
 
         arena.entityCleanupService.cleanupMeteors()
@@ -92,6 +132,7 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
         time = 0
         remaining = arena.maxTime
         nextDisasterIn = arena.rate
+        lastSoundSecond = -1
 
         arena.state = GameState.RECRUITING
 

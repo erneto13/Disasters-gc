@@ -18,25 +18,24 @@ swap:
   no-pair-found: "<yellow>⚠ No swap partner found this time!"
   not-enough-players: "<gray>Not enough players to swap..."
 
-  help:
-  - "<white>"
-  - "<green>Disasters v1.4.0 b2"
-  - "<#c1c1c1>Custom plugin for GalaxyCraft"
-  - "&a/disasters reload &7- Reload the configuration."
-  - "&a/disasters setspawn &7- Set the lobby spawn."
-  - "&a/arena join <arena> &7- Join an arena."
-  - "&a/arena quickjoin &7- Join the best available arena."
-  - "&a/arena leave &7- Leave the current arena."
-  - "&a/arena forcestart &7- Force start the arena."
-  - "&a/arena forcestop &7- Force stop the arena."
-  - "&7For more help, check the documentation or use &a/tab-complete&7."
+help:
+- "<white>"
+- "<green>Disasters v1.4.0 b2"
+- "<#c1c1c1>Custom plugin for GalaxyCraft"
+- "&a/disasters reload &7- Reload the configuration."
+- "&a/disasters setspawn &7- Set the lobby spawn."
+- "&a/arena join <arena> &7- Join an arena."
+- "&a/arena quickjoin &7- Join the best available arena."
+- "&a/arena leave &7- Leave the current arena."
+- "&a/arena forcestart &7- Force start the arena."
+- "&a/arena forcestop &7- Force stop the arena."
+- "&7For more help, check the documentation or use &a/tab-complete&7."
 
 celebration:
   start: "<rainbow><bold>VICTORY!"
   end: "<gold>Returning to lobby..."
 
 arena-setup:
-  # Existing messages
   arena-already-exists: "<red>An arena with that name already exists!"
   arena-set-spawn: "<red>You are not in setup mode! Use <yellow>/arena setup <name>"
   arena-set-spawn-success: "<green>Spawn set at your current location!"
@@ -47,8 +46,6 @@ arena-setup:
   available-arenas: "<green>Available arenas:"
   arena-deleted: "<green>Arena <yellow>%arena% <green>deleted successfully!"
   arena-saved: "<green>Arena <yellow>%arena% <green>saved successfully!"
-
-  # Setup instructions
   setup-activated: "<green>Setup mode activated for arena <yellow>%arena%"
   setup-instructions-axe:
   - "<gray>Use the axe to select corners:"
@@ -57,14 +54,11 @@ arena-setup:
   - "<gray>Use <yellow>/arena setspawn <gray>to set the spawn"
   - "<gray>Use <yellow>/arena save <gray>to save the arena"
   - "<gray>Use <yellow>/arena cancel <gray>to cancel"
-  # Corner selection
   first-corner-selected: "<green>Corner 1 set at <yellow>%x%, %y%, %z%"
   second-corner-selected: "<green>Corner 2 set at <yellow>%x%, %y%, %z%"
   distance-between-corners: "<gray>Distance between corners: <yellow>%distance% blocks"
   arena-volume: "<aqua>Arena volume: <yellow>%volume% blocks <gray>(%dx%x%dy%x%dz%)"
   visualization-started: "<green>✓ Cuboid visualization active! <gray>It will remain until you save or cancel."
-
-  # Validation messages
   invalid-arena-name: "<red>Invalid arena name! Use only letters, numbers, underscores and hyphens (max 12 chars)."
   setup-missing-data: "<red>Cannot save arena: missing required data!"
   setup-missing-corner1: "<red>- Corner 1 not set"
@@ -73,8 +67,6 @@ arena-setup:
   invalid-bounds: "<red>Invalid arena bounds: <yellow>%reason%"
   invalid-spawn: "<red>Invalid spawn location: <yellow>%reason%"
   spawn-warning: "<yellow>⚠ Warning: <gray>%reason%"
-
-  # Session messages
   session-started: "<green>Setup session started for arena <yellow>%arena%"
   session-ended: "<red>Setup session ended"
   edit-instructions: "<gray>Use <yellow>/arena edit %arena% <gray>to edit it"
@@ -88,16 +80,13 @@ arena-edit:
   teleported-corner1: "<green>Teleported to corner 1"
   teleported-corner2: "<green>Teleported to corner 2"
   test-mode-toggled: "<green>Test mode %status%!"
-
   input-number: "<yellow>Enter the new value for <green>%field%"
   input-text: "<yellow>Enter the new value for <green>%field%"
   current-value: "<gray>Current value: <yellow>%value%"
   cancel-hint: "<gray>Type 'cancel' to cancel"
-
   field-updated: "<green>%field% updated to <yellow>%value%"
   invalid-number: "<red>Invalid value! Must be a number"
   cancelled: "<red>Cancelled"
-
   commands-current: "<green>Current commands (%type%):"
   commands-add-hint: "<gray>Type 'add <command>' to add"
   commands-remove-hint: "<gray>Type 'remove <index>' to remove"
@@ -110,49 +99,41 @@ gui:
       lore:
       - "<gray>Current: <yellow>%value%"
       - "<gray>Click to modify"
-
     min-players:
       name: "<green>Min Players"
       lore:
       - "<gray>Current: <yellow>%value%"
       - "<gray>Click to modify"
-
     alive-to-end:
       name: "<green>Alive to End"
       lore:
       - "<gray>Current: <yellow>%value%"
       - "<gray>Click to modify"
-
     countdown:
       name: "<green>Countdown"
       lore:
       - "<gray>Current: <yellow>%value% seconds"
       - "<gray>Click to modify"
-
     game-time:
       name: "<green>Game Time"
       lore:
       - "<gray>Current: <yellow>%value% seconds"
       - "<gray>Click to modify"
-
     disaster-rate:
       name: "<green>Disaster Rate"
       lore:
       - "<gray>Current: <yellow>%value% seconds"
       - "<gray>Click to modify"
-
     max-disasters:
       name: "<green>Max Disasters"
       lore:
       - "<gray>Current: <yellow>%value%"
       - "<gray>Click to modify"
-
     display-name:
       name: "<green>Display Name"
       lore:
       - "<gray>Current: <yellow>%value%"
       - "<gray>Click to modify"
-
     spawn-location:
       name: "<green>Spawn Location"
       lore:
@@ -161,7 +142,6 @@ gui:
       - "<gray>Y: <yellow>%y%"
       - "<gray>Z: <yellow>%z%"
       - "<gray>Click to teleport"
-
     corner1:
       name: "<green>Corner 1"
       lore:
@@ -170,7 +150,6 @@ gui:
       - "<gray>Y: <yellow>%y%"
       - "<gray>Z: <yellow>%z%"
       - "<gray>Click to teleport"
-
     corner2:
       name: "<green>Corner 2"
       lore:
@@ -179,7 +158,6 @@ gui:
       - "<gray>Y: <yellow>%y%"
       - "<gray>Z: <yellow>%z%"
       - "<gray>Click to teleport"
-
     test-mode:
       name: "<gold>Test Mode"
       lore:
@@ -191,30 +169,25 @@ gui:
       - "<gray>- Perfect for testing disasters"
       - ""
       - "<yellow>Click to toggle"
-
     winner-commands:
       name: "<green>Winner Commands"
       lore:
       - "<gray>Click to edit"
       - "<gray>winner commands"
-
     loser-commands:
       name: "<green>Loser Commands"
       lore:
       - "<gray>Click to edit"
       - "<gray>loser commands"
-
     all-commands:
       name: "<green>All Player Commands"
       lore:
       - "<gray>Click to edit"
       - "<gray>commands for all players"
-
     save:
       name: "<green><bold>Save and Close"
       lore:
       - "<gray>Save all changes"
-
     close:
       name: "<red><bold>Close without Saving"
       lore:
@@ -269,12 +242,22 @@ disaster:
   announcement:
     title: "<red><bold>⚠ NEW DISASTER!"
     subtitle: "<gray>A new threat has arrived"
-    chat:
+
+    # Single disaster messages
+    chat-single:
     - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     - "<red><bold>⚠ DISASTER ACTIVATED!"
     - ""
     - "%disaster_name%"
     - "%disaster_description%"
+    - ""
+    - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    # Multiple disasters messages
+    chat-multiple:
+    - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    - "<red><bold>⚠ %disaster_count% DISASTERS ACTIVATED!"
+    - ""
+    - "%disaster_list%"
     - ""
     - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
@@ -373,7 +356,6 @@ game-winners:
   - "<gray>Congratulations to all survivors!"
   - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   winner-entry: "<yellow>★ <white>%player_name% <gray>- <green>%disasters_wins% wins"
-
   no-winners:
   - "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   - "<red><bold>NO SURVIVORS</bold>"

@@ -7,6 +7,7 @@ import me.hhitt.disasters.model.block.DisappearBlock
 import me.hhitt.disasters.model.block.DisasterFloor
 import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 object DisasterRegistry {
@@ -104,7 +105,16 @@ object DisasterRegistry {
 
         if (actuallyAdded > 0) {
             activationCounts[arena] = currentCount + 1
-            newDisasters.forEach { disaster -> Notify.disaster(arena, disaster) }
+            // grouped announcement
+            Notify.disasters(arena, newDisasters)
+            // play disaster sound
+            playDisasterSound(arena)
+        }
+    }
+
+    private fun playDisasterSound(arena: Arena) {
+        arena.playing.forEach { player ->
+            player.playSound(player.location, Sound.UI_BUTTON_CLICK, 1.0f, 2.0f)
         }
     }
 
