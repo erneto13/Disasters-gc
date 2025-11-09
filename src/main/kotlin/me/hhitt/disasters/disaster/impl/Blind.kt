@@ -19,7 +19,6 @@ class Blind : Disaster {
                 )
             )
         }
-        Notify.disaster(arena, "blind")
     }
 
     override fun pulse(time: Int) {

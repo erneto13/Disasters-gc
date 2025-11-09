@@ -18,7 +18,6 @@ class WorldBorder : Disaster {
     private val shrinkAmountPerPulse = 0.5
 
     override fun start(arena: Arena) {
-        Notify.disaster(arena, "world-border")
         val corner1 = arena.corner1
         val corner2 = arena.corner2
         val center =

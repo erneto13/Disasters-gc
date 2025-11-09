@@ -11,7 +11,6 @@ class Grounded : Disaster {
 
     override fun start(arena: Arena) {
         arena.playing.forEach { players.add(it) }
-        Notify.disaster(arena, "grounded")
     }
 
     override fun pulse(time: Int) {}

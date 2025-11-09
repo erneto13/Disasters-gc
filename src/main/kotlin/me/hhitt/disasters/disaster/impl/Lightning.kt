@@ -24,7 +24,6 @@ class Lightning : Disaster {
     override fun start(arena: Arena) {
         loadConfig()
         arenas.add(arena)
-        Notify.disaster(arena, "lightning")
     }
 
     override fun pulse(time: Int) {

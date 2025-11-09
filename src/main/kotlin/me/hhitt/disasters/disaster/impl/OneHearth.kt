@@ -7,7 +7,6 @@ import org.bukkit.attribute.Attribute
 
 class OneHearth : Disaster {
     override fun start(arena: Arena) {
-        Notify.disaster(arena, "one-hearth")
         arena.playing.forEach { player ->
             val maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH)
             maxHealthAttribute?.baseValue = 10.0

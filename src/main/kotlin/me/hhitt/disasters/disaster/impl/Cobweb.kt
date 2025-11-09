@@ -11,7 +11,6 @@ class Cobweb : Disaster {
 
     override fun start(arena: Arena) {
         arena.playing.forEach { players.add(it) }
-        Notify.disaster(arena, "cobweb")
     }
 
     override fun pulse(time: Int) {

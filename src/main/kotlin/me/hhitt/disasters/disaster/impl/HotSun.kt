@@ -13,7 +13,6 @@ class HotSun : Disaster {
 
     override fun start(arena: Arena) {
         arena.playing.forEach { players.add(it) }
-        Notify.disaster(arena, "hot-sun")
     }
 
     override fun pulse(time: Int) {

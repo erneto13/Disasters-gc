@@ -15,7 +15,6 @@ class Swap : Disaster {
 
     override fun start(arena: Arena) {
         arenas.add(arena)
-        Notify.disaster(arena, "swap")
     }
 
     override fun pulse(time: Int) {

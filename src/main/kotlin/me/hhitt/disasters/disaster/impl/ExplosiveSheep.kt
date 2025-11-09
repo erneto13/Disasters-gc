@@ -18,7 +18,6 @@ class ExplosiveSheep : Disaster {
 
     override fun start(arena: Arena) {
         arenas.add(arena)
-        Notify.disaster(arena, "explosive-sheep")
     }
 
     override fun pulse(time: Int) {

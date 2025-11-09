@@ -11,7 +11,6 @@ class BlockDisappear : Disaster {
     private val blocks = CopyOnWriteArrayList<DisappearBlock>()
 
     override fun start(arena: Arena) {
-        Notify.disaster(arena, "disappear-blocks")
     }
 
     override fun pulse(time: Int) {

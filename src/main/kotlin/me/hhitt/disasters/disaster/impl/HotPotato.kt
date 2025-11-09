@@ -12,7 +12,6 @@ class HotPotato : Disaster {
 
     override fun start(arena: Arena) {
         arenas.add(arena)
-        Notify.disaster(arena, "hot-potato")
     }
 
     override fun pulse(time: Int) {

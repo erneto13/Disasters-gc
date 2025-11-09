@@ -17,7 +17,6 @@ class NoJump : Disaster {
             it.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, 20 * 5, 10, true, false))
         }
 
-        Notify.disaster(arena, "no-jump")
     }
 
     override fun pulse(time: Int) {

@@ -45,7 +45,6 @@ class MeteorShower : Disaster {
     override fun start(arena: Arena) {
         loadConfig()
         arenas.add(arena)
-        Notify.disaster(arena, "meteor-shower")
     }
 
     override fun pulse(time: Int) {

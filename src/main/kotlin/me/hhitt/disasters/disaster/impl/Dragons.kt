@@ -87,7 +87,6 @@ class Dragons : Disaster {
             dragons.add(dragon)
         }
 
-        Notify.disaster(arena, "dragons")
     }
 
     override fun pulse(time: Int) {

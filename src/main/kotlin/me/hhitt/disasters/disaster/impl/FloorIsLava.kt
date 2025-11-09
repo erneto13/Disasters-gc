@@ -21,7 +21,6 @@ class FloorIsLava : Disaster {
     override fun start(arena: Arena) {
         loadConfig()
         arenas.add(arena)
-        Notify.disaster(arena, "floor-is-lava")
         startFastTicker()
     }
 

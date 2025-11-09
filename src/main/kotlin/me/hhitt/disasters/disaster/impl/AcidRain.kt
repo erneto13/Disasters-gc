@@ -46,7 +46,6 @@ class AcidRain : Disaster {
         arenas.add(arena)
         damagingBlocks.clear()
         damageCounter = 0
-        Notify.disaster(arena, "acid-rain")
     }
 
     override fun pulse(time: Int) {

@@ -11,7 +11,6 @@ class AllowFight : Disaster {
 
     override fun start(arena: Arena) {
         arena.playing.forEach { players.add(it) }
-        Notify.disaster(arena, "allow-fight")
     }
 
     override fun pulse(time: Int) {

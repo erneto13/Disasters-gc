@@ -19,7 +19,6 @@ class Murder : Disaster {
             players[player.uniqueId] = player
         }
         addMurder()
-        Notify.disaster(arena, "murder")
     }
 
     override fun pulse(time: Int) {
