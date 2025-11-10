@@ -1,10 +1,18 @@
 package me.hhitt.disasters.game
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
+import me.hhitt.disasters.game.celebration.CelebrationManager
 import me.hhitt.disasters.game.countdown.Countdown
 import me.hhitt.disasters.game.timer.GameTimer
+import me.hhitt.disasters.storage.data.Data
+import me.hhitt.disasters.util.Lobby
+import me.hhitt.disasters.util.Notify
 import org.bukkit.scheduler.BukkitTask
 
 class GameSession(private val arena: Arena) {
@@ -14,6 +22,8 @@ class GameSession(private val arena: Arena) {
     private var timerTask: BukkitTask? = null
     private var countdown: Countdown? = null
     private var gameTimer: GameTimer? = null
+
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun start() {
         // Only start countdown if we're in RECRUITING state
@@ -62,20 +72,103 @@ class GameSession(private val arena: Arena) {
         countdown = null
         gameTimer = null
 
-        // Clean disasters immediately
         DisasterRegistry.removeDisasters(arena)
 
-        // If no players remain, reset immediately
-        if (arena.playing.isEmpty()) {
-            arena.entityCleanupService.cleanupMeteors()
-            arena.entityCleanupService.cleanupFireworks()
-            arena.entityCleanupService.cleanupExtendedArea(50)
-            arena.fluidCleanupService.cleanupFluids()
-            arena.fluidCleanupService.cleanupExtendedArea(10)
+        val hasPlayers = arena.playing.isNotEmpty()
 
-            // Reset arena state
-            arena.clear()
-            arena.state = GameState.RECRUITING
+        if (!hasPlayers) {
+            plugin.logger.info(
+                    "Arena ${arena.name} is empty, skipping celebration and resetting immediately"
+            )
+            performImmediateReset()
+        } else {
+            // Players present - normal end with celebration
+            performNormalEnd()
+        }
+    }
+
+    private fun performImmediateReset() {
+        // Immediate cleanup
+        arena.entityCleanupService.cleanupMeteors()
+        arena.entityCleanupService.cleanupFireworks()
+        arena.entityCleanupService.cleanupExtendedArea(50)
+        arena.fluidCleanupService.cleanupFluids()
+        arena.fluidCleanupService.cleanupExtendedArea(10)
+
+        // Reset arena state
+        arena.clear()
+
+        // Paste arena and set state back to recruiting
+        arena.resetService.paste()
+    }
+
+    private fun performNormalEnd() {
+        val celebrationManager = CelebrationManager(plugin)
+
+        // Notify players
+        Notify.gameEnd(arena)
+        Notify.winners(arena)
+
+        // Update stats
+        coroutineScope.launch {
+            arena.playing.forEach { player ->
+                Data.increaseTotalPlayed(player.uniqueId)
+                if (!arena.alive.contains(player)) {
+                    Data.increaseDefeats(player.uniqueId)
+                }
+                if (arena.alive.contains(player)) {
+                    Data.increaseWins(player.uniqueId)
+                }
+            }
+        }
+
+        // Execute commands (moved from GameTimer)
+        executeCommands()
+
+        // Start celebration
+        celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
+    }
+
+    private fun completeCelebrationAndReset() {
+        DisasterRegistry.removeDisasters(arena)
+
+        Lobby.teleportAtEnd(arena)
+
+        arena.entityCleanupService.cleanupMeteors()
+        arena.entityCleanupService.cleanupFireworks()
+        arena.entityCleanupService.cleanupExtendedArea(50)
+    }
+
+    private fun executeCommands() {
+        arena.playing.forEach { player ->
+            if (!arena.alive.contains(player)) {
+                for (command in arena.losersCommands) {
+                    val commandParsed =
+                            me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, command)
+                    org.bukkit.Bukkit.dispatchCommand(
+                            org.bukkit.Bukkit.getConsoleSender(),
+                            commandParsed
+                    )
+                }
+            }
+            if (arena.alive.contains(player)) {
+                for (command in arena.winnersCommands) {
+                    val commandParsed =
+                            me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, command)
+                    org.bukkit.Bukkit.dispatchCommand(
+                            org.bukkit.Bukkit.getConsoleSender(),
+                            commandParsed
+                    )
+                }
+            }
+            for (command in arena.toAllCommands) {
+                val commandParsed =
+                        me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, command)
+                org.bukkit.Bukkit.dispatchCommand(
+                        org.bukkit.Bukkit.getConsoleSender(),
+                        commandParsed
+                )
+            }
         }
     }
 

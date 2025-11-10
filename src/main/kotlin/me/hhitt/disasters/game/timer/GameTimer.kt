@@ -1,24 +1,13 @@
 package me.hhitt.disasters.game.timer
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import me.clip.placeholderapi.PlaceholderAPI
-import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.DisasterRegistry
 import me.hhitt.disasters.game.GameSession
-import me.hhitt.disasters.game.GameState
-import me.hhitt.disasters.game.celebration.CelebrationManager
-import me.hhitt.disasters.storage.data.Data
-import me.hhitt.disasters.util.Lobby
-import me.hhitt.disasters.util.Notify
-import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.scheduler.BukkitRunnable
 
 class GameTimer(private val arena: Arena, private val session: GameSession) : BukkitRunnable() {
 
-    private val plugin = Disasters.getInstance()
-    private val celebrationManager = CelebrationManager(plugin)
     var time = 0
     var remaining = arena.maxTime
     private var nextDisasterIn = arena.rate
@@ -88,73 +77,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
     override fun cancel() {
         super.cancel()
-
-        // Immediately set restarting state
-        arena.state = GameState.RESTARTING
-
-        plugin.launch {
-            arena.playing.forEach { player ->
-                Data.increaseTotalPlayed(player.uniqueId)
-                if (!arena.alive.contains(player)) {
-                    Data.increaseDefeats(player.uniqueId)
-                }
-                if (arena.alive.contains(player)) {
-                    Data.increaseWins(player.uniqueId)
-                }
-            }
-        }
-
-        executeCommands()
-
-        // Clean disasters immediately
-        DisasterRegistry.removeDisasters(arena)
-
-        Notify.gameEnd(arena)
-        Notify.winners(arena)
-
-        celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
-    }
-
-    private fun completeCelebrationAndReset() {
-        // Double check disasters are removed
-        DisasterRegistry.removeDisasters(arena)
-
-        // Teleport all players before cleanup
-        Lobby.teleportAtEnd(arena)
-
-        // Cleanup entities and fluids
-        arena.entityCleanupService.cleanupMeteors()
-        arena.entityCleanupService.cleanupFireworks()
-        arena.entityCleanupService.cleanupExtendedArea(50)
-
-        // Reset timer variables
-        time = 0
-        remaining = arena.maxTime
-        nextDisasterIn = arena.rate
-        lastSoundSecond = -1
-
-        // Paste arena and set state back to recruiting
-        arena.resetService.paste()
-    }
-
-    private fun executeCommands() {
-        arena.playing.forEach { player ->
-            if (!arena.alive.contains(player)) {
-                for (command in arena.losersCommands) {
-                    val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
-                }
-            }
-            if (arena.alive.contains(player)) {
-                for (command in arena.winnersCommands) {
-                    val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
-                }
-            }
-            for (command in arena.toAllCommands) {
-                val commandParsed = PlaceholderAPI.setPlaceholders(player, command)
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandParsed)
-            }
-        }
+        session.stop()
     }
 }
