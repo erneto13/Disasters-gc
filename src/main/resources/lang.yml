@@ -12,6 +12,7 @@ messages:
   now-murder: "<green>Now you are a murderer!"
   only-players: "<red>Only players can use this command!"
   no-arenas: "<red>No arenas available!"
+  arena-restarting: "<red>The arena is restarting, please wait!"
 
 swap:
   swapped-with: "<gradient:#ff00ff:#00ffff>✦ You swapped positions with <white>%player%<gradient:#ff00ff:#00ffff>!</gradient>"

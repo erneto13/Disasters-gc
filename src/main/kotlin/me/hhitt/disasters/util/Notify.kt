@@ -40,12 +40,10 @@ object Notify {
         sound(arena, Sound.BLOCK_NOTE_BLOCK_BASS)
     }
 
-    // single disaster announcement (kept for backwards compatibility)
     fun disaster(arena: Arena, disaster: Disaster) {
         disasters(arena, listOf(disaster))
     }
 
-    // grouped disaster announcements
     fun disasters(arena: Arena, disasterList: List<Disaster>) {
         if (disasterList.isEmpty()) return
 
@@ -53,7 +51,6 @@ object Notify {
         val subtitle = config.getString("disaster.announcement.subtitle") ?: ""
         sendTitleToArena(arena, title, subtitle)
 
-        // build disaster list text
         val disasterNames =
                 disasterList.map { disaster ->
                     val key =
@@ -74,7 +71,6 @@ object Notify {
                     config.getString("disaster.$key.description") ?: ""
                 }
 
-        // build chat messages
         val chatTemplate =
                 if (disasterList.size == 1) {
                     config.getStringList("disaster.announcement.chat-single")
@@ -82,7 +78,6 @@ object Notify {
                     config.getStringList("disaster.announcement.chat-multiple")
                 }
 
-        // create disaster list string
         val disasterListStr =
                 disasterNames
                         .mapIndexed { index, name -> "$name ${disasterDescriptions[index]}" }
@@ -149,6 +144,10 @@ object Notify {
                 }
 
         sendChatMessagesToArena(arena, chatMessages)
+    }
+
+    fun arenaRestarting(player: Player) {
+        Msg.send(player, "messages.arena-restarting")
     }
 
     private fun sendTitleToArena(arena: Arena, title: String, subtitle: String) {

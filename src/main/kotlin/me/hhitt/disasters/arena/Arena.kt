@@ -46,7 +46,12 @@ class Arena(
     private val gameSession = GameSession(this)
 
     fun addPlayer(player: Player) {
-        // Save player inventory/state before entering the game and clear it for arena gameplay
+        // Don't allow joining if arena is restarting
+        if (state == GameState.RESTARTING) {
+            Notify.arenaRestarting(player)
+            return
+        }
+
         Lobby.savePlayerState(player)
         player.inventory.clear()
 
@@ -74,12 +79,19 @@ class Arena(
     }
 
     fun removePlayer(player: Player) {
+        // Clean world border for this player if active
         if (disasters.contains(WorldBorder())) {
             resetWorldBorder(player)
         }
+
         Lobby.teleportPlayer(player)
         playing.remove(player)
         alive.remove(player)
+
+        // Don't trigger stop if already restarting
+        if (state == GameState.RESTARTING) {
+            return
+        }
 
         if (isTestMode) {
             if (playing.isEmpty()) {
@@ -120,6 +132,12 @@ class Arena(
     }
 
     fun stop() {
+        // Prevent multiple stop calls
+        if (state == GameState.RESTARTING) {
+            return
+        }
+
+        state = GameState.RESTARTING
         gameSession.stop()
     }
 

@@ -28,7 +28,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
     override fun run() {
         if (time >= arena.maxTime) {
             cancel()
-            session.stop()
             return
         }
 
@@ -36,11 +35,9 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         if (arena.alive.size < requiredAlive) {
             cancel()
-            session.stop()
             return
         }
 
-        // play countdown sounds for initial cooldown
         if (time < cooldownSeconds) {
             val remainingCooldown = cooldownSeconds - time
             if (remainingCooldown <= 5 && remainingCooldown != lastSoundSecond) {
@@ -49,7 +46,6 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             }
         }
 
-        // play countdown sounds for next disaster
         if (time >= cooldownSeconds) {
             val timeUntilDisaster = nextDisasterIn
             if (timeUntilDisaster <= 5 &&
@@ -61,11 +57,10 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             }
         }
 
-        // spawn disasters after cooldown
         if (time >= cooldownSeconds && (time - cooldownSeconds) % arena.rate == 0) {
             DisasterRegistry.addRandomDisaster(arena)
             nextDisasterIn = arena.rate
-            lastSoundSecond = -1 // reset for next cycle
+            lastSoundSecond = -1
         }
 
         time++
@@ -85,15 +80,18 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
     }
 
     fun getNextDisasterIn(): Int {
-        // if still in cooldown, return cooldown time
         if (time < cooldownSeconds) {
             return cooldownSeconds - time
         }
-        // otherwise return time until next disaster
         return nextDisasterIn.coerceAtLeast(0)
     }
 
     override fun cancel() {
+        super.cancel()
+
+        // Immediately set restarting state
+        arena.state = GameState.RESTARTING
+
         plugin.launch {
             arena.playing.forEach { player ->
                 Data.increaseTotalPlayed(player.uniqueId)
@@ -108,34 +106,34 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         executeCommands()
 
+        // Clean disasters immediately
         DisasterRegistry.removeDisasters(arena)
 
-        arena.state = GameState.RESTARTING
-        super.cancel()
-
         Notify.gameEnd(arena)
-
         Notify.winners(arena)
 
         celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
     }
 
     private fun completeCelebrationAndReset() {
+        // Double check disasters are removed
         DisasterRegistry.removeDisasters(arena)
 
+        // Teleport all players before cleanup
         Lobby.teleportAtEnd(arena)
 
+        // Cleanup entities and fluids
         arena.entityCleanupService.cleanupMeteors()
         arena.entityCleanupService.cleanupFireworks()
         arena.entityCleanupService.cleanupExtendedArea(50)
 
+        // Reset timer variables
         time = 0
         remaining = arena.maxTime
         nextDisasterIn = arena.rate
         lastSoundSecond = -1
 
-        arena.state = GameState.RECRUITING
-
+        // Paste arena and set state back to recruiting
         arena.resetService.paste()
     }
 
