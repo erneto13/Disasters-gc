@@ -26,7 +26,6 @@ class GameSession(private val arena: Arena) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun start() {
-        // solo iniciar countdown si estamos en estado recruiting
         if (arena.state == GameState.RECRUITING) {
             startCountdown()
         }
@@ -57,14 +56,12 @@ class GameSession(private val arena: Arena) {
     }
 
     fun stop() {
-        // prevenir multiples llamadas a stop
         if (arena.state == GameState.RESTARTING) {
             return
         }
 
         arena.state = GameState.RESTARTING
 
-        // cancelar tareas
         countdownTask?.cancel()
         timerTask?.cancel()
         countdownTask = null
@@ -82,35 +79,46 @@ class GameSession(private val arena: Arena) {
             )
             performImmediateReset()
         } else {
-            // jugadores presentes - final normal con celebracion
             performNormalEnd()
         }
     }
 
     private fun performImmediateReset() {
-        // limpieza inmediata de entidades y fluidos
-        arena.entityCleanupService.cleanupMeteors()
-        arena.entityCleanupService.cleanupFireworks()
-        arena.entityCleanupService.cleanupExtendedArea(50)
-        arena.fluidCleanupService.cleanupFluids()
-        arena.fluidCleanupService.cleanupExtendedArea(10)
+        val playersToTeleport = arena.playing.toList()
+
+        playersToTeleport.forEach { player -> Lobby.teleportPlayer(player) }
 
         arena.clear()
 
-        org.bukkit.Bukkit.getScheduler().runTask(plugin, Runnable {
-            arena.resetService.paste()
-            plugin.logger.info("Arena ${arena.name} reset completed (empty arena)")
-        })
+        plugin.server.scheduler.runTaskLater(
+                plugin,
+                Runnable {
+                    arena.entityCleanupService.cleanupMeteors()
+                    arena.entityCleanupService.cleanupFireworks()
+                    arena.entityCleanupService.cleanupExtendedArea(50)
+                    arena.fluidCleanupService.cleanupFluids()
+                    arena.fluidCleanupService.cleanupExtendedArea(10)
+
+                    plugin.server.scheduler.runTask(
+                            plugin,
+                            Runnable {
+                                arena.resetService.paste()
+                                plugin.logger.info(
+                                        "Arena ${arena.name} reset completed (empty arena)"
+                                )
+                            }
+                    )
+                },
+                5L
+        )
     }
 
     private fun performNormalEnd() {
         val celebrationManager = CelebrationManager(plugin)
 
-        // notificar jugadores
         Notify.gameEnd(arena)
         Notify.winners(arena)
 
-        // actualizar estadisticas
         coroutineScope.launch {
             arena.playing.forEach { player ->
                 Data.increaseTotalPlayed(player.uniqueId)
@@ -123,30 +131,40 @@ class GameSession(private val arena: Arena) {
             }
         }
 
-        // ejecutar comandos
         executeCommands()
 
-        // iniciar celebracion
         celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
     }
 
     private fun completeCelebrationAndReset() {
         DisasterRegistry.removeDisasters(arena)
 
-        Lobby.teleportAtEnd(arena)
-
-        arena.entityCleanupService.cleanupMeteors()
-        arena.entityCleanupService.cleanupFireworks()
-        arena.entityCleanupService.cleanupExtendedArea(50)
-        arena.fluidCleanupService.cleanupFluids()
-        arena.fluidCleanupService.cleanupExtendedArea(10)
+        val playersToTeleport = arena.playing.toList()
+        playersToTeleport.forEach { player -> Lobby.teleportPlayer(player) }
 
         arena.clear()
 
-        org.bukkit.Bukkit.getScheduler().runTask(plugin, Runnable {
-            arena.resetService.paste()
-            plugin.logger.info("Arena ${arena.name} reset completed (after celebration)")
-        })
+        plugin.server.scheduler.runTaskLater(
+                plugin,
+                Runnable {
+                    arena.entityCleanupService.cleanupMeteors()
+                    arena.entityCleanupService.cleanupFireworks()
+                    arena.entityCleanupService.cleanupExtendedArea(50)
+                    arena.fluidCleanupService.cleanupFluids()
+                    arena.fluidCleanupService.cleanupExtendedArea(10)
+
+                    plugin.server.scheduler.runTask(
+                            plugin,
+                            Runnable {
+                                arena.resetService.paste()
+                                plugin.logger.info(
+                                        "Arena ${arena.name} reset completed (after celebration)"
+                                )
+                            }
+                    )
+                },
+                5L
+        )
     }
 
     private fun executeCommands() {

@@ -43,9 +43,7 @@ class FluidCleanupService(private val arena: Arena) {
                 for (y in 0 until world.maxHeight) {
                     val block = world.getBlockAt(x, y, z)
                     if (isFluid(block)) {
-                        if (y <= maxY) {
-                            block.type = Material.AIR
-                        }
+                        block.type = Material.AIR
                     }
                 }
             }

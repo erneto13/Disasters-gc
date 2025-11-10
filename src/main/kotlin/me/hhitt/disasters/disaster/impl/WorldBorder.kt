@@ -2,7 +2,6 @@ package me.hhitt.disasters.disaster.impl
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
-import me.hhitt.disasters.util.Notify
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket
@@ -30,7 +29,7 @@ class WorldBorder : Disaster {
         val initialRadius = corner1.distance(corner2) / 2
         arenaSizes[arena] = initialRadius
 
-        for (player in arena.playing) {
+        for (player in arena.alive) {
             sendWorldBorder(player, center, initialRadius)
         }
     }
@@ -52,7 +51,7 @@ class WorldBorder : Disaster {
                                 (arena.corner1.y + arena.corner2.y) / 2,
                                 (arena.corner1.z + arena.corner2.z) / 2
                         )
-                arena.playing.toList().forEach { player ->
+                arena.alive.toList().forEach { player ->
                     sendWorldBorder(player, center, newRadius)
                 }
                 checkPlayersOutsideBorderAndApplyDamage(arena, center, newRadius)

@@ -8,7 +8,6 @@ import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.storage.file.DisasterFileManager
 import me.hhitt.disasters.util.EntityUtils
-import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
 import org.bukkit.entity.EnderDragon
 import org.bukkit.entity.EntityType
@@ -86,7 +85,6 @@ class Dragons : Disaster {
 
             dragons.add(dragon)
         }
-
     }
 
     override fun pulse(time: Int) {
@@ -100,19 +98,31 @@ class Dragons : Disaster {
                 continue
             }
 
-            // keep dragons in bounds and moving
             if (enforceBoundaries && tickCounter % retargetInterval == 0) {
                 val arena = arenas.firstOrNull() ?: continue
                 keepDragonInBounds(dragon, arena)
             }
 
-            // ensure dragon stays in aggressive phase
             if (tickCounter % 20 == 0) {
+                val arena = arenas.firstOrNull() ?: continue
+
+                // Use appropriate phase based on player availability
                 val targetPhase =
                         when (dragonPhase) {
-                            0 -> EnderDragon.Phase.CIRCLING
-                            1 -> EnderDragon.Phase.CHARGE_PLAYER
-                            3 -> EnderDragon.Phase.STRAFING
+                            1 -> {
+                                if (arena.alive.isNotEmpty()) {
+                                    EnderDragon.Phase.CHARGE_PLAYER
+                                } else {
+                                    EnderDragon.Phase.CIRCLING
+                                }
+                            }
+                            3 -> {
+                                if (arena.alive.isNotEmpty()) {
+                                    EnderDragon.Phase.STRAFING
+                                } else {
+                                    EnderDragon.Phase.CIRCLING
+                                }
+                            }
                             10 -> EnderDragon.Phase.HOVER
                             else -> EnderDragon.Phase.CIRCLING
                         }
@@ -193,11 +203,9 @@ class Dragons : Disaster {
         val currentY = dragon.location.y
         val floorY = minY
 
-        // calculate target height based on floor
         val targetMinY = floorY + minHeightAboveFloor
         val targetMaxY = floorY + maxHeightAboveFloor
 
-        // if dragon is too high or too low, bring it back
         val targetY =
                 if (currentY > targetMaxY) {
                     targetMaxY.toDouble()
@@ -212,24 +220,33 @@ class Dragons : Disaster {
 
         val targetLoc = Location(arena.corner1.world, targetX, targetY, targetZ)
 
-        // set phase based on config
+        // Use CIRCLING instead of STRAFING to avoid player requirement
         val targetPhase =
                 when (dragonPhase) {
-                    0 -> EnderDragon.Phase.CIRCLING
-                    1 -> EnderDragon.Phase.CHARGE_PLAYER
-                    3 -> EnderDragon.Phase.STRAFING
+                    1 -> {
+                        if (arena.alive.isNotEmpty()) {
+                            EnderDragon.Phase.CHARGE_PLAYER
+                        } else {
+                            EnderDragon.Phase.CIRCLING
+                        }
+                    }
+                    3 -> {
+                        if (arena.alive.isNotEmpty()) {
+                            EnderDragon.Phase.STRAFING
+                        } else {
+                            EnderDragon.Phase.CIRCLING
+                        }
+                    }
                     10 -> EnderDragon.Phase.HOVER
                     else -> EnderDragon.Phase.CIRCLING
                 }
 
         dragon.phase = targetPhase
 
-        // if there are players, sometimes target them
         if (arena.alive.isNotEmpty() && Random.nextFloat() < 0.4f) {
             val randomPlayer = arena.alive.random()
             val playerLoc = randomPlayer.location
 
-            // target near player but at configured height
             val nearPlayerLoc =
                     Location(
                             arena.corner1.world,

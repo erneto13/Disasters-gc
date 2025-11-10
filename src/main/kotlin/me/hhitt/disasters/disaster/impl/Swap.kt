@@ -3,7 +3,6 @@ package me.hhitt.disasters.disaster.impl
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.util.Msg
-import me.hhitt.disasters.util.Notify
 import me.hhitt.disasters.util.PS
 import org.bukkit.Color
 import org.bukkit.Particle
@@ -12,13 +11,16 @@ import org.bukkit.Sound
 class Swap : Disaster {
 
     val arenas = mutableListOf<Arena>()
+    private var lastSwapTime = 0
 
     override fun start(arena: Arena) {
         arenas.add(arena)
+        lastSwapTime = 0
     }
 
     override fun pulse(time: Int) {
-        if (time % 10 != 0) return
+        if (time - lastSwapTime < 10) return
+        lastSwapTime = time
 
         arenas.toList().forEach { arena ->
             val players = arena.alive.toList()
@@ -38,18 +40,15 @@ class Swap : Disaster {
                 val loc1 = player1.location.clone()
                 val loc2 = player2.location.clone()
 
-                // pre-teleport effects
                 spawnTeleportEffect(loc1)
                 spawnTeleportEffect(loc2)
 
                 PS.playSound(player1, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f)
                 PS.playSound(player2, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f)
 
-                // teleport
                 player1.teleport(loc2)
                 player2.teleport(loc1)
 
-                // post-teleport effects
                 spawnTeleportEffect(loc2)
                 spawnTeleportEffect(loc1)
 

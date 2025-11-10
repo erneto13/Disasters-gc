@@ -2,12 +2,11 @@ package me.hhitt.disasters.disaster.impl
 
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
-import me.hhitt.disasters.util.Notify
 import org.bukkit.attribute.Attribute
 
 class OneHearth : Disaster {
     override fun start(arena: Arena) {
-        arena.playing.forEach { player ->
+        arena.alive.forEach { player ->
             val maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH)
             maxHealthAttribute?.baseValue = 10.0
 
@@ -23,7 +22,9 @@ class OneHearth : Disaster {
             val maxHealthAttribute = player.getAttribute(Attribute.MAX_HEALTH)
             maxHealthAttribute?.baseValue = 20.0
 
-            player.health = 20.0
+            if (player.health > 0) {
+                player.health = 20.0
+            }
         }
     }
 }

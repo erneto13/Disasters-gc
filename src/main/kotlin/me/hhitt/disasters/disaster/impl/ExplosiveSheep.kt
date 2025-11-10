@@ -4,7 +4,6 @@ import kotlin.random.Random
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.model.entity.DisasterSheep
-import me.hhitt.disasters.util.Notify
 import net.minecraft.world.entity.Entity
 import org.bukkit.Location
 import org.bukkit.Material

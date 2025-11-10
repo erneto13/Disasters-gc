@@ -3,7 +3,6 @@ package me.hhitt.disasters.disaster.impl
 import kotlin.random.Random
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
-import me.hhitt.disasters.util.Notify
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World

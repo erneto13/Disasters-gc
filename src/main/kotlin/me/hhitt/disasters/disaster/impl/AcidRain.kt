@@ -7,7 +7,6 @@ import me.hhitt.disasters.Disasters
 import me.hhitt.disasters.arena.Arena
 import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.storage.file.DisasterFileManager
-import me.hhitt.disasters.util.Notify
 import me.hhitt.disasters.util.PS
 import net.minecraft.core.BlockPos
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket

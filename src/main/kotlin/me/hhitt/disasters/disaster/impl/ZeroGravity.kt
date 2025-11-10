@@ -7,11 +7,12 @@ import org.bukkit.potion.PotionEffect
 
 class ZeroGravity : Disaster {
 
-    private val players = mutableListOf<Player>()
-    private val count = 0
+    private val arenaPlayers = mutableMapOf<Arena, MutableList<Player>>()
+    private var count = 0
 
     override fun start(arena: Arena) {
-        arena.playing.forEach() {
+        val players = mutableListOf<Player>()
+        arena.alive.forEach {
             players.add(it)
             it.addPotionEffect(
                     PotionEffect(
@@ -23,32 +24,34 @@ class ZeroGravity : Disaster {
                     )
             )
         }
+        arenaPlayers[arena] = players
     }
 
     override fun pulse(time: Int) {
         if (count > 30) return
-
         if (time % 11 != 0) return
 
-        players.forEach {
-            it.addPotionEffect(
-                    PotionEffect(
-                            org.bukkit.potion.PotionEffectType.LEVITATION,
-                            20 * 5,
-                            1,
-                            true,
-                            false
-                    )
-            )
+        arenaPlayers.forEach { (arena, players) ->
+            players.filter { arena.alive.contains(it) }.forEach {
+                it.addPotionEffect(
+                        PotionEffect(
+                                org.bukkit.potion.PotionEffectType.LEVITATION,
+                                20 * 5,
+                                1,
+                                true,
+                                false
+                        )
+                )
+            }
         }
 
-        count.inc()
+        count++
     }
 
     override fun stop(arena: Arena) {
         arena.playing.forEach {
-            players.remove(it)
             it.removePotionEffect(org.bukkit.potion.PotionEffectType.LEVITATION)
         }
+        arenaPlayers.remove(arena)
     }
 }
