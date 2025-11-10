@@ -13,6 +13,7 @@ messages:
   only-players: "<red>Only players can use this command!"
   no-arenas: "<red>No arenas available!"
   arena-restarting: "<red>The arena is restarting, please wait!"
+  cannot-leave-during-game: "<red>You cannot leave during an active game! <gray>Wait for the game to end or ask an admin to use <yellow>/dg arena forcestop"
 
 swap:
   swapped-with: "<gradient:#ff00ff:#00ffff>✦ You swapped positions with <white>%player%<gradient:#ff00ff:#00ffff>!</gradient>"

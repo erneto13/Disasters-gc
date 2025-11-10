@@ -81,7 +81,6 @@ class Arena(
     }
 
     fun removePlayer(player: Player) {
-        // Clean world border for this player if active
         if (disasters.contains(WorldBorder())) {
             resetWorldBorder(player)
         }
@@ -90,33 +89,33 @@ class Arena(
         playing.remove(player)
         alive.remove(player)
 
-        // Don't trigger stop if already restarting
         if (state == GameState.RESTARTING) {
             return
         }
 
         val requiredPlayers = if (isTestMode) 1 else minPlayers
 
-        // Only cancel/stop if we don't have enough players anymore
-        if (isTestMode) {
-            if (playing.isEmpty()) {
-                stop()
-            }
-        } else {
-            // If in countdown or recruiting, check if we still have enough players
-            if (state == GameState.RECRUITING || state == GameState.COUNTDOWN) {
+        when (state) {
+            GameState.RECRUITING, GameState.COUNTDOWN -> {
                 if (playing.size < requiredPlayers) {
-                    // Cancel countdown if active, return to recruiting
                     if (state == GameState.COUNTDOWN) {
                         gameSession.cancelCountdown()
                         state = GameState.RECRUITING
                     }
                 }
-            } else if (state == GameState.LIVE) {
-                // In live game, check alive count
-                if (alive.size < aliveToEnd) {
-                    stop()
+            }
+            GameState.LIVE -> {
+                if (isTestMode) {
+                    if (playing.isEmpty()) {
+                        stop()
+                    }
+                } else {
+                    if (alive.size < aliveToEnd || playing.isEmpty()) {
+                        stop()
+                    }
                 }
+            }
+            GameState.RESTARTING -> {
             }
         }
 

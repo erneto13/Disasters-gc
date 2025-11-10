@@ -74,93 +74,79 @@ class ArenaCommand(private val arenaManager: ArenaManager) {
 
     @Subcommand("arena leave")
     fun leave(actor: BukkitCommandActor) {
-        // Checking if the actor is a player and obtaining it
         if (!actor.isPlayer) return
         val player = actor.asPlayer()!!
 
-        // Getting the arena from the ArenaManager
-        arenaManager.getArena(player)?.removePlayer(player)
-                ?: run { Msg.send(player, "messages.not-in-arena") }
+        val arena = arenaManager.getArena(player)
+
+        if (arena == null) {
+            Msg.send(player, "messages.not-in-arena")
+            return
+        }
+
+        if (arena.state == GameState.LIVE) {
+            Msg.send(player, "messages.cannot-leave-during-game")
+            return
+        }
+
+        arena.removePlayer(player)
     }
 
     @Subcommand("arena forcestart")
     fun forceStart(actor: BukkitCommandActor) {
-        // Checking if the actor is a player and obtaining it
         if (!actor.isPlayer) return
         val player = actor.asPlayer()!!
 
-        // Getting the arena from the ArenaManager
         arenaManager.getArena(player)?.let {
-            // Checking if the player has permission
             if (!player.hasPermission("disasters.forcestart")) {
                 Msg.send(player, "messages.no-permission")
-
                 return
             }
             it.start()
         }
-                ?: run {
-                    // If the arena does not exist
-                    Msg.send(player, "messages.not-in-arena")
-                }
+                ?: run { Msg.send(player, "messages.not-in-arena") }
     }
 
     @Subcommand("arena forcestop")
     fun forceStop(actor: BukkitCommandActor) {
-        // Checking if the actor is a player and obtaining it
         if (!actor.isPlayer) return
         val player = actor.asPlayer()!!
 
-        // Getting the arena from the ArenaManager
         arenaManager.getArena(player)?.let {
-            // Checking if the player has permission
             if (!player.hasPermission("disasters.forcestop")) {
                 Msg.send(player, "messages.no-permission")
                 return
             }
             it.stop()
         }
-                ?: run {
-                    // If the arena does not exist
-                    Msg.send(player, "messages.not-in-arena")
-                }
+                ?: run { Msg.send(player, "messages.not-in-arena") }
     }
 
     @Subcommand("forcestart <arena>")
     fun forceStart(actor: BukkitCommandActor, arena: String) {
         val sender = actor.sender()
 
-        // Getting the arena from the ArenaManager
         arenaManager.getArena(arena)?.let {
-            // Checking if the player has permission
             if (!sender.hasPermission("disasters.forcestart")) {
                 Msg.send(sender, "messages.no-permission")
                 return
             }
             it.start()
         }
-                ?: run {
-                    // If the arena does not exist
-                    Msg.send(sender, "messages.arena-not-found")
-                }
+                ?: run { Msg.send(sender, "messages.arena-not-found") }
     }
 
     @Subcommand("arena forcestop <arena>")
     fun forceStop(actor: BukkitCommandActor, arena: String) {
         val sender = actor.sender()
 
-        // Getting the arena from the ArenaManager
         arenaManager.getArena(arena)?.let {
-            // Checking if the player has permission
             if (!sender.hasPermission("disasters.forcestop")) {
                 Msg.send(sender, "messages.no-permission")
                 return
             }
             it.stop()
         }
-                ?: run {
-                    // If the arena does not exist
-                    Msg.send(sender, "messages.arena-not-found")
-                }
+                ?: run { Msg.send(sender, "messages.arena-not-found") }
     }
 }

@@ -26,7 +26,7 @@ class GameSession(private val arena: Arena) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun start() {
-        // Only start countdown if we're in RECRUITING state
+        // solo iniciar countdown si estamos en estado recruiting
         if (arena.state == GameState.RECRUITING) {
             startCountdown()
         }
@@ -57,14 +57,14 @@ class GameSession(private val arena: Arena) {
     }
 
     fun stop() {
-        // Prevent multiple stop calls
+        // prevenir multiples llamadas a stop
         if (arena.state == GameState.RESTARTING) {
             return
         }
 
         arena.state = GameState.RESTARTING
 
-        // Cancel tasks
+        // cancelar tareas
         countdownTask?.cancel()
         timerTask?.cancel()
         countdownTask = null
@@ -82,34 +82,35 @@ class GameSession(private val arena: Arena) {
             )
             performImmediateReset()
         } else {
-            // Players present - normal end with celebration
+            // jugadores presentes - final normal con celebracion
             performNormalEnd()
         }
     }
 
     private fun performImmediateReset() {
-        // Immediate cleanup
+        // limpieza inmediata de entidades y fluidos
         arena.entityCleanupService.cleanupMeteors()
         arena.entityCleanupService.cleanupFireworks()
         arena.entityCleanupService.cleanupExtendedArea(50)
         arena.fluidCleanupService.cleanupFluids()
         arena.fluidCleanupService.cleanupExtendedArea(10)
 
-        // Reset arena state
         arena.clear()
 
-        // Paste arena and set state back to recruiting
-        arena.resetService.paste()
+        org.bukkit.Bukkit.getScheduler().runTask(plugin, Runnable {
+            arena.resetService.paste()
+            plugin.logger.info("Arena ${arena.name} reset completed (empty arena)")
+        })
     }
 
     private fun performNormalEnd() {
         val celebrationManager = CelebrationManager(plugin)
 
-        // Notify players
+        // notificar jugadores
         Notify.gameEnd(arena)
         Notify.winners(arena)
 
-        // Update stats
+        // actualizar estadisticas
         coroutineScope.launch {
             arena.playing.forEach { player ->
                 Data.increaseTotalPlayed(player.uniqueId)
@@ -122,10 +123,10 @@ class GameSession(private val arena: Arena) {
             }
         }
 
-        // Execute commands (moved from GameTimer)
+        // ejecutar comandos
         executeCommands()
 
-        // Start celebration
+        // iniciar celebracion
         celebrationManager.startCelebration(arena) { completeCelebrationAndReset() }
     }
 
@@ -137,6 +138,15 @@ class GameSession(private val arena: Arena) {
         arena.entityCleanupService.cleanupMeteors()
         arena.entityCleanupService.cleanupFireworks()
         arena.entityCleanupService.cleanupExtendedArea(50)
+        arena.fluidCleanupService.cleanupFluids()
+        arena.fluidCleanupService.cleanupExtendedArea(10)
+
+        arena.clear()
+
+        org.bukkit.Bukkit.getScheduler().runTask(plugin, Runnable {
+            arena.resetService.paste()
+            plugin.logger.info("Arena ${arena.name} reset completed (after celebration)")
+        })
     }
 
     private fun executeCommands() {
