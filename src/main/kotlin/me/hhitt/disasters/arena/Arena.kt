@@ -61,7 +61,9 @@ class Arena(
         Notify.playerJoined(player, this)
 
         val requiredPlayers = if (isTestMode) 1 else minPlayers
-        if (playing.size >= requiredPlayers) {
+
+        // Only start countdown if we have enough players AND we're still in RECRUITING state
+        if (playing.size >= requiredPlayers && state == GameState.RECRUITING) {
             start()
         }
     }
@@ -93,21 +95,31 @@ class Arena(
             return
         }
 
+        val requiredPlayers = if (isTestMode) 1 else minPlayers
+
+        // Only cancel/stop if we don't have enough players anymore
         if (isTestMode) {
             if (playing.isEmpty()) {
                 stop()
             }
         } else {
-            if (isWaiting()) {
-                if (playing.size < minPlayers) {
-                    stop()
+            // If in countdown or recruiting, check if we still have enough players
+            if (state == GameState.RECRUITING || state == GameState.COUNTDOWN) {
+                if (playing.size < requiredPlayers) {
+                    // Cancel countdown if active, return to recruiting
+                    if (state == GameState.COUNTDOWN) {
+                        gameSession.cancelCountdown()
+                        state = GameState.RECRUITING
+                    }
                 }
-            } else {
+            } else if (state == GameState.LIVE) {
+                // In live game, check alive count
                 if (alive.size < aliveToEnd) {
                     stop()
                 }
             }
         }
+
         Notify.playerLeft(player, this)
     }
 
@@ -128,7 +140,10 @@ class Arena(
     }
 
     fun start() {
-        gameSession.start()
+        // Only start if we're in RECRUITING state
+        if (state == GameState.RECRUITING) {
+            gameSession.start()
+        }
     }
 
     fun stop() {

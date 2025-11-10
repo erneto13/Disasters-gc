@@ -264,87 +264,108 @@ disaster:
 
   acid-rain:
     name: "<red>Acid Rain"
-    description: "<gray>Take cover from the toxic rain!"
+    description:
+    - "<gray>Take cover from the toxic rain!"
 
   apocalypse:
     name: "<red>Zombie Apocalypse"
-    description: "<gray>Hordes of zombies are spawning!"
+    description:
+    - "<gray>Hordes of zombies are spawning!"
 
   explosive-sheep:
     name: "<red>Explosive Sheep"
-    description: "<gray>Watch out for the TNT sheep!"
+    description:
+    - "<gray>Watch out for the TNT sheep!"
 
   floor-is-lava:
     name: "<red>Floor is Lava"
-    description: "<gray>Don't touch the ground!"
+    description:
+    - "<gray>Don't touch the ground!"
 
   grounded:
     name: "<red>Grounded"
-    description: "<gray>You can't jump anymore!"
+    description:
+    - "<gray>You can't jump anymore!"
 
   lightning:
     name: "<red>Lightning Storm"
-    description: "<gray>Lightning strikes everywhere!"
+    description:
+    - "<gray>Lightning strikes everywhere!"
 
   one-hearth:
     name: "<red>One Heart"
-    description: "<gray>Your health is reduced to minimum!"
+    description:
+    - "<gray>Your health is reduced to minimum!"
 
   swap:
     name: "<gradient:#ff00ff:#00ffff>Swap"
-    description: "<gray>Players swap positions randomly!"
+    description:
+    - "<gray>Players swap positions randomly!"
 
   world-border:
     name: "<red>World Border"
-    description: "<gray>The border is shrinking!"
+    description:
+    - "<gray>The border is shrinking!"
 
   blind:
     name: "<red>Blindness"
-    description: "<gray>Your vision is impaired!"
+    description:
+    - "<gray>Your vision is impaired!"
 
   cobweb:
     name: "<red>Cobwebs"
-    description: "<gray>Cobwebs spawn under your feet!"
+    description:
+    - "<gray>Cobwebs spawn under your feet!"
 
   lag:
     name: "<red>Lag"
-    description: "<gray>Experience severe lag!"
+    description:
+    - "<gray>Experience severe lag!"
 
   zero-gravity:
     name: "<red>Zero Gravity"
-    description: "<gray>Levitation effect activated!"
+    description:
+    - "<gray>Levitation effect activated!"
 
   wither:
     name: "<red>Wither Boss"
-    description: "<gray>A wither has spawned!"
+    description:
+    - "<gray>A wither has spawned!"
 
   hot-sun:
     name: "<red>Hot Sun"
-    description: "<gray>The sun burns exposed players!"
+    description:
+    - "<gray>The sun burns exposed players!"
 
   murder:
     name: "<red>Murder"
-    description: "<gray>Some players have swords!"
+    description:
+    - "<gray>Some players have swords!"
 
   allow-fight:
     name: "<red>PvP Enabled"
-    description: "<gray>Players can attack each other!"
+    description:
+    - "<gray>Players can attack each other!"
 
   disappear-blocks:
     name: "<red>Disappearing Blocks"
-    description: "<gray>Blocks vanish under your feet!"
+    description:
+    - "<gray>Blocks vanish under your feet!"
 
   no-jump:
     name: "<red>No Jump"
-    description: "<gray>Jump boost applied - don't jump!"
+    description:
+    - "<gray>Jump boost applied - don't jump!"
 
   meteor-shower:
     name: "<red>Meteor Shower"
-    description: "<gray>Meteors fall from the sky!"
+    description:
+    - "<gray>Meteors fall from the sky!"
 
   dragons:
     name: "<red>Dragon Attack"
-    description: "<gray>Dragons are flying above!"
+    description:
+    - "<gray>Dragons are flying above!"
 
 game-winners:
   title: "<gold><bold>WINNERS</bold>"

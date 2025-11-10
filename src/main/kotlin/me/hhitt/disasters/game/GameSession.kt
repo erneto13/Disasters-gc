@@ -16,6 +16,7 @@ class GameSession(private val arena: Arena) {
     private var gameTimer: GameTimer? = null
 
     fun start() {
+        // Only start countdown if we're in RECRUITING state
         if (arena.state == GameState.RECRUITING) {
             startCountdown()
         }
@@ -25,6 +26,14 @@ class GameSession(private val arena: Arena) {
         arena.state = GameState.COUNTDOWN
         countdown = Countdown(arena, this)
         countdownTask = countdown!!.runTaskTimer(plugin, 0, 20L)
+    }
+
+    fun cancelCountdown() {
+        countdown?.cancel()
+        countdownTask?.cancel()
+        countdownTask = null
+        countdown = null
+        arena.state = GameState.RECRUITING
     }
 
     fun startGameTimer() {
@@ -38,6 +47,13 @@ class GameSession(private val arena: Arena) {
     }
 
     fun stop() {
+        // Prevent multiple stop calls
+        if (arena.state == GameState.RESTARTING) {
+            return
+        }
+
+        arena.state = GameState.RESTARTING
+
         // Cancel tasks
         countdownTask?.cancel()
         timerTask?.cancel()
