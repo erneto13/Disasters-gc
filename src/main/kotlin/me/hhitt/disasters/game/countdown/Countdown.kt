@@ -20,11 +20,12 @@ class Countdown(private val arena: Arena, private val session: GameSession) : Bu
     var remaining = arena.countdown
 
     override fun run() {
+        // si ya termino el countdown, iniciar el juego
         if (time >= arena.countdown) {
             if (time >= (arena.countdown + 2)) {
-                // Teleport all players to spawn with random offsets before starting
+                // teleportar jugadores con offsets aleatorios
                 teleportPlayersToSpawn()
-
+                // mostrar titulo de inicio
                 Notify.gameStart(arena)
                 cancel()
                 session.startGameTimer()
@@ -36,10 +37,14 @@ class Countdown(private val arena: Arena, private val session: GameSession) : Bu
         val requiredAlive = if (arena.isTestMode) 1 else arena.minPlayers
 
         if (arena.alive.size < requiredAlive) {
-            cancel()
+            // cancelar sin mostrar notificacion, el gameSession ya maneja el estado
+            super.cancel()
+            time = 0
+            remaining = arena.countdown
             return
         }
 
+        // mostrar notificacion y reproducir sonido
         Notify.countdown(arena, remaining)
         time++
         remaining--
@@ -47,7 +52,10 @@ class Countdown(private val arena: Arena, private val session: GameSession) : Bu
 
     override fun cancel() {
         super.cancel()
-        Notify.countdownCanceled(arena)
+        // solo mostrar cancelacion si realmente fue cancelado (no por tiempo)
+        if (time < arena.countdown) {
+            Notify.countdownCanceled(arena)
+        }
         time = 0
         remaining = arena.countdown
     }
