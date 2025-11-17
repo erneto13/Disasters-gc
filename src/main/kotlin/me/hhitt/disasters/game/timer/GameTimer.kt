@@ -20,16 +20,16 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
             return
         }
 
-        val requiredAlive = if (arena.isTestMode) 1 else arena.aliveToEnd
-
-        if (arena.alive.size <= requiredAlive && arena.alive.size > 0) {
-            cancel()
-            return
-        }
-
-        if (arena.alive.isEmpty()) {
-            cancel()
-            return
+        if (arena.isTestMode) {
+            if (arena.alive.isEmpty()) {
+                cancel()
+                return
+            }
+        } else {
+            if (arena.alive.size < arena.aliveToEnd) {
+                cancel()
+                return
+            }
         }
 
         if (time < cooldownSeconds) {
