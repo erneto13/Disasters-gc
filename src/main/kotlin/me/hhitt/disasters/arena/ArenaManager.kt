@@ -80,9 +80,9 @@ class ArenaManager(private val worldEdit: WorldEditPlugin?) {
                             arenaConfig.getDouble("corner2.z")
                     )
 
-            val winnersCommands = arenaConfig.getStringList("winners-commands")
-            val losersCommands = arenaConfig.getStringList("losers-commands")
-            val toAllCommands = arenaConfig.getStringList("to-all-commands")
+            val winnersCommands = arenaConfig.getStringList("commands.winners")
+            val losersCommands = arenaConfig.getStringList("commands.losers")
+            val toAllCommands = arenaConfig.getStringList("commands.to-all")
 
             val arena =
                     Arena(
