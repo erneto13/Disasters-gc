@@ -35,13 +35,15 @@ class WorldBorder : Disaster {
     }
 
     override fun pulse(time: Int) {
-        val iterator = arenaSizes.iterator()
-        while (iterator.hasNext()) {
-            val (arena, currentRadius) = iterator.next()
+        val arenasCopy = arenaSizes.keys.toList()
+
+        for (arena in arenasCopy) {
+            val currentRadius = arenaSizes[arena] ?: continue
             val newRadius = currentRadius - shrinkAmountPerPulse
+
             if (newRadius <= 0) {
                 stop(arena)
-                iterator.remove()
+                arenaSizes.remove(arena)
             } else {
                 arenaSizes[arena] = newRadius
                 val center =

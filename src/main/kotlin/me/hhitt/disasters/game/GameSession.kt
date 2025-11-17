@@ -62,6 +62,9 @@ class GameSession(private val arena: Arena) {
 
         arena.state = GameState.RESTARTING
 
+        // CRITICAL: Stop all disasters IMMEDIATELY before anything else
+        DisasterRegistry.removeDisasters(arena)
+
         countdownTask?.cancel()
         timerTask?.cancel()
         countdownTask = null
@@ -72,7 +75,7 @@ class GameSession(private val arena: Arena) {
         val hasPlayers = arena.playing.isNotEmpty()
 
         if (!hasPlayers) {
-            plugin.logger.info("Arena ${arena.name} is empty, cleaning up disasters immediately")
+            plugin.logger.info("Arena ${arena.name} is empty, cleaning up immediately")
             performImmediateReset()
         } else {
             performNormalEnd()
