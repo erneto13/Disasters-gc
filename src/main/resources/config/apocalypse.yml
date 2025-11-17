@@ -1,0 +1,160 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster spawns zombies that chase players around the arena
+# and can break blocks and doors to get to them.
+# ==========================================
+
+# spawn settings
+# --------------
+
+# spawn interval in ticks (20 ticks = 1 second)
+spawn-interval: 40
+
+# number of zombies to spawn per player each interval
+zombies-per-player: 2
+
+# spawn radius around the player where zombies can spawn (in blocks)
+spawn-radius: 10
+
+# zombie properties
+# -----------------
+
+# prevent zombies from burning in the sun
+prevent-sun-burn: true
+
+# zombie movement speed (1.0 = normal, 2.0 = double speed)
+movement-speed: 1.2
+
+# zombie health (20.0 = 10 hearts)
+zombie-health: 30.0
+
+# whether zombies can break doors
+can-break-doors: true
+
+# whether zombies can break blocks
+can-break-blocks: true
+
+# list of blocks that can be broken
+breakable-blocks:
+- DIRT
+- GRASS_BLOCK
+- SAND
+- GRAVEL
+- STONE
+- COBBLESTONE
+- WOODEN_DOOR
+- OAK_DOOR
+- SPRUCE_DOOR
+- BIRCH_DOOR
+- JUNGLE_DOOR
+- ACACIA_DOOR
+- DARK_OAK_DOOR
+- CRIMSON_DOOR
+- WARPED_DOOR
+
+# time between block break attempts (in ticks)
+block-break-interval: 30
+
+# radius to detect blocks near the zombie
+block-break-radius: 2
+
+# items on the head
+# ------------------
+
+# probability of spawning with an item on the head (0.0 to 1.0)
+# example: 0.5 = 50% probability
+helmet-chance: 0.3
+
+# list of possible items for the head
+# the zombie will choose one at random from this list
+possible-helmets:
+- material: IRON_HELMET
+  chance: 0.4
+- material: DIAMOND_HELMET
+  chance: 0.2
+- material: GOLDEN_HELMET
+  chance: 0.2
+- material: CHAINMAIL_HELMET
+  chance: 0.15
+- material: CARVED_PUMPKIN
+  chance: 0.05
+
+# probability of the item being enchanted (0.0 to 1.0)
+enchanted-helmet-chance: 0.3
+
+# maximum protection level the helmet can have
+max-protection-level: 2
+
+# items in hands
+# --------------
+
+# probability of having a weapon (0.0 to 1.0)
+weapon-chance: 0.4
+
+# possible weapons
+possible-weapons:
+- material: IRON_SWORD
+  chance: 0.5
+- material: DIAMOND_SWORD
+  chance: 0.2
+- material: STONE_SWORD
+  chance: 0.3
+
+# probability of the weapon being enchanted (0.0 to 1.0)
+enchanted-weapon-chance: 0.25
+
+# maximum sharpness level the weapon can have
+max-sharpness-level: 2
+
+# full armor
+# ------------- 
+
+# probability of spawning with full armor (0.0 to 1.0)
+full-armor-chance: 0.15
+
+# type of armor for full set (LEATHER, IRON, DIAMOND, etc)
+full-armor-type: IRON
+
+# special effects
+# ------------------
+
+# probability of having potion effects (0.0 to 1.0)
+potion-effect-chance: 0.2
+
+# possible effects (SPEED, STRENGTH, RESISTANCE, etc)
+possible-effects:
+- effect: SPEED
+  amplifier: 1
+  duration: 999999
+  chance: 0.4
+- effect: RESISTANCE
+  amplifier: 1
+  duration: 999999
+  chance: 0.3
+- effect: STRENGTH
+  amplifier: 0
+  duration: 999999
+  chance: 0.3
+
+# special variants
+# ----------------
+
+# probability of spawning a baby zombie (0.0 to 1.0)
+baby-zombie-chance: 0.1
+
+# baby zombies are faster
+baby-speed-multiplier: 1.5
+
+# DO NOT TOUCH THIS!
+config-version: 1
