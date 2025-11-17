@@ -69,14 +69,10 @@ class GameSession(private val arena: Arena) {
         countdown = null
         gameTimer = null
 
-        DisasterRegistry.removeDisasters(arena)
-
         val hasPlayers = arena.playing.isNotEmpty()
 
         if (!hasPlayers) {
-            plugin.logger.info(
-                    "Arena ${arena.name} is empty, skipping celebration and resetting immediately"
-            )
+            plugin.logger.info("Arena ${arena.name} is empty, cleaning up disasters immediately")
             performImmediateReset()
         } else {
             performNormalEnd()
@@ -84,10 +80,11 @@ class GameSession(private val arena: Arena) {
     }
 
     private fun performImmediateReset() {
+        // Clean disasters BEFORE removing players
+        DisasterRegistry.removeDisasters(arena)
+
         val playersToTeleport = arena.playing.toList()
-
         playersToTeleport.forEach { player -> Lobby.teleportPlayer(player) }
-
         arena.clear()
 
         plugin.server.scheduler.runTaskLater(
@@ -137,11 +134,11 @@ class GameSession(private val arena: Arena) {
     }
 
     private fun completeCelebrationAndReset() {
+        // Clean disasters BEFORE removing players
         DisasterRegistry.removeDisasters(arena)
 
         val playersToTeleport = arena.playing.toList()
         playersToTeleport.forEach { player -> Lobby.teleportPlayer(player) }
-
         arena.clear()
 
         plugin.server.scheduler.runTaskLater(

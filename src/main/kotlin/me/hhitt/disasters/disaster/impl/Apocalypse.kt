@@ -7,10 +7,8 @@ import me.hhitt.disasters.disaster.Disaster
 import me.hhitt.disasters.storage.file.DisasterFileManager
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
-import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -73,12 +71,20 @@ class Apocalypse : Disaster {
 
     override fun stop(arena: Arena) {
         arenas.remove(arena)
+
+        // Remove all zombies immediately
         zombiesData.keys.toList().forEach { zombie ->
             if (zombie.isValid) {
                 zombie.remove()
             }
         }
         zombiesData.clear()
+
+        Disasters.getInstance()
+                .logger
+                .info(
+                        "Apocalypse stopped and ${zombiesData.size} zombies removed from arena: ${arena.name}"
+                )
     }
 
     private fun loadConfig() {
@@ -91,7 +97,6 @@ class Apocalypse : Disaster {
             return
         }
 
-        // cargar configuracion basica
         spawnInterval = config.getInt("spawn-interval", 40)
         zombiesPerPlayer = config.getInt("zombies-per-player", 2)
         spawnRadius = config.getInt("spawn-radius", 10)
@@ -114,7 +119,6 @@ class Apocalypse : Disaster {
         babyZombieChance = config.getDouble("baby-zombie-chance", 0.1)
         babySpeedMultiplier = config.getDouble("baby-speed-multiplier", 1.5)
 
-        // cargar bloques rompibles
         breakableBlocks.clear()
         config.getStringList("breakable-blocks").forEach { materialName ->
             try {
@@ -126,7 +130,6 @@ class Apocalypse : Disaster {
             }
         }
 
-        // cargar cascos posibles
         possibleHelmets.clear()
         config.getMapList("possible-helmets").forEach { map ->
             val material = map["material"] as? String ?: return@forEach
@@ -134,7 +137,6 @@ class Apocalypse : Disaster {
             possibleHelmets.add(ItemConfig(material, chance))
         }
 
-        // cargar armas posibles
         possibleWeapons.clear()
         config.getMapList("possible-weapons").forEach { map ->
             val material = map["material"] as? String ?: return@forEach
@@ -142,7 +144,6 @@ class Apocalypse : Disaster {
             possibleWeapons.add(ItemConfig(material, chance))
         }
 
-        // cargar efectos posibles
         possibleEffects.clear()
         config.getMapList("possible-effects").forEach { map ->
             val effect = map["effect"] as? String ?: return@forEach
@@ -174,7 +175,6 @@ class Apocalypse : Disaster {
             val zombie = entry.key
             val data = entry.value
 
-            // remover zombies muertos o invalidos
             if (!zombie.isValid || zombie.isDead) {
                 iterator.remove()
                 continue
@@ -191,9 +191,8 @@ class Apocalypse : Disaster {
 
     private fun tryBreakNearbyBlock(zombie: Zombie) {
         val location = zombie.location
-        val nearbyBlocks = mutableListOf<Block>()
+        val nearbyBlocks = mutableListOf<org.bukkit.block.Block>()
 
-        // buscar bloques cercanos
         for (x in -blockBreakRadius..blockBreakRadius) {
             for (y in -1..2) {
                 for (z in -blockBreakRadius..blockBreakRadius) {
@@ -215,10 +214,9 @@ class Apocalypse : Disaster {
 
         val blockToBreak = nearbyBlocks.random()
 
-        // reproducir sonido de romper puerta
         location.world.playSound(
                 blockToBreak.location,
-                Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR,
+                org.bukkit.Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR,
                 1.0f,
                 0.8f
         )
@@ -227,19 +225,15 @@ class Apocalypse : Disaster {
     }
 
     private fun customizeZombie(zombie: Zombie) {
-
-        // configurar vida
         val healthAttr = zombie.getAttribute(Attribute.MAX_HEALTH)
         healthAttr?.baseValue = zombieHealth
         zombie.health = zombieHealth
 
-        // configurar velocidad
         val speedAttr = zombie.getAttribute(Attribute.MOVEMENT_SPEED)
         speedAttr?.let { attr -> attr.baseValue = attr.baseValue * movementSpeed }
 
         zombie.setCanBreakDoors(canBreakDoors)
 
-        // zombie bebe
         if (Random.nextDouble() < babyZombieChance) {
             zombie.setBaby()
             val babySpeedAttr = zombie.getAttribute(Attribute.MOVEMENT_SPEED)
@@ -249,7 +243,6 @@ class Apocalypse : Disaster {
             }
         }
 
-        // equipar armadura
         if (Random.nextDouble() < fullArmorChance) {
             equipFullArmor(zombie)
         } else {
@@ -258,12 +251,10 @@ class Apocalypse : Disaster {
             }
         }
 
-        // equipar arma
         if (Random.nextDouble() < weaponChance) {
             equipWeapon(zombie)
         }
 
-        // aplicar efectos
         if (Random.nextDouble() < potionEffectChance) {
             applyPotionEffect(zombie)
         }

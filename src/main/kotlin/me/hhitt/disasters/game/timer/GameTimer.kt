@@ -22,7 +22,12 @@ class GameTimer(private val arena: Arena, private val session: GameSession) : Bu
 
         val requiredAlive = if (arena.isTestMode) 1 else arena.aliveToEnd
 
-        if (arena.alive.size < requiredAlive) {
+        if (arena.alive.size <= requiredAlive && arena.alive.size > 0) {
+            cancel()
+            return
+        }
+
+        if (arena.alive.isEmpty()) {
             cancel()
             return
         }
