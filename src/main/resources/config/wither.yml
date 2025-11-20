@@ -1,0 +1,135 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster spawns withers that actively hunt down players
+# and cause destruction with their explosive skulls.
+# ==========================================
+
+# Spawn Settings
+# --------------
+
+# Number of withers to spawn
+wither-count: 1
+
+# Spawn location offset from arena center (in blocks)
+spawn-height-offset: 15
+
+# Whether to spawn withers spread out or at center
+spawn-spread: true
+
+# Spread radius if spawn-spread is true
+spawn-spread-radius: 10
+
+# Wither Properties
+# -----------------
+
+# Wither health multiplier (1.0 = normal, 2.0 = double health)
+health-multiplier: 2.0
+
+# Whether wither has AI enabled (should always be true)
+enable-ai: true
+
+# Show custom name above wither
+show-custom-name: false
+
+# Custom name for the wither (if show-custom-name is true)
+custom-name: "<red><bold>BOSS WITHER"
+
+# Behavior Settings
+# -----------------
+
+# How often to retarget players (in ticks, 20 = 1 second)
+# Lower = more responsive targeting
+retarget-interval: 40
+
+# Target the closest player instead of random
+target-closest-player: true
+
+# Whether wither should break blocks while moving
+break-blocks: true
+
+# Whether wither explodes blocks on death
+explode-on-death: false
+
+# Attack Settings
+# ---------------
+
+# Skull shooting frequency (in ticks, 20 = 1 second)
+# Lower = shoots more often
+skull-shoot-interval: 30
+
+# Shoot charged skulls (blue skulls that create bigger explosions)
+shoot-charged-skulls: true
+
+# Chance to shoot charged skull (0.0 to 1.0)
+charged-skull-chance: 0.5
+
+# Skull explosion power (3.0 = normal, 6.0 = double)
+skull-explosion-power: 3.0
+
+# Whether skulls destroy blocks
+skull-destroy-blocks: true
+
+# Shoot skulls even without player target
+shoot-random-skulls: true
+
+# Random skull shooting chance when no target (0.0 to 1.0)
+random-skull-chance: 0.3
+
+# Movement Settings
+# -----------------
+
+# Keep wither within arena boundaries
+enforce-boundaries: true
+
+# Boundary padding (blocks from arena edges)
+boundary-padding: 5
+
+# Maximum height wither can fly above arena floor
+max-height-above-floor: 30
+
+# Minimum height wither can fly above arena floor
+min-height-above-floor: 10
+
+# Movement speed multiplier (1.0 = normal)
+movement-speed: 1.0
+
+# Loot Settings
+# -------------
+
+# Whether wither drops loot when killed
+drop-loot: false
+
+# Drop a nether star even if drop-loot is false
+always-drop-nether-star: false
+
+# Special Effects
+# ---------------
+
+# Apply wither effect to nearby players
+apply-wither-effect: true
+
+# Wither effect radius (in blocks)
+wither-effect-radius: 10
+
+# How often to apply wither effect (in ticks)
+wither-effect-interval: 60
+
+# Wither effect duration (in ticks)
+wither-effect-duration: 100
+
+# Wither effect amplifier (0 = level 1, 1 = level 2)
+wither-effect-amplifier: 1
+
+# DO NOT TOUCH THIS!
+config-version: 1
