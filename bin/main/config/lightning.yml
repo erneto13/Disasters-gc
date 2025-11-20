@@ -1,0 +1,65 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# Lightning Disaster Configuration
+# Strikes lightning bolts with powerful explosions
+# ==========================================
+
+# Strike Settings
+# ---------------
+
+# How often lightning strikes (in ticks, 20 = 1 second)
+# Lower = more frequent strikes
+# Examples: 1 = every tick (insane), 3 = every 0.15s (very fast), 10 = every 0.5s
+strike-interval: 3
+
+# Radius around players where lightning can strike (in blocks)
+# Higher = more unpredictable
+radius: 8
+
+# Explosion Settings
+# ------------------
+
+# Explosion power (TNT = 4.0, Creeper = 3.0)
+# Higher = bigger crater, more debris
+# Recommended: 2.5 - 4.0
+explosion-power: 3.5
+
+# Whether explosions destroy blocks
+# true = creates craters and debris
+# false = only visual explosion
+explosion-breaks-blocks: true
+
+# Whether explosions set blocks on fire
+# true = leaves fire after explosion (more chaos)
+# false = no fire (recommended for most arenas)
+explosion-sets-fire: false
+
+# Damage Settings
+# ---------------
+
+# Damage multiplier for players near strikes
+# 1.0 = normal, 2.0 = double damage, 0.0 = no extra damage
+# Players take less damage the further they are from strike
+damage-multiplier: 1.0
+
+# Targeting Settings
+# ------------------
+
+# Target random players or always the same player
+# true = strikes near random players (more fair)
+# false = always targets first player (more focused)
+target-random-players: true
+
+# DO NOT TOUCH THIS!
+config-version: 1

@@ -1,0 +1,47 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster spawns dragons that fly around the arena
+# causing destruction with fireballs and chaos.
+# ==========================================
+
+# Rain Settings
+# -----------------
+
+# How often (in ticks) to damage players exposed to acid rain
+player-damage-interval: 40
+
+# Initial damage dealt to players
+initial-damage: 0.5
+
+# Maximum damage that can be dealt to players
+max-damage: 2.0
+
+# Rate at which damage increases (in ticks)
+damage-increase-rate: 80
+
+# Block damage settings
+# How often (in ticks) to check for new blocks to damage
+block-damage-check-interval: 5
+
+# Number of blocks to select for damage each check
+blocks-to-damage-per-pulse: 15
+
+# Total ticks needed to break a block
+block-damage-ticks-to-break: 100
+
+# Interval between visual break stages (0-9)
+break-stage-interval: 11
+
+# DO NOT TOUCH THIS!
+config-version: 1

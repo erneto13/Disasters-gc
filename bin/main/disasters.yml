@@ -1,0 +1,54 @@
+# Desastres deshabilitados (no aparecerán nunca)
+disabled-disasters:
+- "HotPotato"
+- "Lag"
+- "Cobweb"
+
+# Prioridades de desastres
+priorities:
+  low:
+  - "Blind"
+  - "NoJump"
+  - "Grounded"
+  - "ZeroGravity"
+  - "Swap"
+
+  medium:
+  - "HotSun"
+  - "Lightning"
+  - "AllowFight"
+  - "Murder"
+  - "BlockDisappear"
+  - "OneHearth"
+
+  high:
+  - "AcidRain"
+  - "Apocalypse"
+  - "ExplosiveSheep"
+  - "FloorIsLava"
+  - "WorldBorder"
+  - "Wither"
+  - "MeteorShower"
+  - "Dragons"
+
+# Patrón de desastres (orden de oleadas)
+disaster-pattern:
+- "high:1"
+- "medium:2"
+- "medium:1"
+- "high:1"
+- "low:2"
+- "medium:1"
+- "low:1"
+- "high:1"
+
+repeat-pattern: true
+
+# Exclusiones (desastres incompatibles)
+exclusions:
+  grounded:
+  - "NoJump"
+  - "ZeroGravity"
+
+# DO NOT TOUCH THIS!
+config-version: 1

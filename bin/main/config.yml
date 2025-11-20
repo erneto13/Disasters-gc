@@ -1,0 +1,33 @@
+#    ____  _                 __
+#   / __ \(_)________ ______/ /____  __________
+#  / / / / / ___/ __ `/ ___/ __/ _ \/ ___/ ___/
+# / /_/ / (__  ) /_/ (__  ) /_/  __/ /  (__  )
+#/_____/_/____/\__,_/____/\__/\___/_/  /____/
+# Useful links:
+# - https://discord.smartshub.dev -> support
+
+
+# Available drivers: h2, mysql
+# If you are using h2, you don't need to specify the host, port, db-name,
+# username and password due to h2 is local database.
+database:
+  driver: h2
+  host: 101.101.101.101
+  port: 3306
+  db-name: disasters
+  username: userNaMeForDisasters
+  password: passw0rD
+
+# This is the location where players will return after the game ends
+lobby:
+  world: world
+  x: 0
+  y: 64
+  z: 0
+  yaw: 0
+  pitch: 0
+
+enable-scoreboard: true
+
+# DO NOT TOUCH THIS!
+config-version: 1

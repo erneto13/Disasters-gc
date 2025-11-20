@@ -1,0 +1,50 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster causes floor blocks to gradually turn into lava
+# over time, damaging players who stand on them.
+# ==========================================
+
+# Transformation Settings
+# -----------------------
+
+# How many ticks between each stage change
+# 1 tick = 0.05 seconds
+# Examples:
+# - 1 = instant (0.05s between stages)
+# - 5 = very fast (0.25s)
+# - 10 = fast (0.5s)
+# - 20 = normal (1s)
+ticks-per-stage: 5
+
+# Block transformation stages
+# The block will go through these materials in order
+# You can add or remove stages as needed
+stages:
+- YELLOW_WOOL
+- ORANGE_WOOL
+- RED_WOOL
+- LAVA
+
+# Damage Settings
+# ----------------
+
+# Damage settings (when block becomes lava)
+# Damage dealt to players standing on lava blocks
+lava-damage: 4.0
+
+# How often to damage players on lava (in ticks)
+lava-damage-interval: 10
+
+# DO NOT TOUCH THIS!
+config-version: 1

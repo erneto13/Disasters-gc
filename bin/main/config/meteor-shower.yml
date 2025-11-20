@@ -1,0 +1,101 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# This disaster spawns meteors that fall from the sky
+# and explode on impact, increasing in intensity over time.
+# ==========================================
+
+# Spawn Settings
+# --------------
+
+# How often meteors should spawn (in ticks, 20 ticks = 1 second)
+# Example: 5 = meteors spawn every 0.25 seconds
+spawn-rate: 5
+
+# Distance from the arena where meteors are spawned (in blocks)
+# Example: 30.0 = meteors start 30 blocks away from arena center
+spawn-distance: 30.0
+
+# Multiplier for how far to the sides meteors can spawn
+# Example: 1.0 = normal angles, 2.0 = wider lateral angles
+lateral-offset-multiplier: 1.0
+
+# Minimum height above the arena where meteors spawn (in blocks)
+# Example: 20.0 = meteors will spawn at least 20 blocks above
+spawn-height-min: 20.0
+
+# Maximum height above the arena where meteors spawn (in blocks)
+# Example: 60.0 = meteors can spawn up to 60 blocks higher
+spawn-height-max: 60.0
+
+# Intensity Settings
+# ------------------
+
+# The initial amount of meteors spawned per wave
+# Example: 10 = start with 10 meteors each spawn cycle
+initial-intensity: 10
+
+# The maximum intensity (limit of meteors spawned per cycle)
+# Example: 40 = even if intensity keeps increasing, it won't exceed 40
+max-intensity: 40
+
+# How often the intensity should increase (in ticks)
+# Example: 60 = every 3 seconds the intensity will increase
+intensity-increase-rate: 60
+
+# How many meteors are added to the intensity each increase
+# Example: 2 = every 60 ticks, 2 extra meteors will be added
+intensity-increase-amount: 2
+
+# Meteor Properties
+# -----------------
+
+# The minimum visual and physical size of meteors
+# Example: 0.8 = small meteors
+min-size: 0.8
+
+# The maximum visual and physical size of meteors
+# Example: 2.5 = huge meteors
+max-size: 2.5
+
+# Explosion power multiplier (applied to meteor size)
+# Example: 3.5 = explosion power = meteor size * 3.5
+explosion-multiplier: 3.5
+
+# Movement Settings
+# -----------------
+
+# The falling speed of each meteor
+# Example: 0.8 = medium speed; lower = slower, higher = faster
+fall-speed: 0.8
+
+# The maximum lifetime of a meteor before it disappears (in ticks)
+# Example: 300 = 15 seconds before despawning if no impact occurs
+max-lifetime-ticks: 300
+
+# Visual & Audio Effects
+# ----------------------
+
+# Enable particle effects for meteors (simplified trail only)
+# Includes: flame trail and light smoke
+enable-particles: true
+
+# Enable sound effects for meteors
+# Includes: falling sound and explosion sounds
+enable-sounds: true
+
+# Enable circular impact wave on meteor landing
+enable-impact-wave: true
+
+# DO NOT TOUCH THIS!
+config-version: 1

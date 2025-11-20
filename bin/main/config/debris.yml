@@ -1,0 +1,134 @@
+# developed fork by erneto13
+#
+#▓█████▄  ██▓  ██████  ▄▄▄        ██████ ▄▄▄█████▓▓█████  ██▀███    ██████ 
+#▒██▀ ██▌▓██▒▒██    ▒ ▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓█   ▀ ▓██ ▒ ██▒▒██    ▒ 
+#░██   █▌▒██▒░ ▓██▄   ▒██  ▀█▄  ░ ▓██▄   ▒ ▓██░ ▒░▒███   ▓██ ░▄█ ▒░ ▓██▄   
+#░▓█▄   ▌░██░  ▒   ██▒░██▄▄▄▄██   ▒   ██▒░ ▓██▓ ░ ▒▓█  ▄ ▒██▀▀█▄    ▒   ██▒
+#░▒████▓ ░██░▒██████▒▒ ▓█   ▓██▒▒██████▒▒  ▒██▒ ░ ░▒████▒░██▓ ▒██▒▒██████▒▒
+# ▒▒▓  ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░  ▒ ░░   ░░ ▒░ ░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+# ░ ▒  ▒  ▒ ░░ ░▒  ░ ░  ▒   ▒▒ ░░ ░▒  ░ ░    ░     ░ ░  ░  ░▒ ░ ▒░░ ░▒  ░ ░
+# ░ ░  ░  ▒ ░░  ░  ░    ░   ▒   ░  ░  ░    ░         ░     ░░   ░ ░  ░  ░  
+#   ░     ░        ░        ░  ░      ░              ░  ░   ░           ░  
+# ░       
+
+# Flying Debris System Configuration
+# This system makes blocks fly out from explosions and land naturally
+# instead of dropping as items, creating more realistic destruction effects.
+# ==========================================
+
+# Enable/Disable System
+# ---------------------
+
+# Enable the debris system globally
+enabled: true
+
+# Explosion Debris Settings
+# --------------------------
+
+# Maximum number of debris pieces to spawn per explosion
+# Higher = more realistic but can cause lag
+# Recommended: 10-20 for small arenas, 15-30 for large arenas
+max-debris-per-explosion: 15
+
+# Base force multiplier for explosion debris
+# Higher = debris flies further
+# Example: 1.0 = normal distance, 2.0 = twice as far
+explosion-force-multiplier: 1.0
+
+# Enable random velocity variations
+# Makes debris fly in slightly different directions for realism
+random-velocity-variation: true
+
+# Random variation range (0.0 to 1.0)
+# Higher = more chaotic debris spread
+velocity-randomness: 0.3
+
+# Individual Block Break Settings
+# --------------------------------
+
+# Force for blocks broken individually (not by explosions)
+# Used when blocks are destroyed by disasters like Acid Rain
+individual-block-force: 1.5
+
+# Upward bias for individual blocks
+# Range: 0.0 (horizontal) to 1.0 (straight up)
+# Recommended: 0.5-0.8 for natural looking arcs
+upward-bias: 0.6
+
+# Physics Settings
+# ----------------
+
+# Whether debris can hurt players when falling
+# If true, debris acts like falling anvils
+hurt-entities: true
+
+# Damage dealt by falling debris (in half hearts)
+# Only applies if hurt-entities is true
+debris-damage: 2.0
+
+# Whether debris has gravity
+# Should always be true for realistic physics
+enable-gravity: true
+
+# Lifetime Settings
+# -----------------
+
+# Maximum time (in seconds) debris can exist before being removed
+# Prevents lag from debris that gets stuck or flies away
+max-lifetime-seconds: 10
+
+# Whether to place blocks where debris lands
+# true = debris becomes a solid block where it lands
+# false = debris disappears when it hits the ground
+place-on-landing: true
+
+# Performance Settings
+# --------------------
+
+# Skip debris creation for these materials (to reduce lag)
+# Add any blocks that would create too many debris pieces
+blacklisted-materials:
+- AIR
+- CAVE_AIR
+- VOID_AIR
+- WATER
+- LAVA
+- FIRE
+- SOUL_FIRE
+
+# Minimum distance from explosion center to create debris
+# Blocks closer than this won't become debris (reduces clutter)
+min-debris-distance: 1.0
+
+# Maximum distance from explosion center to create debris
+# Blocks further than this won't become debris (prevents excessive spread)
+max-debris-distance: 10.0
+
+# TODO: future update, not working
+
+# Visual Settings (Future)
+# -------------------------
+
+# Enable particle trails behind flying debris
+enable-particle-trails: false
+
+# Particle type for debris trails
+trail-particle: SMOKE
+
+# Sound Settings (Future)
+# ------------------------
+
+# Enable impact sounds when debris lands
+enable-impact-sounds: true
+
+# Sound to play on debris impact
+impact-sound: BLOCK_STONE_BREAK
+
+# Impact sound volume
+impact-sound-volume: 0.5
+
+# Impact sound pitch
+impact-sound-pitch: 0.8
+
+# DO NOT TOUCH THIS!
+config-version: 1
